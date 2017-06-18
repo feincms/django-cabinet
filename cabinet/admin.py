@@ -109,7 +109,7 @@ class FileAdmin(admin.ModelAdmin):
         if instance.image_file.name:
             return format_html(
                 '<img src="{}" alt=""/>',
-                instance.image_file.thumbnail['50x50'],
+                instance.image_file.crop['50x50'],
             )
         elif instance.download_file.name:
             return instance.download_type.upper()
