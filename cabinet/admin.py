@@ -5,10 +5,10 @@ from django.template.defaultfilters import filesizeformat
 from django.utils.html import format_html
 from django.utils.translation import ugettext_lazy as _
 
-from cabinet import models
+from cabinet.models import Folder, File
 
 
-@admin.register(models.Folder)
+@admin.register(Folder)
 class FolderAdmin(admin.ModelAdmin):
     list_display = ('name', 'parent')
     list_filter = ('parent',)
@@ -21,8 +21,8 @@ class FolderAdmin(admin.ModelAdmin):
 
         if parent__id__exact:
             try:
-                folder = models.Folder.objects.get(pk=parent__id__exact)
-            except models.Folder.DoesNotExist:
+                folder = Folder.objects.get(pk=parent__id__exact)
+            except Folder.DoesNotExist:
                 pass
             else:
                 request._cabinet_folder = folder
@@ -35,7 +35,7 @@ class FolderListFilter(admin.RelatedFieldListFilter):
         return True
 
 
-@admin.register(models.File)
+@admin.register(File)
 class FileAdmin(admin.ModelAdmin):
     list_display = (
         'admin_thumbnail',
@@ -77,14 +77,14 @@ class FileAdmin(admin.ModelAdmin):
         if not q:
             if folder__id__exact:
                 try:
-                    folder = models.Folder.objects.get(pk=folder__id__exact)
-                except models.Folder.DoesNotExist:
+                    folder = Folder.objects.get(pk=folder__id__exact)
+                except Folder.DoesNotExist:
                     return HttpResponseRedirect('?folder__isnull=True')
 
             if folder is None:
                 cabinet_context.update({
                     'folder': None,
-                    'folder_children': models.Folder.objects.filter(
+                    'folder_children': Folder.objects.filter(
                         parent__isnull=True,
                     ).annotate(
                         num_subfolders=Count('children'),
