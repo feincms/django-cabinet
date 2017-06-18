@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2017-05-16 09:58+0200\n"
+"POT-Creation-Date: 2017-06-18 23:23+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -17,11 +17,133 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1)\n"
 
-#: templates/cabinet/errors.html:5
-msgid "Please correct the following errors:"
-msgstr "Bitte korrigieren Sie die folgenden Fehler:"
+#: admin.py:59 base.py:43
+msgid "Image"
+msgstr "Bild"
 
-#: templatetags/cabinet.py:29
-#, python-format
-msgid "(Hidden field %(name)s) %(error)s"
+#: admin.py:62
+msgid "Download"
+msgstr "Download"
+
+#: admin.py:105 templates/admin/cabinet/file/change_list.html:11
+msgid "Root folder"
+msgstr "Oberster Ordner"
+
+#: admin.py:121 base.py:99
+msgid "file name"
+msgstr "Dateiname"
+
+#: admin.py:129
+msgid "details"
+msgstr "Details"
+
+#: base.py:15
+msgid "image"
+msgstr "Bild"
+
+#: base.py:23
+msgid "image width"
+msgstr "Bildbreite"
+
+#: base.py:29
+msgid "image height"
+msgstr "Bildhöhe"
+
+#: base.py:34
+msgid "primary point of interest"
+msgstr "Fokuspunkt"
+
+#: base.py:45
+msgid "Video"
+msgstr "Video"
+
+#: base.py:48
+msgid "Audio"
+msgstr "Ton"
+
+#: base.py:50
+msgid "PDF document"
+msgstr "PDF-Dokument"
+
+#: base.py:51
+msgid "Flash"
+msgstr "Flash"
+
+#: base.py:52
+msgid "Text"
+msgstr "Text"
+
+#: base.py:53
+msgid "Rich Text"
+msgstr "Rich Text"
+
+#: base.py:54
+msgid "Zip archive"
+msgstr "ZIP-Archiv"
+
+#: base.py:55
+msgid "Microsoft Word"
+msgstr "Microsoft Word"
+
+#: base.py:57
+msgid "Microsoft Excel"
+msgstr "Microsoft Excel"
+
+#: base.py:59
+msgid "Microsoft PowerPoint"
+msgstr "Microsoft PowerPoint"
+
+#: base.py:61
+msgid "Binary"
+msgstr "Binär"
+
+#: base.py:65
+msgid "download"
+msgstr "Download"
+
+#: base.py:70
+msgid "download type"
+msgstr "Downloadtyp"
+
+#: base.py:94 models.py:42 templates/admin/cabinet/file/change_list.html:22
+msgid "folder"
+msgstr "Ordner"
+
+#: base.py:103
+msgid "file size"
+msgstr "Dateigrösse"
+
+#: base.py:109
+msgid "file"
+msgstr "Datei"
+
+#: base.py:110
+msgid "files"
+msgstr "Dateien"
+
+#: models.py:31
+msgid "parent"
+msgstr "übergeordnet"
+
+#: models.py:35
+msgid "name"
+msgstr "Name"
+
+#: models.py:43
+msgid "folders"
+msgstr "Ordner"
+
+#: templates/admin/cabinet/file/change_list.html:9
+msgid "Home"
 msgstr ""
+
+#: templates/admin/cabinet/file/change_list.html:22
+#: templates/admin/cabinet/file/change_list.html:30
+#, python-format
+msgid "Add %(name)s"
+msgstr ""
+
+#: templates/admin/cabinet/file/change_list.html:104
+#, python-format
+msgid "%(num_subfolders)s subfolders, %(num_files)s files"
+msgstr "%(num_subfolders)s Unterordner, %(num_files)s Dateien"
