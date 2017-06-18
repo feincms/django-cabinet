@@ -4,6 +4,17 @@
 
 {% block filters %}{% endblock %}
 
+{% block breadcrumbs %}
+<div class="breadcrumbs">
+<a href="{% url 'admin:index' %}">{% trans 'Home' %}</a>
+&rsaquo; <a href="{% url 'admin:app_list' app_label=cl.opts.app_label %}">{{ cl.opts.app_config.verbose_name }}</a>
+&rsaquo; <a href="?folder__isnull=True">{{ cl.opts.verbose_name_plural|capfirst }}</a>
+{% for node in cabinet.folder.ancestors reversed %}
+&rsaquo; {% if forloop.last %}{{ node }}{% else %}<a href="?folder__id__exact={{ node.id }}">{{ node }}</a>{% endif %}
+{% endfor %}
+</div>
+{% endblock %}
+
 {% block object-tools-items %}
   {% if perms.cabinet.add_folder %}
   <li>

@@ -45,6 +45,15 @@ class Folder(models.Model):
     def __str__(self):
         return self.name
 
+    def ancestors(self):
+        node = self
+        while True:
+            yield node
+            if node.parent_id:
+                node = node.parent
+            else:
+                break
+
 
 class File(AbstractFile):
     class Meta(AbstractFile.Meta):
