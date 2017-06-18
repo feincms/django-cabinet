@@ -1,5 +1,6 @@
 language: python
 sudo: false
+cache: pip
 python:
   - "3.4"
   - "3.5"
@@ -8,7 +9,7 @@ env:
   - REQ='Django>=1.11,<2.0'
 matrix:
 install:
-  - pip install -q $REQ flake8
+  - pip install $REQ django-versatileimagefield flake8
   - python setup.py install
 # command to run tests, e.g. python setup.py test
 script: "cd tests && ./manage.py test testapp && cd .. && flake8 ."
