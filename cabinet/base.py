@@ -1,3 +1,4 @@
+import os
 import re
 
 from django.db import models
@@ -68,7 +69,7 @@ class DownloadMixin(models.Model):
     download_type = models.CharField(
         _('download type'),
         max_length=20,
-        blank=True,
+        editable=False,
     )
 
     class Meta:
@@ -77,7 +78,7 @@ class DownloadMixin(models.Model):
     def save(self, *args, **kwargs):
         self.download_type = next(iter(
             type
-            for type, check in self.DOWNLOAD_TYPES
+            for type, title, check in self.DOWNLOAD_TYPES
             if check(self.download_file.name)
         )) if self.download_file else ''
         super().save(*args, **kwargs)
@@ -98,6 +99,9 @@ class AbstractFileBase(models.Model):
         _('file name'),
         max_length=1000,
     )
+    file_size = models.PositiveIntegerField(
+        _('file size'),
+    )
 
     class Meta:
         abstract = True
@@ -110,7 +114,15 @@ class AbstractFileBase(models.Model):
 
     @property
     def file(self):
-        return next(iter(getattr(self, field) for field in self.FILE_FIELDS))
+        files = (getattr(self, field) for field in self.FILE_FIELDS)
+        return next(iter(f for f in files if f.name))
+
+    def save(self, *args, **kwargs):
+        f_obj = self.file
+        self.file_name = os.path.basename(f_obj.name)
+        self.file_size = f_obj.size
+        super().save(*args, **kwargs)
+    save.alters_data = True
 
 
 class AbstractFile(

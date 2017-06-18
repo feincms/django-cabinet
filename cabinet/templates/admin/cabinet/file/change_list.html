@@ -1,0 +1,44 @@
+{% extends "admin/change_list.html" %}
+
+{% block filters %}{% endblock %}
+
+{% block result_list %}
+{{ block.super }}
+
+<div id="cabinet" style="display:none">
+  <table>
+    <tbody data-folders>
+      <tr>
+        <td></td>
+        <th>Folder</th>
+        <td colspan="2">
+          {% if cabinet.folder %}
+            <a href="
+              {% if cabinet.folder.parent_id %}?parent__id__exact={{ cabinet.folder.parent_id }}
+              {% else %}?parent__isnull=True{
+              {% endif %}">../</a>
+          {% endif %}
+        </td>
+      </tr>
+      {% for f in cabinet.folder_children %}
+        <tr>
+          <td></td>
+          <th>Folder</th>
+          <td colspan="2">
+            <a href="?parent__id__exact={{ f.id }}">{{ f }}</a>
+          </td>
+        </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+
+<script type="text/javascript">
+(function() {
+  var $ = django.jQuery;
+  $('.module.filtered').removeClass('filtered');
+  $('#result_list>tbody').prepend($('#cabinet [data-folders]')[0].innerHTML);
+
+})();
+</script>
+{% endblock %}
