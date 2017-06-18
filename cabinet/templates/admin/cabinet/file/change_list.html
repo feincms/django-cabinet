@@ -1,31 +1,97 @@
 {% extends "admin/change_list.html" %}
 
+{% load admin_urls i18n %}
+
 {% block filters %}{% endblock %}
+
+{% block object-tools-items %}
+  <li>
+    <a href="{% url 'admin:cabinet_folder_add' %}?parent={{ cabinet.folder.pk }}" class="addlink">
+      {% blocktrans with name=_('folder') %}Add {{ name }}{% endblocktrans %}
+    </a>
+  </li>
+  {% if has_add_permission %}
+  <li>
+    {% url cl.opts|admin_urlname:'add' as add_url %}
+    <a href="{% add_preserved_filters add_url is_popup to_field %}&amp;folder={{ cabinet.folder.pk }}" class="addlink">
+      {% blocktrans with cl.opts.verbose_name as name %}Add {{ name }}{% endblocktrans %}
+    </a>
+  </li>
+  {% endif %}
+{% endblock %}
 
 {% block result_list %}
 {{ block.super }}
 
+<script type="text/template" id="cabinet-result-list">
+
+<div class="results">
+<table id="result_list">
+<thead>
+<tr>
+
+<th scope="col"  class="action-checkbox-column">
+
+   <div class="text"><span><input type="checkbox" id="action-toggle" /></span></div>
+   <div class="clear"></div>
+</th>
+<th scope="col"  class="column-admin_thumbnail">
+
+   <div class="text"><span></span></div>
+   <div class="clear"></div>
+</th>
+<th scope="col"  class="column-admin_file_name">
+
+   <div class="text"><span>File name</span></div>
+   <div class="clear"></div>
+</th>
+<th scope="col"  class="column-admin_details">
+
+   <div class="text"><span>Details</span></div>
+   <div class="clear"></div>
+</th>
+</tr>
+</thead>
+<tbody>
+
+
+
+</tbody>
+</table>
+</div>
+
+</script>
+
 <div id="cabinet" style="display:none">
   <table>
     <tbody data-folders>
+      {% if cabinet.folder %}
       <tr>
         <td></td>
-        <th>Folder</th>
-        <td colspan="2">
-          {% if cabinet.folder %}
+        <td>&#x1f4c2;</td>
+        <th colspan="2">
             <a href="
-              {% if cabinet.folder.parent_id %}?parent__id__exact={{ cabinet.folder.parent_id }}
-              {% else %}?parent__isnull=True{
+              {% if cabinet.folder.parent_id %}?folder__id__exact={{ cabinet.folder.parent_id }}
+              {% else %}?folder__isnull=True{
               {% endif %}">../</a>
-          {% endif %}
-        </td>
+        </th>
       </tr>
+      {% endif %}
       {% for f in cabinet.folder_children %}
         <tr>
           <td></td>
-          <th>Folder</th>
-          <td colspan="2">
-            <a href="?parent__id__exact={{ f.id }}">{{ f }}</a>
+          <td>&#x1f4c2;</td>
+          <th>
+            <a href="?folder__id__exact={{ f.id }}">
+              {{ f }}
+            </a>
+          </th>
+          <td>
+            <small>
+              {% blocktrans with num_subfolders=f.num_subfolders num_files=f.num_files trimmed %}
+                {{ num_subfolders }} subfolders, {{ num_files }} files
+              {% endblocktrans %}
+            </small>
           </td>
         </tr>
       {% endfor %}
@@ -36,9 +102,28 @@
 <script type="text/javascript">
 (function() {
   var $ = django.jQuery;
+
+  // Remove filtered class so that module uses horizontal space better
   $('.module.filtered').removeClass('filtered');
+
+  // Hardcoded result list HTML if there are no files at all (for example in
+  // the root folder)
+  if (!$('#result_list').length) {
+    $('#cabinet').before($('#cabinet-result-list')[0].innerHTML);
+  }
+
+  // Prepend folders to result list
   $('#result_list>tbody').prepend($('#cabinet [data-folders]')[0].innerHTML);
 
+  // Search searches all files; remove folder filter
+  $('#changelist-search input[name=folder__isnull]').remove();
+  $('#changelist-search input[name=folder__id__exact]').remove();
 })();
 </script>
+<style type="text/css">
+.column-admin_thumbnail {
+  width: 2em;
+  font-size: 2rem;
+}
+</style>
 {% endblock %}

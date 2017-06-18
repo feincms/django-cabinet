@@ -1,4 +1,5 @@
 from django.contrib import admin
+from django.db.models import Count
 from django.http import HttpResponseRedirect
 from django.template.defaultfilters import filesizeformat
 from django.utils.html import format_html
@@ -41,8 +42,14 @@ class FileAdmin(admin.ModelAdmin):
         'admin_file_name',
         'admin_details',
     )
+    list_display_links = (
+        'admin_file_name',
+    )
     list_filter = (
         ('folder', FolderListFilter),
+    )
+    search_fields = (
+        'file_name',
     )
 
     fieldsets = [
@@ -60,30 +67,38 @@ class FileAdmin(admin.ModelAdmin):
     def changelist_view(self, request):
         folder__isnull = request.GET.get('folder__isnull')
         folder__id__exact = request.GET.get('folder__id__exact')
-        if not any((folder__isnull, folder__id__exact)):
+        q = request.GET.get('q')
+        if not any((folder__isnull, folder__id__exact, q)):
             return HttpResponseRedirect('?folder__isnull=True')
 
         cabinet_context = {}
         folder = None
 
-        if folder__id__exact:
-            try:
-                folder = models.Folder.objects.get(pk=folder__id__exact)
-            except models.Folder.DoesNotExist:
-                return HttpResponseRedirect('?folder__isnull=True')
+        if not q:
+            if folder__id__exact:
+                try:
+                    folder = models.Folder.objects.get(pk=folder__id__exact)
+                except models.Folder.DoesNotExist:
+                    return HttpResponseRedirect('?folder__isnull=True')
 
-        if folder is None:
-            cabinet_context.update({
-                'folder': None,
-                'folder_children': models.Folder.objects.filter(
-                    parent__isnull=True,
-                ),
-            })
-        else:
-            cabinet_context.update({
-                'folder': folder,
-                'folder_children': folder.children.all(),
-            })
+            if folder is None:
+                cabinet_context.update({
+                    'folder': None,
+                    'folder_children': models.Folder.objects.filter(
+                        parent__isnull=True,
+                    ).annotate(
+                        num_subfolders=Count('children'),
+                        num_files=Count('files'),
+                    ),
+                })
+            else:
+                cabinet_context.update({
+                    'folder': folder,
+                    'folder_children': folder.children.annotate(
+                        num_subfolders=Count('children'),
+                        num_files=Count('files'),
+                    ),
+                })
 
         return super().changelist_view(request, extra_context={
             'cabinet': cabinet_context,
@@ -91,6 +106,13 @@ class FileAdmin(admin.ModelAdmin):
         })
 
     def admin_thumbnail(self, instance):
+        if instance.image_file.name:
+            return format_html(
+                '<img src="{}" alt=""/>',
+                instance.image_file.thumbnail['50x50'],
+            )
+        elif instance.download_file.name:
+            return instance.download_type.upper()
         return ''
     admin_thumbnail.short_description = ''
 
@@ -100,7 +122,8 @@ class FileAdmin(admin.ModelAdmin):
 
     def admin_details(self, instance):
         return format_html(
-            '<small>{}</small>',
+            '<small>{}<br>{}</small>',
             filesizeformat(instance.file_size),
+            instance.file.name,
         )
     admin_details.short_description = _('details')
