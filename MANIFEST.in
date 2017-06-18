@@ -1,0 +1,5 @@
+include LICENSE
+include MANIFEST.in
+include README.rst
+include CHANGELOG.rst
+recursive-include cabinet *.html *.js *.css *.po *.mo

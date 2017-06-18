@@ -1,0 +1,10 @@
+*.py?
+*~
+.*.sw?
+\#*#
+/docs/_build
+/dist
+/build
+/*.egg-info
+/MANIFEST
+/tests/venv
