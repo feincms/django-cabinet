@@ -1,6 +1,7 @@
 import os
 import re
 
+from django.core.exceptions import ValidationError
 from django.db import models
 from django.utils.translation import ugettext_lazy as _
 
@@ -116,6 +117,11 @@ class AbstractFileBase(models.Model):
     def file(self):
         files = (getattr(self, field) for field in self.FILE_FIELDS)
         return next(iter(f for f in files if f.name))
+
+    def clean(self):
+        files = (getattr(self, field) for field in self.FILE_FIELDS)
+        if len([f for f in files if f.name]) != 1:
+            raise ValidationError(_('Please fill in exactly one file field!'))
 
     def save(self, *args, **kwargs):
         f_obj = self.file
