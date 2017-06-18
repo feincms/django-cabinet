@@ -5,11 +5,13 @@
 {% block filters %}{% endblock %}
 
 {% block object-tools-items %}
+  {% if perms.cabinet.add_folder %}
   <li>
     <a href="{% url 'admin:cabinet_folder_add' %}?parent={{ cabinet.folder.pk }}" class="addlink">
       {% blocktrans with name=_('folder') %}Add {{ name }}{% endblocktrans %}
     </a>
   </li>
+  {% endif %}
   {% if has_add_permission %}
   <li>
     {% url cl.opts|admin_urlname:'add' as add_url %}
