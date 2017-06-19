@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2017-06-18 23:23+0200\n"
+"POT-Creation-Date: 2017-06-19 11:14+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -17,109 +17,157 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1)\n"
 
-#: admin.py:59 base.py:43
+#: admin.py:40
+msgid "Delete this folder"
+msgstr "Diesen Ordner löschen"
+
+#: admin.py:65 base.py:44
 msgid "Image"
 msgstr "Bild"
 
-#: admin.py:62
+#: admin.py:68
 msgid "Download"
 msgstr "Download"
 
-#: admin.py:105 templates/admin/cabinet/file/change_list.html:11
+#: admin.py:123 templates/admin/cabinet/file/change_list.html:11
 msgid "Root folder"
 msgstr "Oberster Ordner"
 
-#: admin.py:121 base.py:99
+#: admin.py:171
+#, python-format
+msgid "The folder \"%s\" was changed successfully."
+msgstr "Der Ordner \"%s\" wurde erfolgreich aktualisiert."
+
+#: admin.py:182
+#, python-format
+msgid "The folder \"%s\" was added successfully."
+msgstr "Der Ordner \"%s\" wurde erfolgreich hinzugefügt."
+
+#: admin.py:204
+#, python-format
+msgid "Add %s"
+msgstr "%s hinzufügen"
+
+#: admin.py:204
+#, python-format
+msgid "Change %s"
+msgstr "%s ändern"
+
+#: admin.py:239
+#, python-format
+msgid "Cannot delete %(name)s"
+msgstr "%(name)s kann nicht gelöscht werden"
+
+#: admin.py:246
+#, python-format
+msgid "Cannot delete %(name)s because of related objects (%(related)s)"
+msgstr "%(name)s kann wegen abhängigen Objekten nicht gelöscht werden (%(related)s)"
+
+#: admin.py:260
+#, python-format
+msgid "The folder \"%s\" was deleted successfully."
+msgstr "Der Ordner \"%s\" wurde erfolgreich gelöscht."
+
+#: admin.py:283 base.py:100
 msgid "file name"
 msgstr "Dateiname"
 
-#: admin.py:129
+#: admin.py:291
 msgid "details"
 msgstr "Details"
 
-#: base.py:15
+#: apps.py:7
+msgid "Cabinet media library"
+msgstr "Cabinet Medienbibliothek"
+
+#: base.py:16
 msgid "image"
 msgstr "Bild"
 
-#: base.py:23
+#: base.py:24
 msgid "image width"
 msgstr "Bildbreite"
 
-#: base.py:29
+#: base.py:30
 msgid "image height"
 msgstr "Bildhöhe"
 
-#: base.py:34
+#: base.py:35
 msgid "primary point of interest"
 msgstr "Fokuspunkt"
 
-#: base.py:45
+#: base.py:46
 msgid "Video"
 msgstr "Video"
 
-#: base.py:48
+#: base.py:49
 msgid "Audio"
 msgstr "Ton"
 
-#: base.py:50
+#: base.py:51
 msgid "PDF document"
 msgstr "PDF-Dokument"
 
-#: base.py:51
+#: base.py:52
 msgid "Flash"
 msgstr "Flash"
 
-#: base.py:52
+#: base.py:53
 msgid "Text"
 msgstr "Text"
 
-#: base.py:53
+#: base.py:54
 msgid "Rich Text"
 msgstr "Rich Text"
 
-#: base.py:54
+#: base.py:55
 msgid "Zip archive"
 msgstr "ZIP-Archiv"
 
-#: base.py:55
+#: base.py:56
 msgid "Microsoft Word"
 msgstr "Microsoft Word"
 
-#: base.py:57
+#: base.py:58
 msgid "Microsoft Excel"
 msgstr "Microsoft Excel"
 
-#: base.py:59
+#: base.py:60
 msgid "Microsoft PowerPoint"
 msgstr "Microsoft PowerPoint"
 
-#: base.py:61
+#: base.py:62
 msgid "Binary"
 msgstr "Binär"
 
-#: base.py:65
+#: base.py:66
 msgid "download"
 msgstr "Download"
 
-#: base.py:70
+#: base.py:71
 msgid "download type"
 msgstr "Downloadtyp"
 
-#: base.py:94 models.py:42 templates/admin/cabinet/file/change_list.html:22
+#: base.py:95 models.py:42 templates/admin/cabinet/file/change_list.html:22
+#: templates/admin/cabinet/folder/change_form.html:15
 msgid "folder"
 msgstr "Ordner"
 
-#: base.py:103
+#: base.py:104
 msgid "file size"
 msgstr "Dateigrösse"
 
-#: base.py:109
+#: base.py:110
 msgid "file"
 msgstr "Datei"
 
-#: base.py:110
+#: base.py:111
 msgid "files"
 msgstr "Dateien"
+
+#: base.py:124
+msgid "Please fill in exactly one file field!"
+msgstr "Bitte genau ein Dateifeld ausfüllen!"
 
 #: models.py:31
 msgid "parent"
@@ -134,16 +182,26 @@ msgid "folders"
 msgstr "Ordner"
 
 #: templates/admin/cabinet/file/change_list.html:9
+#: templates/admin/cabinet/folder/change_form.html:7
 msgid "Home"
-msgstr ""
+msgstr "Start"
 
 #: templates/admin/cabinet/file/change_list.html:22
 #: templates/admin/cabinet/file/change_list.html:30
+#: templates/admin/cabinet/folder/change_form.html:15
 #, python-format
 msgid "Add %(name)s"
-msgstr ""
+msgstr "%(name)s hinzufügen"
 
-#: templates/admin/cabinet/file/change_list.html:104
+#: templates/admin/cabinet/file/change_list.html:103
 #, python-format
 msgid "%(num_subfolders)s subfolders, %(num_files)s files"
 msgstr "%(num_subfolders)s Unterordner, %(num_files)s Dateien"
+
+#: templates/admin/cabinet/file/change_list.html:107
+msgid "Change folder"
+msgstr "Ordner ändern"
+
+#: templates/admin/cabinet/folder/change_form.html:23
+msgid "Save"
+msgstr "Sichern"
