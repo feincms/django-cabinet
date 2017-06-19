@@ -9,6 +9,7 @@ env:
   - REQ='Django>=1.11,<2.0'
 matrix:
 install:
+  - pip install -U pip wheel
   - pip install $REQ django-versatileimagefield flake8
   - python setup.py install
 # command to run tests, e.g. python setup.py test
