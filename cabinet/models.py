@@ -7,6 +7,10 @@ from django.utils.translation import ugettext_lazy as _
 from cabinet.base import AbstractFile
 
 
+if not hasattr(settings, 'CABINET_FILE_MODEL'):
+    settings.CABINET_FILE_MODEL = 'cabinet.File'
+
+
 def get_file_model():
     """
     Return the File model that is active in this project.
