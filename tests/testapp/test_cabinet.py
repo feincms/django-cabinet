@@ -1,3 +1,7 @@
+import io
+import os
+
+from django.conf import settings
 from django.contrib.auth.models import User
 from django.test import Client, TestCase
 
@@ -61,6 +65,69 @@ class CabinetTestCase(TestCase):
             Folder.objects.count(),
             0,
         )
+
+    def test_upload(self):
+        folder = Folder.objects.create(name='Test')
+        c = self.login()
+
+        with io.open(os.path.join(settings.BASE_DIR, 'image.png'), 'rb') as f:
+            response = c.post('/admin/cabinet/file/add/', {
+                'folder': folder.id,
+                'image_file_0': f,
+            })
+
+        self.assertRedirects(
+            response,
+            '/admin/cabinet/file/',
+        )
+
+        response = c.get(
+            '/admin/cabinet/file/?folder__id__exact=%s' % folder.id)
+
+        self.assertContains(
+            response,
+            '>image.png</a>',
+            1,
+        )
+        self.assertContains(
+            response,
+            '''../</a>''',
+        )
+        self.assertContains(
+            response,
+            '<p class="paginator"> 1 file </p>',
+            html=True,
+        )
+
+        response = c.get('/admin/cabinet/file/')
+        self.assertContains(
+            response,
+            '''
+            <a href="?folder__id__exact=1">
+              Test
+            </a>
+            ''',
+            html=True,
+        )
+        self.assertContains(
+            response,
+            '<p class="paginator"> 0 files </p>',
+            html=True,
+        )
+
+        response = c.get('/admin/cabinet/file/?q=image')
+        self.assertContains(
+            response,
+            '<tbody data-folders> </tbody>',
+            html=True,
+        )
+        self.assertContains(
+            response,
+            '<p class="paginator"> 1 file </p>',
+            html=True,
+        )
+
+        # print(response.content.decode('utf-8'))
 
     def test_stuff(self):
         self.assertEqual(

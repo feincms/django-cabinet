@@ -24,7 +24,7 @@ Installation
 ============
 
 - ``pip install django-cabinet``
-- Add ``cabinet`` to your ``INSTALLED_APPS``
+- Add ``cabinet`` and ``versatileimagefield`` to your ``INSTALLED_APPS``
 - Maybe replace the file model by setting ``CABINET_FILE_MODEL``, but the
   default should be fine for most uses.
 
