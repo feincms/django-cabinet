@@ -17,6 +17,9 @@ from cabinet.models import Folder, File
 
 
 class FolderListFilter(admin.RelatedFieldListFilter):
+    def has_output(self):
+        return True
+
     def queryset(self, request, queryset):
         if self.used_parameters:
             try:
