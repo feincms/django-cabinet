@@ -1,3 +1,5 @@
+from collections import defaultdict
+
 from django import forms
 from django.contrib import admin, messages
 from django.contrib.admin import helpers
@@ -32,6 +34,23 @@ class FolderListFilter(admin.RelatedFieldListFilter):
             return queryset.filter(folder__isnull=True)
 
 
+def folder_choices():
+    children = defaultdict(list)
+    for folder in Folder.objects.all():
+        children[folder.parent_id].append(folder)
+
+    if not children:
+        return []
+
+    def iterate(parent_id, ancestors):
+        for node in children[parent_id]:
+            anc = ancestors + [node.name]
+            yield node.id, ' / '.join(anc)
+            yield from iterate(node.id, anc)
+
+    yield from iterate(None, [])
+
+
 class FolderForm(forms.ModelForm):
     class Meta:
         model = Folder
@@ -39,6 +58,7 @@ class FolderForm(forms.ModelForm):
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
+        self.fields['parent'].choices = list(folder_choices())
         if self.instance.pk:
             self.fields['_delete_folder'] = forms.BooleanField(
                 required=False,
@@ -287,6 +307,12 @@ class FileAdmin(admin.ModelAdmin):
             (('?folder__id__exact=%s' % obj.parent_id)
              if obj.parent_id else '')
         )
+
+    def formfield_for_foreignkey(self, db_field, request, **kwargs):
+        field = super().formfield_for_foreignkey(db_field, request, **kwargs)
+        if db_field.name in ('parent', 'folder'):
+            field.choices = list(folder_choices())
+        return field
 
     def admin_thumbnail(self, instance):
         if instance.image_file.name:
