@@ -72,16 +72,20 @@
   {% if cabinet.folder %}
   <tr class="row-folder">
     <td></td>
-    <td class="field-admin_thumbnail"><span class="folder"></span></td>
+    <td class="field-admin_thumbnail">
+      <a href="{% if cabinet.folder.parent_id %}?folder__id__exact={{ cabinet.folder.parent_id }}{% else %}.{% endif %}"><span class="folder"></span></a>
+    </td>
     <th class="field-admin_file_name" colspan="2">
-        <a href="{% if cabinet.folder.parent_id %}?folder__id__exact={{ cabinet.folder.parent_id }}{% else %}.{% endif %}">../</a>
+      <a href="{% if cabinet.folder.parent_id %}?folder__id__exact={{ cabinet.folder.parent_id }}{% else %}.{% endif %}">../</a>
     </th>
   </tr>
   {% endif %}
   {% for f in cabinet.folder_children %}
     <tr class="row-folder">
       <td></td>
-      <td class="field-admin_thumbnail"><span class="folder"></span></td>
+      <td class="field-admin_thumbnail">
+        <a href="?folder__id__exact={{ f.id }}"><span class="folder"></span></a>
+      </td>
       <th class="field-admin_file_name">
         <a href="?folder__id__exact={{ f.id }}">{{ f }}</a>
       </th>

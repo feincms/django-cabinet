@@ -54,6 +54,7 @@ class FileAdmin(admin.ModelAdmin):
         'admin_details',
     )
     list_display_links = (
+        'admin_thumbnail',
         'admin_file_name',
     )
     list_filter = (
