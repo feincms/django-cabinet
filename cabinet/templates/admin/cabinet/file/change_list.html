@@ -128,31 +128,32 @@
 <style type="text/css">
 .column-admin_thumbnail {
   width: 2em;
-  font-size: 2rem;
 }
 .field-admin_thumbnail span {
   box-sizing: border-box;
-  width: 40px;
-  height: 40px;
+  width: 50px;
+  height: 50px;
+  overflow: hidden;
   display: inline-block;
-  position: relative;
   background-position: center center;
   background-repeat: no-repeat;
   background-size: contain;
-  vertical-align: middle;
   text-align: center;
-  font-size: 90%;
+  font-size: 80%;
+  font-weight: normal;
 }
 .field-admin_thumbnail .folder {
   background-image: url({% static 'cabinet/folder-open-o.svg' %});
 }
 .field-admin_thumbnail .download {
   background-image: url({% static 'cabinet/file-o.svg' %});
-  padding-top: 16px;
+  padding-top: 20px;
 }
-.field-admin_file_name a {
-  display: block;
-  padding: 10px 0;
+.action-checkbox,
+.field-admin_thumbnail,
+.field-admin_file_name,
+.field-admin_details {
+  vertical-align: middle;
 }
 </style>
 {% endblock %}
