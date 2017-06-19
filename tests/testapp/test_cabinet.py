@@ -60,7 +60,7 @@ class CabinetTestCase(TestCase):
 
         response = c.post('/admin/cabinet/file/folder/%s/' % folder.id, {
             'name': folder.name,
-            'delete': True,
+            '_delete_folder': True,
         })
         self.assertRedirects(
             response,

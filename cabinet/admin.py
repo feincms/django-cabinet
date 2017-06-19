@@ -40,7 +40,7 @@ class FolderForm(forms.ModelForm):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         if self.instance.pk:
-            self.fields['delete'] = forms.BooleanField(
+            self.fields['_delete_folder'] = forms.BooleanField(
                 required=False,
                 label=_('Delete this folder'),
             )
@@ -179,7 +179,7 @@ class FileAdmin(admin.ModelAdmin):
         if request.method == 'POST':
             form = FolderForm(request.POST, **kw)
             if form.is_valid():
-                if original and form.cleaned_data.get('delete'):
+                if original and form.cleaned_data.get('_delete_folder'):
                     return self._folder_form_delete(
                         request,
                         original,
