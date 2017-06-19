@@ -143,7 +143,6 @@ class FileAdmin(admin.ModelAdmin):
 
         return folders
 
-
     def folder_add(self, request):
         with transaction.atomic(using=router.db_for_write(self.model)):
             return self._folder_form(
@@ -295,7 +294,11 @@ class FileAdmin(admin.ModelAdmin):
                 instance.image_file.crop['50x50'],
             )
         elif instance.download_file.name:
-            return instance.download_type.upper()
+            return format_html(
+                '<span class="download download-{}">{}</span>',
+                instance.download_type,
+                instance.download_type.upper(),
+            )
         return ''
     admin_thumbnail.short_description = ''
 

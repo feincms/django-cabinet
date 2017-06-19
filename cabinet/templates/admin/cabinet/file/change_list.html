@@ -1,6 +1,6 @@
 {% extends "admin/change_list.html" %}
 
-{% load admin_urls i18n %}
+{% load admin_urls i18n static %}
 
 {# Do not render filters #}
 {% block filters %}{% endblock %}
@@ -70,22 +70,22 @@
 
 <script type="text/template" id="cabinet-folder-list">
   {% if cabinet.folder %}
-  <tr>
+  <tr class="row-folder">
     <td></td>
-    <td>&#x1f4c2;</td>
-    <th colspan="2">
+    <td class="field-admin_thumbnail"><span class="folder"></span></td>
+    <th class="field-admin_file_name" colspan="2">
         <a href="{% if cabinet.folder.parent_id %}?folder__id__exact={{ cabinet.folder.parent_id }}{% else %}.{% endif %}">../</a>
     </th>
   </tr>
   {% endif %}
   {% for f in cabinet.folder_children %}
-    <tr>
+    <tr class="row-folder">
       <td></td>
-      <td>&#x1f4c2;</td>
-      <th>
+      <td class="field-admin_thumbnail"><span class="folder"></span></td>
+      <th class="field-admin_file_name">
         <a href="?folder__id__exact={{ f.id }}">{{ f }}</a>
       </th>
-      <td>
+      <td class="field-admin_details">
         <small>
           {% blocktrans with num_subfolders=f.num_subfolders num_files=f.num_files trimmed %}
             {{ num_subfolders }} subfolders, {{ num_files }} files
@@ -123,6 +123,30 @@
 .column-admin_thumbnail {
   width: 2em;
   font-size: 2rem;
+}
+.field-admin_thumbnail span {
+  box-sizing: border-box;
+  width: 40px;
+  height: 40px;
+  display: inline-block;
+  position: relative;
+  background-position: center center;
+  background-repeat: no-repeat;
+  background-size: contain;
+  vertical-align: middle;
+  text-align: center;
+  font-size: 90%;
+}
+.field-admin_thumbnail .folder {
+  background-image: url({% static 'cabinet/folder-open-o.svg' %});
+}
+.field-admin_thumbnail .download {
+  background-image: url({% static 'cabinet/file-o.svg' %});
+  padding-top: 16px;
+}
+.field-admin_file_name a {
+  display: block;
+  padding: 10px 0;
 }
 </style>
 {% endblock %}
