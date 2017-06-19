@@ -51,3 +51,4 @@ MIDDLEWARE_CLASSES = (
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.locale.LocaleMiddleware'
 )
+ROOT_URLCONF = 'testapp.urls'
