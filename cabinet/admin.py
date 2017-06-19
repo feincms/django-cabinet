@@ -1,4 +1,5 @@
 from collections import defaultdict
+from urllib.parse import urlencode
 
 from django import forms
 from django.contrib import admin, messages
@@ -28,7 +29,7 @@ class FolderListFilter(admin.RelatedFieldListFilter):
                 return queryset.filter(**self.used_parameters)
             except ValidationError as e:
                 raise IncorrectLookupParameters(e)
-        elif request.GET:
+        elif 'q' in request.GET:
             return queryset
         else:
             return queryset.filter(folder__isnull=True)
@@ -113,7 +114,13 @@ class FileAdmin(admin.ModelAdmin):
         ] + super().get_urls()
 
     def changelist_view(self, request):
-        cabinet_context = {}
+        cabinet_context = {
+            'querystring': urlencode({
+                key: value
+                for key, value in request.GET.items()
+                if key != 'folder__id__exact'
+            }),
+        }
         folder = None
 
         folder__id__exact = request.GET.get('folder__id__exact')

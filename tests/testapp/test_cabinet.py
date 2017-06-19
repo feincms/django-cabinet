@@ -107,7 +107,7 @@ class CabinetTestCase(TestCase):
         response = c.get('/admin/cabinet/file/')
         self.assertContains(
             response,
-            '<a href="?folder__id__exact=%s">Test</a>' % folder.id,
+            '<a href="?&amp;folder__id__exact=%s">Test</a>' % folder.id,
         )
         self.assertContains(
             response,

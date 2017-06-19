@@ -45,10 +45,12 @@
   <table id="result_list">
     <thead>
     <tr>
+      {% if action_form %}
       <th scope="col"  class="action-checkbox-column">
         <div class="text"><span><input type="checkbox" id="action-toggle" /></span></div>
         <div class="clear"></div>
       </th>
+      {% endif %}
       <th scope="col"  class="column-admin_thumbnail">
         <div class="text"><span></span></div>
         <div class="clear"></div>
@@ -71,23 +73,23 @@
 <script type="text/template" id="cabinet-folder-list">
   {% if cabinet.folder %}
   <tr class="row-folder">
-    <td></td>
+    {% if action_form %}<td></td>{% endif %}
     <td class="field-admin_thumbnail">
-      <a href="{% if cabinet.folder.parent_id %}?folder__id__exact={{ cabinet.folder.parent_id }}{% else %}.{% endif %}"><span class="folder"></span></a>
+      <a href="?{{ cabinet.querystring }}{% if cabinet.folder.parent_id %}&amp;folder__id__exact={{ cabinet.folder.parent_id }}{% endif %}"><span class="folder"></span></a>
     </td>
     <th class="field-admin_file_name" colspan="2">
-      <a href="{% if cabinet.folder.parent_id %}?folder__id__exact={{ cabinet.folder.parent_id }}{% else %}.{% endif %}">../</a>
+      <a href="?{{ cabinet.querystring }}{% if cabinet.folder.parent_id %}&amp;folder__id__exact={{ cabinet.folder.parent_id }}{% endif %}">../</a>
     </th>
   </tr>
   {% endif %}
   {% for f in cabinet.folder_children %}
     <tr class="row-folder">
-      <td></td>
+      {% if action_form %}<td></td>{% endif %}
       <td class="field-admin_thumbnail">
-        <a href="?folder__id__exact={{ f.id }}"><span class="folder"></span></a>
+        <a href="?{{ cabinet.querystring }}&amp;folder__id__exact={{ f.id }}"><span class="folder"></span></a>
       </td>
       <th class="field-admin_file_name">
-        <a href="?folder__id__exact={{ f.id }}">{{ f }}</a>
+        <a href="?{{ cabinet.querystring }}&amp;folder__id__exact={{ f.id }}">{{ f }}</a>
       </th>
       <td class="field-admin_details">
         <small>
