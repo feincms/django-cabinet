@@ -23,6 +23,8 @@ class FolderListFilter(admin.RelatedFieldListFilter):
                 return queryset.filter(**self.used_parameters)
             except ValidationError as e:
                 raise IncorrectLookupParameters(e)
+        elif request.GET:
+            return queryset
         else:
             return queryset.filter(folder__isnull=True)
 
