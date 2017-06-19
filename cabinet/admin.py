@@ -1,4 +1,5 @@
 from django.contrib import admin
+from django.contrib.admin.options import IncorrectLookupParameters
 from django.db.models import Count
 from django.http import HttpResponseRedirect
 from django.template.defaultfilters import filesizeformat
@@ -30,9 +31,14 @@ class FolderAdmin(admin.ModelAdmin):
 
 
 class FolderListFilter(admin.RelatedFieldListFilter):
-    @property
-    def include_empty_choice(self):
-        return True
+    def queryset(self, request, queryset):
+        if self.used_parameters:
+            try:
+                return queryset.filter(**self.used_parameters)
+            except ValidationError as e:
+                raise IncorrectLookupParameters(e)
+        else:
+            return queryset.filter(folder__isnull=True)
 
 
 @admin.register(File)
@@ -65,21 +71,17 @@ class FileAdmin(admin.ModelAdmin):
     ]
 
     def changelist_view(self, request):
-        folder__isnull = request.GET.get('folder__isnull')
-        folder__id__exact = request.GET.get('folder__id__exact')
-        q = request.GET.get('q')
-        if not any((folder__isnull, folder__id__exact, q)):
-            return HttpResponseRedirect('?folder__isnull=True')
-
         cabinet_context = {}
         folder = None
 
+        folder__id__exact = request.GET.get('folder__id__exact')
+        q = request.GET.get('q')
         if not q:
             if folder__id__exact:
                 try:
                     folder = Folder.objects.get(pk=folder__id__exact)
                 except Folder.DoesNotExist:
-                    return HttpResponseRedirect('?folder__isnull=True')
+                    return HttpResponseRedirect('?e=1')
 
             if folder is None:
                 cabinet_context.update({
