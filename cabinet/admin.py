@@ -107,26 +107,42 @@ class FileAdmin(admin.ModelAdmin):
             if folder is None:
                 cabinet_context.update({
                     'folder': None,
-                    'folder_children': Folder.objects.filter(
-                        parent__isnull=True,
-                    ).annotate(
-                        num_subfolders=Count('children'),
-                        num_files=Count('files'),
-                    ),
+                    'folder_children': self.folders_annotate(
+                        Folder.objects.filter(parent__isnull=True)),
                 })
             else:
                 cabinet_context.update({
                     'folder': folder,
-                    'folder_children': folder.children.annotate(
-                        num_subfolders=Count('children'),
-                        num_files=Count('files'),
-                    ),
+                    'folder_children': self.folders_annotate(
+                        folder.children.all()),
                 })
 
         return super().changelist_view(request, extra_context={
             'cabinet': cabinet_context,
             'title': folder or _('Root folder'),
         })
+
+    def folders_annotate(self, folders):
+        num_subfolders = dict(
+            Folder.objects.order_by().filter(
+                parent__in=folders,
+            ).values('parent').annotate(
+                Count('id'),
+            ).values_list('parent', 'id__count'))
+
+        num_files = dict(
+            File.objects.order_by().filter(
+                folder__in=folders,
+            ).values('folder').annotate(
+                Count('id'),
+            ).values_list('folder', 'id__count'))
+
+        for f in folders:
+            f.num_subfolders = num_subfolders.get(f.id, 0)
+            f.num_files = num_files.get(f.id, 0)
+
+        return folders
+
 
     def folder_add(self, request):
         with transaction.atomic(using=router.db_for_write(self.model)):

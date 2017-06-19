@@ -2,8 +2,10 @@
 
 {% load admin_urls i18n %}
 
+{# Do not render filters #}
 {% block filters %}{% endblock %}
 
+{# Add parent folders to breadcrumbs #}
 {% block breadcrumbs %}
 <div class="breadcrumbs">
 <a href="{% url 'admin:index' %}">{% trans 'Home' %}</a>
@@ -36,82 +38,65 @@
 {% block result_list %}
 {{ block.super }}
 
+{# Blob of content that is added to main template if there were no files #}
+{# (which always happens for example on the root folder listing) #}
 <script type="text/template" id="cabinet-result-list">
-
-<div class="results">
-<table id="result_list">
-<thead>
-<tr>
-
-<th scope="col"  class="action-checkbox-column">
-
-   <div class="text"><span><input type="checkbox" id="action-toggle" /></span></div>
-   <div class="clear"></div>
-</th>
-<th scope="col"  class="column-admin_thumbnail">
-
-   <div class="text"><span></span></div>
-   <div class="clear"></div>
-</th>
-<th scope="col"  class="column-admin_file_name">
-
-   <div class="text"><span>File name</span></div>
-   <div class="clear"></div>
-</th>
-<th scope="col"  class="column-admin_details">
-
-   <div class="text"><span>Details</span></div>
-   <div class="clear"></div>
-</th>
-</tr>
-</thead>
-<tbody>
-
-
-
-</tbody>
-</table>
-</div>
-
+  <div class="results">
+  <table id="result_list">
+    <thead>
+    <tr>
+      <th scope="col"  class="action-checkbox-column">
+        <div class="text"><span><input type="checkbox" id="action-toggle" /></span></div>
+        <div class="clear"></div>
+      </th>
+      <th scope="col"  class="column-admin_thumbnail">
+        <div class="text"><span></span></div>
+        <div class="clear"></div>
+      </th>
+      <th scope="col"  class="column-admin_file_name">
+        <div class="text"><span>File name</span></div>
+        <div class="clear"></div>
+      </th>
+      <th scope="col"  class="column-admin_details">
+        <div class="text"><span>Details</span></div>
+        <div class="clear"></div>
+      </th>
+    </tr>
+    </thead>
+    <tbody></tbody>
+  </table>
+  </div>
 </script>
 
-<div id="cabinet" style="display:none">
-  <table>
-    <tbody data-folders>
-      {% if cabinet.folder %}
-      <tr>
-        <td></td>
-        <td>&#x1f4c2;</td>
-        <th colspan="2">
-            <a href="
-              {% if cabinet.folder.parent_id %}?folder__id__exact={{ cabinet.folder.parent_id }}
-              {% else %}.{% endif %}">../</a>
-        </th>
-      </tr>
-      {% endif %}
-      {% for f in cabinet.folder_children %}
-        <tr>
-          <td></td>
-          <td>&#x1f4c2;</td>
-          <th>
-            <a href="?folder__id__exact={{ f.id }}">
-              {{ f }}
-            </a>
-          </th>
-          <td>
-            <small>
-              {% blocktrans with num_subfolders=f.num_subfolders num_files=f.num_files trimmed %}
-                {{ num_subfolders }} subfolders, {{ num_files }} files
-              {% endblocktrans %}
-              <a href="{% url 'admin:cabinet_folder_change' f.id %}"
-                 title="{% trans 'Change folder' %}" class="changelink"></a>
-            </small>
-          </td>
-        </tr>
-      {% endfor %}
-    </tbody>
-  </table>
-</div>
+<script type="text/template" id="cabinet-folder-list">
+  {% if cabinet.folder %}
+  <tr>
+    <td></td>
+    <td>&#x1f4c2;</td>
+    <th colspan="2">
+        <a href="{% if cabinet.folder.parent_id %}?folder__id__exact={{ cabinet.folder.parent_id }}{% else %}.{% endif %}">../</a>
+    </th>
+  </tr>
+  {% endif %}
+  {% for f in cabinet.folder_children %}
+    <tr>
+      <td></td>
+      <td>&#x1f4c2;</td>
+      <th>
+        <a href="?folder__id__exact={{ f.id }}">{{ f }}</a>
+      </th>
+      <td>
+        <small>
+          {% blocktrans with num_subfolders=f.num_subfolders num_files=f.num_files trimmed %}
+            {{ num_subfolders }} subfolders, {{ num_files }} files
+          {% endblocktrans %}
+          <a href="{% url 'admin:cabinet_folder_change' f.id %}"
+             title="{% trans 'Change folder' %}" class="changelink"></a>
+        </small>
+      </td>
+    </tr>
+  {% endfor %}
+</script>
 
 <script type="text/javascript">
 (function() {
@@ -123,11 +108,12 @@
   // Hardcoded result list HTML if there are no files at all (for example in
   // the root folder)
   if (!$('#result_list').length) {
-    $('#cabinet').before($('#cabinet-result-list')[0].innerHTML);
+    var rl = document.getElementById('cabinet-result-list');
+    $(rl).before(rl.innerHTML);
   }
 
   // Prepend folders to result list
-  $('#result_list>tbody').prepend($('#cabinet [data-folders]')[0].innerHTML);
+  $('#result_list>tbody').prepend(document.getElementById('cabinet-folder-list').innerHTML);
 
   // Search searches all files; remove folder filter
   $('#changelist-search input[name=folder__id__exact]').remove();

@@ -27,7 +27,12 @@ class CabinetTestCase(TestCase):
         response = c.get('/admin/cabinet/file/')
         self.assertContains(
             response,
-            '<div id="cabinet" style="display:none">',
+            '<script type="text/template" id="cabinet-result-list">',
+            1,
+        )
+        self.assertContains(
+            response,
+            '<script type="text/template" id="cabinet-folder-list">',
             1,
         )
         self.assertContains(
@@ -102,12 +107,7 @@ class CabinetTestCase(TestCase):
         response = c.get('/admin/cabinet/file/')
         self.assertContains(
             response,
-            '''
-            <a href="?folder__id__exact=1">
-              Test
-            </a>
-            ''',
-            html=True,
+            '<a href="?folder__id__exact=%s">Test</a>' % folder.id,
         )
         self.assertContains(
             response,
@@ -116,11 +116,6 @@ class CabinetTestCase(TestCase):
         )
 
         response = c.get('/admin/cabinet/file/?q=image')
-        self.assertContains(
-            response,
-            '<tbody data-folders> </tbody>',
-            html=True,
-        )
         self.assertContains(
             response,
             '<p class="paginator"> 1 file </p>',
