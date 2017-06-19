@@ -7,4 +7,4 @@
 /build
 /*.egg-info
 /MANIFEST
-/tests/venv
+venv
