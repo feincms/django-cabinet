@@ -27,3 +27,23 @@
 .field-admin_details {
   vertical-align: middle;
 }
+
+.results.dragover {
+  position: relative;
+}
+.results.dragover::after {
+  content: 'Drop here to upload';
+  position: absolute;
+  z-index: 1;
+  top: 0; right: 0; bottom: 0; left: 0;
+  box-sizing: border-box;
+  margin: 15px;
+  box-shadow: 0 0 0 15px rgba(240, 240, 240, .9);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  border: 2px dashed black;
+  background: rgba(240, 240, 240, .9);
+  pointer-events: none;
+}

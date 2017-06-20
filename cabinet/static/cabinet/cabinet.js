@@ -17,4 +17,46 @@ django.jQuery(function($) {
 
   // Search searches all files; remove folder filter
   $('#changelist-search input[name=folder__id__exact]').remove();
+
+  var dragCounter = 0,
+    results = $('.results');
+
+  results.on('drag dragstart dragend dragover dragenter dragleave drop', function(e) {
+    e.preventDefault();
+    e.stopPropagation();
+  }).on('dragover dragenter', function(e) {
+    ++dragCounter;
+    results.addClass('dragover');
+  }).on('dragleave dragend', function(e) {
+    if (--dragCounter <= 0)
+      results.removeClass('dragover');
+  }).on('mouseleave mouseout drop', function(e) {
+    dragCounter = 0;
+    results.removeClass('dragover');
+  }).on('drop', function(e) {
+    dragCounter = 0;
+    results.removeClass('dragover');
+
+    var files = e.originalEvent.dataTransfer.files,
+      success = 0;
+    for (var i=0; i<files.length; ++i) {
+      var d = new FormData();
+      d.append('folder', window.location.href.match(/folder__id__exact=(\d+)/)[1]);
+      d.append('csrfmiddlewaretoken', $('input[name=csrfmiddlewaretoken]').val());
+      d.append('download_file', files[i]);
+
+      $.ajax({
+        url: './add/',
+        type: 'POST',
+        data: d,
+        contentType: false,
+        processData: false,
+        success: function() {
+          if (++success >= files.length) {
+            window.location.reload();
+          }
+        },
+      });
+    }
+  });
 });
