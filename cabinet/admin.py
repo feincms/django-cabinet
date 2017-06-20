@@ -9,7 +9,7 @@ from django.contrib.admin.utils import get_deleted_objects
 from django.core.exceptions import PermissionDenied, ValidationError
 from django.db import router, transaction
 from django.db.models import Count
-from django.http import HttpResponseRedirect
+from django.http import HttpResponseRedirect, JsonResponse
 from django.shortcuts import get_object_or_404
 from django.template.defaultfilters import filesizeformat
 from django.urls import reverse
@@ -124,6 +124,11 @@ class FileAdmin(admin.ModelAdmin):
 
         return [
             url(
+                r'^upload/$',
+                self.admin_site.admin_view(self.upload),
+                name='cabinet_upload',
+            ),
+            url(
                 r'^folder/add/$',
                 self.admin_site.admin_view(self.folder_add),
                 name='cabinet_folder_add',
@@ -186,6 +191,17 @@ class FileAdmin(admin.ModelAdmin):
         if response.status_code == 302 and folder:
             response['Location'] += '&folder=%s' % folder.id
         return response
+
+    def upload(self, request):
+        f = File(folder_id=request.POST['folder'])
+        f.file = request.FILES['file']
+        f.file_name = f.file.name
+        f.file_size = f.file.size
+        f.save()
+
+        return JsonResponse({
+            'success': True,
+        })
 
     def folders_annotate(self, folders):
         num_subfolders = dict(

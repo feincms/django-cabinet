@@ -39,14 +39,17 @@ django.jQuery(function($) {
 
     var files = e.originalEvent.dataTransfer.files,
       success = 0;
+
+    console.log(files);
+
     for (var i=0; i<files.length; ++i) {
       var d = new FormData();
-      d.append('folder', window.location.href.match(/folder__id__exact=(\d+)/)[1]);
       d.append('csrfmiddlewaretoken', $('input[name=csrfmiddlewaretoken]').val());
-      d.append('download_file', files[i]);
+      d.append('folder', window.location.href.match(/folder__id__exact=(\d+)/)[1]);
+      d.append('file', files[i]);
 
       $.ajax({
-        url: './add/',
+        url: './upload/',
         type: 'POST',
         data: d,
         contentType: false,

@@ -184,6 +184,13 @@ class AbstractFileBase(models.Model):
         files = (getattr(self, field) for field in self.FILE_FIELDS)
         return next(iter(f for f in files if f.name))
 
+    @file.setter
+    def file(self, value):
+        if value.name.lower().endswith(('.png', '.jpg', '.jpeg')):
+            self.image_file = value
+        else:
+            self.download_file = value
+
     def clean(self):
         files = (getattr(self, field) for field in self.FILE_FIELDS)
         if len([f for f in files if f.name]) != 1:
