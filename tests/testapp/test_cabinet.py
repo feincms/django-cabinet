@@ -122,7 +122,49 @@ class CabinetTestCase(TestCase):
             html=True,
         )
 
-        # print(response.content.decode('utf-8'))
+        f1 = File.objects.get()
+        f1_name = f1.file.name
+
+        with io.open(os.path.join(settings.BASE_DIR, 'image.png'), 'rb') as f:
+            response = c.post('/admin/cabinet/file/%s/change/' % f1.id, {
+                'folder': folder.id,
+                'image_file_0': f,
+            })
+
+        self.assertRedirects(
+            response,
+            '/admin/cabinet/file/',
+        )
+
+        f2 = File.objects.get()
+        f2_name = f2.file.name
+
+        self.assertNotEqual(
+            f1_name,
+            f2_name,
+        )
+
+        with io.open(os.path.join(settings.BASE_DIR, 'image.png'), 'rb') as f:
+            response = c.post('/admin/cabinet/file/%s/change/' % f1.id, {
+                'folder': folder.id,
+                'image_file_0': f,
+                '_overwrite': True,
+            })
+
+        self.assertRedirects(
+            response,
+            '/admin/cabinet/file/',
+        )
+
+        f3 = File.objects.get()
+        f3_name = f3.file.name
+
+        self.assertEqual(
+            f2_name,
+            f3_name,
+        )
+
+        # print(response, response.content.decode('utf-8'))
 
     def test_stuff(self):
         self.assertEqual(

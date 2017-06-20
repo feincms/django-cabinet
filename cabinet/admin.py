@@ -94,7 +94,12 @@ class FileAdmin(admin.ModelAdmin):
     def get_fieldsets(self, request, obj=None):
         return [
             (None, {
-                'fields': ('folder', 'caption', 'copyright'),
+                'fields': [field for field in (
+                    'folder',
+                    'caption',
+                    'copyright',
+                    '_overwrite' if obj else '',
+                ) if field],
             }),
             (_('Image'), {
                 'fields': ('image_file', 'image_alt_text'),

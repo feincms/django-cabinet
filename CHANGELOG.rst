@@ -4,6 +4,10 @@ Change log
 `Next version`_
 ~~~~~~~~~~~~~~~
 
+- Allow replacing files remotely.
+- Added caption, copyright and alt text fields.
+- Also show folder breadcrumbs when adding files.
+
 
 `0.1`_ (2017-06-20)
 ~~~~~~~~~~~~~~~~~~~

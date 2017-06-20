@@ -2,6 +2,7 @@ import os
 import re
 
 from django.core.exceptions import ValidationError
+from django.core.files.base import File
 from django.db import models
 from django.utils.translation import ugettext_lazy as _
 
@@ -91,6 +92,66 @@ class DownloadMixin(models.Model):
     save.alters_data = True
 
 
+class OverwriteMixin(models.Model):
+    _overwrite = models.BooleanField(
+        _('Overwrite the original file?'),
+        default=False,
+        help_text=_(
+            'By default, Django always generates filenames that'
+            ' do not clash with existing files.'
+        )
+    )
+
+    class Meta:
+        abstract = True
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        try:
+            self._original_file_name = self.file.name
+        except StopIteration:
+            self._original_file_name = None
+
+    def save(self, *args, **kwargs):
+        f_obj = self.file
+        self.file_name = os.path.basename(f_obj.name)
+        self.file_size = f_obj.size
+        super().save(*args, **kwargs)
+
+        if self._overwrite and self._original_file_name:
+            # Commit everything
+            super().save(*args, **kwargs)
+
+            # Delete the original file
+            f_obj = self.file
+            f_obj.storage.delete(self._original_file_name)
+
+            # Save new file name -- we want to remove the file from the new
+            # location after re-uploading it to the old location.
+            _new_file_name = f_obj.name
+
+            # Save the new file to the old file name
+            f_obj.open()
+            f_obj.storage.save(
+                self._original_file_name,
+                File(f_obj),
+            )
+
+            # Manipulate some internals
+            f_obj.name = self._original_file_name
+            f_obj._committed = True
+            self._overwrite = False
+
+            # Save again
+            super().save(*args, **kwargs)
+
+            # Delete file from new location (because we prefer the old)
+            f_obj.storage.delete(_new_file_name)
+        else:
+            super().save(*args, **kwargs)
+    save.alters_data = True
+
+
 class AbstractFileBase(models.Model):
     FILE_FIELDS = []
 
@@ -140,6 +201,7 @@ class AbstractFile(
     AbstractFileBase,
     ImageMixin,
     DownloadMixin,
+    OverwriteMixin,
 ):
     FILE_FIELDS = [
         'image_file',
