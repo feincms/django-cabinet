@@ -167,6 +167,13 @@ class FileAdmin(admin.ModelAdmin):
             'title': folder or _('Root folder'),
         })
 
+    def add_view(self, request, form_url='', extra_context=None):
+        extra_context = extra_context or {}
+        extra_context.setdefault('cabinet', {}).update({
+            'folder': get_object_or_404(Folder, pk=request.GET.get('folder')),
+        })
+        return self.changeform_view(request, None, form_url, extra_context)
+
     def folders_annotate(self, folders):
         num_subfolders = dict(
             Folder.objects.order_by().filter(
