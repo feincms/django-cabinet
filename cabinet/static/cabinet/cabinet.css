@@ -1,0 +1,29 @@
+.column-admin_thumbnail {
+  width: 2em;
+}
+.field-admin_thumbnail span {
+  box-sizing: border-box;
+  width: 50px;
+  height: 50px;
+  overflow: hidden;
+  display: inline-block;
+  background-position: center center;
+  background-repeat: no-repeat;
+  background-size: contain;
+  text-align: center;
+  font-size: 80%;
+  font-weight: normal;
+}
+.field-admin_thumbnail .folder {
+  background-image: url(folder-open-o.svg);
+}
+.field-admin_thumbnail .download {
+  background-image: url(file-o.svg);
+  padding-top: 20px;
+}
+.action-checkbox,
+.field-admin_thumbnail,
+.field-admin_file_name,
+.field-admin_details {
+  vertical-align: middle;
+}
