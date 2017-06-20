@@ -1,6 +1,6 @@
 from django.apps import apps
 from django.conf import settings
-from django.core.exceptions import ImproperlyConfigured
+from django.core.exceptions import ImproperlyConfigured, ValidationError
 from django.db import models
 from django.utils.translation import ugettext_lazy as _
 
@@ -57,6 +57,14 @@ class Folder(models.Model):
                 node = node.parent
             else:
                 break
+
+    def clean(self):
+        if self.id and self.parent_id and (
+            self.id in [node.id for node in self.parent.ancestors()]
+        ):
+            raise ValidationError({
+                'parent': _('Loop detected.'),
+            })
 
 
 class File(AbstractFile):

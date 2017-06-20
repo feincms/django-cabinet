@@ -40,8 +40,10 @@ def folder_choices():
     for folder in Folder.objects.all():
         children[folder.parent_id].append(folder)
 
+    yield (None, '-' * 10)
+
     if not children:
-        return []
+        return
 
     def iterate(parent_id, ancestors):
         for node in children[parent_id]:
