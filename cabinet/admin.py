@@ -169,10 +169,18 @@ class FileAdmin(admin.ModelAdmin):
 
     def add_view(self, request, form_url='', extra_context=None):
         extra_context = extra_context or {}
-        extra_context.setdefault('cabinet', {}).update({
-            'folder': get_object_or_404(Folder, pk=request.GET.get('folder')),
-        })
-        return self.changeform_view(request, None, form_url, extra_context)
+        if request.GET.get('folder'):
+            folder = get_object_or_404(Folder, pk=request.GET.get('folder'))
+            extra_context['cabinet'] = {'folder': folder}
+        else:
+            folder = None
+
+        response = self.changeform_view(
+            request, None, request.get_full_path(), extra_context)
+
+        if response.status_code == 302 and folder:
+            response['Location'] += '&folder=%s' % folder.id
+        return response
 
     def folders_annotate(self, folders):
         num_subfolders = dict(

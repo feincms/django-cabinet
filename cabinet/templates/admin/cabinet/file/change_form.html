@@ -12,10 +12,12 @@
   &rsaquo; <a href="{% url opts|admin_urlname:'changelist' %}?folder__id__exact={{ f.id }}">{{ f }}</a>
   {% endfor %}
   &rsaquo; {{ original }}
-{% elif add and cabinet.folder %}
+{% elif add %}
+  {% if cabinet.folder %}
   {% for f in cabinet.folder.ancestors reversed %}
     &rsaquo; <a href="{% url opts|admin_urlname:'changelist' %}?folder__id__exact={{ f.id }}">{{ f }}</a>
   {% endfor %}
+  {% endif %}
   &rsaquo; {% blocktrans with name=opts.verbose_name %}Add {{ name }}{% endblocktrans %}
 {% endif %}
 
