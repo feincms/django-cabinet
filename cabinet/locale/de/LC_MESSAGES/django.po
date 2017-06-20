@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2017-06-19 11:14+0200\n"
+"POT-Creation-Date: 2017-06-20 10:37+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -17,62 +17,65 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1)\n"
 
-#: admin.py:40
+#: admin.py:68
 msgid "Delete this folder"
 msgstr "Diesen Ordner löschen"
 
-#: admin.py:65 base.py:44
+#: admin.py:104 base.py:50
 msgid "Image"
 msgstr "Bild"
 
-#: admin.py:68
+#: admin.py:112
 msgid "Download"
 msgstr "Download"
 
-#: admin.py:123 templates/admin/cabinet/file/change_list.html:11
+#: admin.py:172 templates/admin/cabinet/file/change_form.html:9
+#: templates/admin/cabinet/file/change_list.html:13
+#: templates/admin/cabinet/folder/change_form.html:9
 msgid "Root folder"
 msgstr "Oberster Ordner"
 
-#: admin.py:171
+#: admin.py:256
 #, python-format
 msgid "The folder \"%s\" was changed successfully."
 msgstr "Der Ordner \"%s\" wurde erfolgreich aktualisiert."
 
-#: admin.py:182
+#: admin.py:267
 #, python-format
 msgid "The folder \"%s\" was added successfully."
 msgstr "Der Ordner \"%s\" wurde erfolgreich hinzugefügt."
 
-#: admin.py:204
+#: admin.py:289
 #, python-format
 msgid "Add %s"
 msgstr "%s hinzufügen"
 
-#: admin.py:204
+#: admin.py:289
 #, python-format
 msgid "Change %s"
 msgstr "%s ändern"
 
-#: admin.py:239
+#: admin.py:324
 #, python-format
 msgid "Cannot delete %(name)s"
 msgstr "%(name)s kann nicht gelöscht werden"
 
-#: admin.py:246
+#: admin.py:331
 #, python-format
 msgid "Cannot delete %(name)s because of related objects (%(related)s)"
-msgstr "%(name)s kann wegen abhängigen Objekten nicht gelöscht werden (%(related)s)"
+msgstr ""
+"%(name)s kann wegen abhängigen Objekten nicht gelöscht werden (%(related)s)"
 
-#: admin.py:260
+#: admin.py:345
 #, python-format
 msgid "The folder \"%s\" was deleted successfully."
 msgstr "Der Ordner \"%s\" wurde erfolgreich gelöscht."
 
-#: admin.py:283 base.py:100
+#: admin.py:378 base.py:166
 msgid "file name"
 msgstr "Dateiname"
 
-#: admin.py:291
+#: admin.py:386
 msgid "details"
 msgstr "Details"
 
@@ -80,125 +83,155 @@ msgstr "Details"
 msgid "Cabinet media library"
 msgstr "Cabinet Medienbibliothek"
 
-#: base.py:16
+#: base.py:17
 msgid "image"
 msgstr "Bild"
 
-#: base.py:24
+#: base.py:25
 msgid "image width"
 msgstr "Bildbreite"
 
-#: base.py:30
+#: base.py:31
 msgid "image height"
 msgstr "Bildhöhe"
 
-#: base.py:35
+#: base.py:36
 msgid "primary point of interest"
 msgstr "Fokuspunkt"
 
-#: base.py:46
+#: base.py:38
+msgid "alternative text"
+msgstr "Alternativer Text"
+
+#: base.py:52
 msgid "Video"
 msgstr "Video"
 
-#: base.py:49
+#: base.py:55
 msgid "Audio"
 msgstr "Ton"
 
-#: base.py:51
+#: base.py:57
 msgid "PDF document"
 msgstr "PDF-Dokument"
 
-#: base.py:52
+#: base.py:58
 msgid "Flash"
 msgstr "Flash"
 
-#: base.py:53
+#: base.py:59
 msgid "Text"
 msgstr "Text"
 
-#: base.py:54
+#: base.py:60
 msgid "Rich Text"
 msgstr "Rich Text"
 
-#: base.py:55
+#: base.py:61
 msgid "Zip archive"
 msgstr "ZIP-Archiv"
 
-#: base.py:56
+#: base.py:62
 msgid "Microsoft Word"
 msgstr "Microsoft Word"
 
-#: base.py:58
+#: base.py:64
 msgid "Microsoft Excel"
 msgstr "Microsoft Excel"
 
-#: base.py:60
+#: base.py:66
 msgid "Microsoft PowerPoint"
 msgstr "Microsoft PowerPoint"
 
-#: base.py:62
+#: base.py:68
 msgid "Binary"
 msgstr "Binär"
 
-#: base.py:66
+#: base.py:72
 msgid "download"
 msgstr "Download"
 
-#: base.py:71
+#: base.py:77
 msgid "download type"
 msgstr "Downloadtyp"
 
-#: base.py:95 models.py:42 templates/admin/cabinet/file/change_list.html:22
+#: base.py:97
+msgid "Overwrite the original file?"
+msgstr "Originaldatei überschreiben?"
+
+#: base.py:100
+msgid ""
+"By default, Django always generates filenames that do not clash with "
+"existing files."
+msgstr ""
+"Standardmässig generiert Django immer neue Dateinamen, um Konflikte mit "
+"existierenden Dateien zu vermeiden."
+
+#: base.py:161 models.py:46 templates/admin/cabinet/file/change_list.html:24
 #: templates/admin/cabinet/folder/change_form.html:15
 msgid "folder"
 msgstr "Ordner"
 
-#: base.py:104
+#: base.py:170
 msgid "file size"
 msgstr "Dateigrösse"
 
-#: base.py:110
+#: base.py:176
 msgid "file"
 msgstr "Datei"
 
-#: base.py:111
+#: base.py:177
 msgid "files"
 msgstr "Dateien"
 
-#: base.py:124
+#: base.py:190
 msgid "Please fill in exactly one file field!"
 msgstr "Bitte genau ein Dateifeld ausfüllen!"
 
-#: models.py:31
+#: models.py:35
 msgid "parent"
 msgstr "übergeordnet"
 
-#: models.py:35
+#: models.py:39
 msgid "name"
 msgstr "Name"
 
-#: models.py:43
+#: models.py:47
 msgid "folders"
 msgstr "Ordner"
 
-#: templates/admin/cabinet/file/change_list.html:9
+#: models.py:66
+msgid "Loop detected."
+msgstr "Ring entdeckt."
+
+#: models.py:72
+msgid "caption"
+msgstr "Legende"
+
+#: models.py:77
+msgid "copyright"
+msgstr "Copyright"
+
+#: templates/admin/cabinet/file/change_form.html:7
+#: templates/admin/cabinet/file/change_list.html:11
 #: templates/admin/cabinet/folder/change_form.html:7
 msgid "Home"
 msgstr "Start"
 
-#: templates/admin/cabinet/file/change_list.html:22
-#: templates/admin/cabinet/file/change_list.html:30
+#: templates/admin/cabinet/file/change_form.html:21
+#: templates/admin/cabinet/file/change_list.html:24
+#: templates/admin/cabinet/file/change_list.html:32
 #: templates/admin/cabinet/folder/change_form.html:15
 #, python-format
 msgid "Add %(name)s"
 msgstr "%(name)s hinzufügen"
 
-#: templates/admin/cabinet/file/change_list.html:103
+#: templates/admin/cabinet/file/change_list.html:96
 #, python-format
 msgid "%(num_subfolders)s subfolders, %(num_files)s files"
 msgstr "%(num_subfolders)s Unterordner, %(num_files)s Dateien"
 
-#: templates/admin/cabinet/file/change_list.html:107
+#: templates/admin/cabinet/file/change_list.html:100
 msgid "Change folder"
 msgstr "Ordner ändern"
 
