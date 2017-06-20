@@ -68,5 +68,16 @@ class Folder(models.Model):
 
 
 class File(AbstractFile):
+    caption = models.CharField(
+        _('caption'),
+        max_length=1000,
+        blank=True,
+    )
+    copyright = models.CharField(
+        _('copyright'),
+        max_length=1000,
+        blank=True,
+    )
+
     class Meta(AbstractFile.Meta):
         swappable = 'CABINET_FILE_MODEL'

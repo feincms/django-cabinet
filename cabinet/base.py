@@ -33,6 +33,11 @@ class ImageMixin(models.Model):
         editable=False,
     )
     image_ppoi = PPOIField(_('primary point of interest'))
+    image_alt_text = models.CharField(
+        _('alternative text'),
+        max_length=1000,
+        blank=True,
+    )
 
     class Meta:
         abstract = True

@@ -87,21 +87,32 @@ class FileAdmin(admin.ModelAdmin):
         'file_name',
     )
 
-    fieldsets = [
-        (None, {
-            'fields': ('folder',),
-        }),
-        (_('Image'), {
-            'fields': ('image_file',),
-        }),
-        (_('Download'), {
-            'fields': ('download_file',),
-        }),
-    ]
-
     class Media:
         css = {'all': ('cabinet/cabinet.css',)}
         js = ('cabinet/cabinet.js',)
+
+    def get_fieldsets(self, request, obj=None):
+        return [
+            (None, {
+                'fields': ('folder', 'caption', 'copyright'),
+            }),
+            (_('Image'), {
+                'fields': ('image_file', 'image_alt_text'),
+                'classes': (
+                    ('collapse',)
+                    if (obj and not obj.image_file.name)
+                    else ()
+                ),
+            }),
+            (_('Download'), {
+                'fields': ('download_file',),
+                'classes': (
+                    ('collapse',)
+                    if (obj and not obj.download_file.name)
+                    else ()
+                ),
+            }),
+        ]
 
     def get_urls(self):
         from django.conf.urls import url
