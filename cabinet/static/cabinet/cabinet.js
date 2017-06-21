@@ -43,9 +43,6 @@ django.jQuery(function($) {
 
     progress.appendTo(results);
 
-    console.log(progress);
-    console.log(files);
-
     for (var i=0; i<files.length; ++i) {
       var d = new FormData();
       d.append('csrfmiddlewaretoken', $('input[name=csrfmiddlewaretoken]').val());
