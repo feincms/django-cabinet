@@ -7,5 +7,7 @@
 /build
 /*.egg-info
 /MANIFEST
-venv
 .tox
+venv
+.coverage
+htmlcov
