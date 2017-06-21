@@ -4,6 +4,9 @@ Change log
 `Next version`_
 ~~~~~~~~~~~~~~~
 
+- Added upload progress (only files, not bytes).
+
+
 `0.2`_ (2017-06-21)
 ~~~~~~~~~~~~~~~~~~~
 
