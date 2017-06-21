@@ -16,6 +16,7 @@ from django.http import HttpResponseRedirect, JsonResponse
 from django.shortcuts import get_object_or_404
 from django.template.defaultfilters import filesizeformat
 from django.urls import reverse
+from django.utils.functional import cached_property
 from django.utils.html import format_html
 from django.utils.translation import ugettext_lazy as _
 
@@ -231,8 +232,24 @@ class FolderAdminMixin(admin.ModelAdmin):
         return HttpResponseRedirect(url)
 
 
+class FileForm(forms.ModelForm):
+    class Meta:
+        model = File
+        fields = '__all__'
+
+    @cached_property
+    def changed_data(self):
+        # Admin's construct_change_message does not like it if files are
+        # already gone. Whatever...
+        try:
+            return super().changed_data
+        except OSError:
+            return []
+
+
 @admin.register(File)
 class FileAdmin(FolderAdminMixin):
+    form = FileForm
     list_display = (
         'admin_thumbnail',
         'admin_file_name',

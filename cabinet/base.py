@@ -105,50 +105,47 @@ class OverwriteMixin(models.Model):
     class Meta:
         abstract = True
 
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
-        try:
-            self._original_file_name = self.file.name
-        except StopIteration:
-            self._original_file_name = None
-
     def save(self, *args, **kwargs):
+        original = None
+        if self.pk:
+            try:
+                original = self.__class__._default_manager.get(pk=self.pk)
+            except self.__class__.DoesNotExist:
+                pass
+
         f_obj = self.file
         self.file_name = os.path.basename(f_obj.name)
         self.file_size = f_obj.size
         super().save(*args, **kwargs)
 
-        if self._overwrite and self._original_file_name:
-            # Commit everything
-            super().save(*args, **kwargs)
-
+        if self._overwrite and original:
             # Delete the original file
-            f_obj = self.file
-            f_obj.storage.delete(self._original_file_name)
+            original_file_name = original.file.name
+            original.file.delete(save=False)
 
-            # Save new file name -- we want to remove the file from the new
-            # location after re-uploading it to the old location.
             _new_file_name = f_obj.name
 
-            # Save the new file to the old file name
             f_obj.open()
             f_obj.storage.save(
-                self._original_file_name,
+                original_file_name,
                 File(f_obj),
+                max_length=f_obj.field.max_length,
             )
-
-            # Manipulate some internals
-            f_obj.name = self._original_file_name
+            setattr(self, f_obj.field.name, original_file_name)
             f_obj._committed = True
-            self._overwrite = False
-
-            # Save again
             super().save(*args, **kwargs)
 
             # Delete file from new location (because we prefer the old)
             f_obj.storage.delete(_new_file_name)
+
         else:
             super().save(*args, **kwargs)
+
+            if original and (
+                    original.file.name != self.file.name or
+                    original.file.storage != self.file.storage):
+                original.delete_files()
+
     save.alters_data = True
 
 
@@ -210,3 +207,14 @@ class AbstractFile(
 
     class Meta(AbstractFileBase.Meta):
         abstract = True
+
+    def delete_files(self):
+        for field in self.FILE_FIELDS:
+            f_obj = getattr(self, field)
+            if not f_obj.name:
+                continue
+
+            if hasattr(f_obj, 'delete_all_created_images'):
+                f_obj.delete_all_created_images()
+            f_obj.storage.delete(f_obj.name)
+    delete_files.alters_data = True

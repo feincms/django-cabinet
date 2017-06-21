@@ -5,6 +5,7 @@ Change log
 ~~~~~~~~~~~~~~~
 
 - Added upload progress (only files, not bytes).
+- Implemented cleaning of storage when deleting and replacing files.
 
 
 `0.2`_ (2017-06-21)
