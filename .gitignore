@@ -8,3 +8,4 @@
 /*.egg-info
 /MANIFEST
 venv
+.tox

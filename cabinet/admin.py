@@ -16,7 +16,7 @@ from django.urls import reverse
 from django.utils.html import format_html
 from django.utils.translation import ugettext_lazy as _
 
-from cabinet.models import Folder, File
+from cabinet.models import File, Folder
 
 
 class FolderListFilter(admin.RelatedFieldListFilter):

@@ -2,6 +2,7 @@ from __future__ import absolute_import, unicode_literals
 
 import os
 
+
 BASE_DIR = os.path.dirname(os.path.dirname(__file__))
 
 DATABASES = {

@@ -5,7 +5,7 @@ from django.conf import settings
 from django.contrib.auth.models import User
 from django.test import Client, TestCase
 
-from cabinet.models import Folder, File
+from cabinet.models import File, Folder
 
 
 class CabinetTestCase(TestCase):
