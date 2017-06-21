@@ -7,6 +7,7 @@ Change log
 - Allow replacing files remotely.
 - Added caption, copyright and alt text fields.
 - Also show folder breadcrumbs when adding files.
+- Drag-drop upload of files directly into the folder view.
 
 
 `0.1`_ (2017-06-20)

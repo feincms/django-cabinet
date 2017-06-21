@@ -15,6 +15,7 @@ class CabinetTestCase(TestCase):
             is_staff=True,
             is_superuser=True,
         )
+        self.image_path = os.path.join(settings.BASE_DIR, 'image.png')
 
     def login(self):
         client = Client()
@@ -75,10 +76,10 @@ class CabinetTestCase(TestCase):
         folder = Folder.objects.create(name='Test')
         c = self.login()
 
-        with io.open(os.path.join(settings.BASE_DIR, 'image.png'), 'rb') as f:
+        with io.open(self.image_path, 'rb') as image:
             response = c.post('/admin/cabinet/file/add/', {
                 'folder': folder.id,
-                'image_file_0': f,
+                'image_file_0': image,
             })
 
         self.assertRedirects(
@@ -125,10 +126,10 @@ class CabinetTestCase(TestCase):
         f1 = File.objects.get()
         f1_name = f1.file.name
 
-        with io.open(os.path.join(settings.BASE_DIR, 'image.png'), 'rb') as f:
+        with io.open(self.image_path, 'rb') as image:
             response = c.post('/admin/cabinet/file/%s/change/' % f1.id, {
                 'folder': folder.id,
-                'image_file_0': f,
+                'image_file_0': image,
             })
 
         self.assertRedirects(
@@ -144,10 +145,10 @@ class CabinetTestCase(TestCase):
             f2_name,
         )
 
-        with io.open(os.path.join(settings.BASE_DIR, 'image.png'), 'rb') as f:
+        with io.open(self.image_path, 'rb') as image:
             response = c.post('/admin/cabinet/file/%s/change/' % f1.id, {
                 'folder': folder.id,
-                'image_file_0': f,
+                'image_file_0': image,
                 '_overwrite': True,
             })
 
@@ -185,15 +186,38 @@ class CabinetTestCase(TestCase):
                 'folder': f.id,
                 'file': file,
             })
-
         self.assertEqual(response.status_code, 200)
         self.assertEqual(
             response.content,
             b'{"success": true}',
         )
 
-        # FIXME Known failure. Looking at the file extension isn't enough.
-        with self.assertRaises(OSError):
-            response = c.get(
-                '/admin/cabinet/file/?folder__id__exact=%s' % f.id)
-            # self.assertEqual(response.status_code, 200)
+        with io.open(self.image_path, 'rb') as image:
+            response = c.post('/admin/cabinet/file/upload/', {
+                'folder': f.id,
+                'file': image,
+            })
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(
+            response.content,
+            b'{"success": true}',
+        )
+
+        response = c.get(
+            '/admin/cabinet/file/?folder__id__exact=%s' % f.id)
+
+        self.assertContains(
+            response,
+            '<p class="paginator"> 2 files </p>',
+            html=True,
+        )
+        self.assertContains(
+            response,
+            '<span class="download download-image">',
+            1,
+        )
+        self.assertContains(
+            response,
+            '<img src="__sized__/cabinet/',
+            1,
+        )

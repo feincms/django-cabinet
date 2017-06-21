@@ -1,4 +1,6 @@
+from PIL import Image
 from collections import defaultdict
+from io import BytesIO
 from urllib.parse import urlencode
 
 from django import forms
@@ -193,10 +195,27 @@ class FileAdmin(admin.ModelAdmin):
         return response
 
     def upload(self, request):
+        data = request.FILES['file']
+
+        # From django/forms/fields.py
+        if hasattr(data, 'temporary_file_path'):
+            file = data.temporary_file_path()
+        else:
+            if hasattr(data, 'read'):
+                file = BytesIO(data.read())
+            else:
+                file = BytesIO(data['content'])
+
         f = File(folder_id=request.POST['folder'])
-        f.file = request.FILES['file']
-        f.file_name = f.file.name
-        f.file_size = f.file.size
+        try:
+            image = Image.open(file)
+            image.verify()
+            f.image_file = data
+        except OSError:
+            f.download_file = data
+
+        f.file_name = data.name
+        f.file_size = data.size
         f.save()
 
         return JsonResponse({
