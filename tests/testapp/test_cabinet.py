@@ -1,4 +1,5 @@
 import io
+import itertools
 import os
 
 from django.conf import settings
@@ -17,13 +18,17 @@ class CabinetTestCase(TestCase):
         )
         self.image_path = os.path.join(settings.BASE_DIR, 'image.png')
 
-    def tearDown(self):
-        File.objects.all().delete()
-
     def login(self):
         client = Client()
         client.force_login(self.user)
         return client
+
+    def assertNoMediaFiles(self):
+        File.objects.all().delete()
+        files = list(itertools.chain.from_iterable(
+            i[2] for i in os.walk(settings.MEDIA_ROOT)
+        ))
+        self.assertEqual(files, [])
 
     def test_cabinet_folders(self):
         c = self.login()
@@ -74,6 +79,8 @@ class CabinetTestCase(TestCase):
             Folder.objects.count(),
             0,
         )
+
+        self.assertNoMediaFiles()
 
     def test_upload(self):
         folder = Folder.objects.create(name='Test')
@@ -170,6 +177,8 @@ class CabinetTestCase(TestCase):
 
         # print(response, response.content.decode('utf-8'))
 
+        self.assertNoMediaFiles()
+
     def test_stuff(self):
         self.assertEqual(
             Folder.objects.count(),
@@ -180,7 +189,7 @@ class CabinetTestCase(TestCase):
             0,
         )
 
-    def test_fail(self):
+    def test_dnd_upload(self):
         c = self.login()
         f = Folder.objects.create(name='Test')
         with io.BytesIO(b'invalid') as file:
@@ -224,3 +233,5 @@ class CabinetTestCase(TestCase):
             '<img src="__sized__/cabinet/',
             1,
         )
+
+        self.assertNoMediaFiles()
