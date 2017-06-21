@@ -17,6 +17,9 @@ class CabinetTestCase(TestCase):
         )
         self.image_path = os.path.join(settings.BASE_DIR, 'image.png')
 
+    def tearDown(self):
+        File.objects.all().delete()
+
     def login(self):
         client = Client()
         client.force_login(self.user)

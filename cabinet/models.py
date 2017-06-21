@@ -1,7 +1,9 @@
 from django.apps import apps
 from django.conf import settings
 from django.core.exceptions import ImproperlyConfigured, ValidationError
+from django.dispatch import receiver
 from django.db import models
+from django.db.models import signals
 from django.utils.translation import ugettext_lazy as _
 
 from cabinet.base import AbstractFile
@@ -81,3 +83,15 @@ class File(AbstractFile):
 
     class Meta(AbstractFile.Meta):
         swappable = 'CABINET_FILE_MODEL'
+
+
+@receiver(signals.post_delete, sender=File)
+def delete_files(sender, instance, **kwargs):
+    for field in instance.FILE_FIELDS:
+        f_obj = getattr(instance, field)
+        if not f_obj.name:
+            continue
+
+        if hasattr(f_obj, 'delete_all_created_images'):
+            f_obj.delete_all_created_images()
+        f_obj.storage.delete(f_obj.name)
