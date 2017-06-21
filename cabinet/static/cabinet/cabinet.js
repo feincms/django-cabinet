@@ -38,8 +38,12 @@ django.jQuery(function($) {
     results.removeClass('dragover');
 
     var files = e.originalEvent.dataTransfer.files,
-      success = 0;
+      success = 0,
+      progress = $('<div class="progress">0 / ' + files.length + '</div>');
 
+    progress.appendTo(results);
+
+    console.log(progress);
     console.log(files);
 
     for (var i=0; i<files.length; ++i) {
@@ -55,7 +59,8 @@ django.jQuery(function($) {
         contentType: false,
         processData: false,
         success: function() {
-          if (++success >= files.length) {
+          progress.html('' + ++success + ' / ' + files.length);
+          if (success >= files.length) {
             window.location.reload();
           }
         },

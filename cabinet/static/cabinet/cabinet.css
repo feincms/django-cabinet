@@ -28,11 +28,11 @@
   vertical-align: middle;
 }
 
-.results.dragover {
+.results {
   position: relative;
 }
+.results>.progress,
 .results.dragover::after {
-  content: 'Drop here to upload';
   position: absolute;
   z-index: 1;
   top: 0; right: 0; bottom: 0; left: 0;
@@ -46,4 +46,9 @@
   border: 2px dashed black;
   background: rgba(240, 240, 240, .9);
   pointer-events: none;
+  font-size: 2rem;
+}
+
+.results.dragover::after {
+    content: 'Drop here to upload';
 }
