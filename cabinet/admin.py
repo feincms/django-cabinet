@@ -1,6 +1,6 @@
-from PIL import Image
 from collections import defaultdict
 from io import BytesIO
+from PIL import Image
 from urllib.parse import urlencode
 
 from django import forms
@@ -8,6 +8,7 @@ from django.contrib import admin, messages
 from django.contrib.admin import helpers
 from django.contrib.admin.options import IncorrectLookupParameters
 from django.contrib.admin.utils import get_deleted_objects
+from django.contrib.admin.views.main import SEARCH_VAR
 from django.core.exceptions import PermissionDenied, ValidationError
 from django.db import router, transaction
 from django.db.models import Count
@@ -22,6 +23,10 @@ from cabinet.models import File, Folder
 
 
 class FolderListFilter(admin.RelatedFieldListFilter):
+    """
+    Filters are hidden in the file changelist; this filter is only responsible
+    for filtering files by folders.
+    """
     def has_output(self):
         return True
 
@@ -38,6 +43,10 @@ class FolderListFilter(admin.RelatedFieldListFilter):
 
 
 def folder_choices():
+    """
+    Generate folder choices, concatenating all folders with their ancestors'
+    names.
+    """
     children = defaultdict(list)
     for folder in Folder.objects.all():
         children[folder.parent_id].append(folder)
@@ -71,65 +80,11 @@ class FolderForm(forms.ModelForm):
             )
 
 
-@admin.register(File)
-class FileAdmin(admin.ModelAdmin):
-    list_display = (
-        'admin_thumbnail',
-        'admin_file_name',
-        'admin_details',
-    )
-    list_display_links = (
-        'admin_thumbnail',
-        'admin_file_name',
-    )
-    list_filter = (
-        ('folder', FolderListFilter),
-    )
-    search_fields = (
-        'file_name',
-    )
-
-    class Media:
-        css = {'all': ('cabinet/cabinet.css',)}
-        js = ('cabinet/cabinet.js',)
-
-    def get_fieldsets(self, request, obj=None):
-        return [
-            (None, {
-                'fields': [field for field in (
-                    'folder',
-                    'caption',
-                    'copyright',
-                    '_overwrite' if obj else '',
-                ) if field],
-            }),
-            (_('Image'), {
-                'fields': ('image_file', 'image_alt_text'),
-                'classes': (
-                    ('collapse',)
-                    if (obj and not obj.image_file.name)
-                    else ()
-                ),
-            }),
-            (_('Download'), {
-                'fields': ('download_file',),
-                'classes': (
-                    ('collapse',)
-                    if (obj and not obj.download_file.name)
-                    else ()
-                ),
-            }),
-        ]
-
+class FolderAdminMixin(admin.ModelAdmin):
     def get_urls(self):
         from django.conf.urls import url
 
         return [
-            url(
-                r'^upload/$',
-                self.admin_site.admin_view(self.upload),
-                name='cabinet_upload',
-            ),
             url(
                 r'^folder/add/$',
                 self.admin_site.admin_view(self.folder_add),
@@ -142,129 +97,21 @@ class FileAdmin(admin.ModelAdmin):
             ),
         ] + super().get_urls()
 
-    def changelist_view(self, request):
-        cabinet_context = {
-            'querystring': urlencode({
-                key: value
-                for key, value in request.GET.items()
-                if key != 'folder__id__exact'
-            }),
-        }
-        folder = None
-
-        folder__id__exact = request.GET.get('folder__id__exact')
-        q = request.GET.get('q')
-        if not q:
-            if folder__id__exact:
-                try:
-                    folder = Folder.objects.get(pk=folder__id__exact)
-                except Folder.DoesNotExist:
-                    return HttpResponseRedirect('?e=1')
-
-            if folder is None:
-                cabinet_context.update({
-                    'folder': None,
-                    'folder_children': self.folders_annotate(
-                        Folder.objects.filter(parent__isnull=True)),
-                })
-            else:
-                cabinet_context.update({
-                    'folder': folder,
-                    'folder_children': self.folders_annotate(
-                        folder.children.all()),
-                })
-
-        return super().changelist_view(request, extra_context={
-            'cabinet': cabinet_context,
-            'title': folder or _('Root folder'),
-        })
-
-    def add_view(self, request, form_url='', extra_context=None):
-        extra_context = extra_context or {}
-        if request.GET.get('folder'):
-            folder = get_object_or_404(Folder, pk=request.GET.get('folder'))
-            extra_context['cabinet'] = {'folder': folder}
-        else:
-            folder = None
-
-        response = self.changeform_view(
-            request, None, request.get_full_path(), extra_context)
-
-        if response.status_code == 302 and folder:
-            response['Location'] += '&folder=%s' % folder.id
-        return response
-
-    def upload(self, request):
-        data = request.FILES['file']
-
-        # From django/forms/fields.py
-        if hasattr(data, 'temporary_file_path'):
-            file = data.temporary_file_path()
-        else:
-            if hasattr(data, 'read'):
-                file = BytesIO(data.read())
-            else:
-                file = BytesIO(data['content'])
-
-        f = File(folder_id=request.POST['folder'])
-        try:
-            image = Image.open(file)
-            image.verify()
-            f.image_file = data
-        except OSError:
-            f.download_file = data
-
-        f.file_name = data.name
-        f.file_size = data.size
-        f.save()
-
-        return JsonResponse({
-            'success': True,
-        })
-
-    def folders_annotate(self, folders):
-        num_subfolders = dict(
-            Folder.objects.order_by().filter(
-                parent__in=folders,
-            ).values('parent').annotate(
-                Count('id'),
-            ).values_list('parent', 'id__count'))
-
-        num_files = dict(
-            File.objects.order_by().filter(
-                folder__in=folders,
-            ).values('folder').annotate(
-                Count('id'),
-            ).values_list('folder', 'id__count'))
-
-        for f in folders:
-            f.num_subfolders = num_subfolders.get(f.id, 0)
-            f.num_files = num_files.get(f.id, 0)
-
-        return folders
-
     def folder_add(self, request):
         with transaction.atomic(using=router.db_for_write(self.model)):
-            return self._folder_form(
-                request,
-                {
-                    'initial': {
-                        'parent': request.GET.get('parent'),
-                    },
+            return self._folder_form(request, {
+                'initial': {
+                    'parent': request.GET.get('parent'),
                 },
-            )
+            })
 
     def folder_change(self, request, object_id):
         with transaction.atomic(using=router.db_for_write(self.model)):
-            return self._folder_form(
-                request,
-                {
-                    'instance': get_object_or_404(Folder, pk=object_id),
-                },
-            )
+            return self._folder_form(request, {
+                'instance': get_object_or_404(Folder, pk=object_id),
+            })
 
     def _folder_form(self, request, kw):
-        info = self.model._meta.app_label, self.model._meta.model_name
         original = kw.get('instance')
         add = not original
 
@@ -279,32 +126,26 @@ class FileAdmin(admin.ModelAdmin):
             form = FolderForm(request.POST, **kw)
             if form.is_valid():
                 if original and form.cleaned_data.get('_delete_folder'):
-                    return self._folder_form_delete(
-                        request,
-                        original,
-                    )
+                    return self._folder_form_delete(request, original)
 
                 folder = form.save()
                 if original:
                     self.message_user(
                         request,
-                        _('The folder "%s" was changed successfully.') % folder,  # noqa
+                        _('The folder "%s" was changed successfully.') % (
+                            folder,
+                        ),
                         messages.SUCCESS)
-                    return HttpResponseRedirect(
-                        reverse('admin:%s_%s_changelist' % info) +
-                        (('?folder__id__exact=%s' % folder.parent_id)
-                         if folder.parent_id else '')
-                    )
+                    return self.redirect_to_folder(folder.parent_id)
 
                 else:
                     self.message_user(
                         request,
-                        _('The folder "%s" was added successfully.') % folder,
+                        _('The folder "%s" was added successfully.') % (
+                            folder,
+                        ),
                         messages.SUCCESS)
-                    return HttpResponseRedirect(
-                        reverse('admin:%s_%s_changelist' % info) +
-                        '?folder__id__exact=%s' % folder.pk
-                    )
+                    return self.redirect_to_folder(folder.id)
 
         else:
             form = FolderForm(**kw)
@@ -380,18 +221,192 @@ class FileAdmin(admin.ModelAdmin):
                 _('The folder "%s" was deleted successfully.') % obj,
                 messages.SUCCESS)
 
+        return self.redirect_to_folder(obj.parent_id)
+
+    def redirect_to_folder(self, folder_id):
         info = self.model._meta.app_label, self.model._meta.model_name
-        return HttpResponseRedirect(
-            reverse('admin:%s_%s_changelist' % info) +
-            (('?folder__id__exact=%s' % obj.parent_id)
-             if obj.parent_id else '')
-        )
+        url = reverse('admin:%s_%s_changelist' % info)
+        if folder_id:
+            url += '?folder__id__exact=%s' % folder_id
+        return HttpResponseRedirect(url)
+
+
+@admin.register(File)
+class FileAdmin(FolderAdminMixin):
+    list_display = (
+        'admin_thumbnail',
+        'admin_file_name',
+        'admin_details',
+    )
+    list_display_links = (
+        'admin_thumbnail',
+        'admin_file_name',
+    )
+    list_filter = (
+        ('folder', FolderListFilter),
+    )
+    search_fields = (
+        'file_name',
+    )
+
+    class Media:
+        css = {'all': ('cabinet/cabinet.css',)}
+        js = ('cabinet/cabinet.js',)
+
+    def get_fieldsets(self, request, obj=None):
+        return [
+            (None, {
+                'fields': [field for field in (
+                    'folder',
+                    'caption',
+                    'copyright',
+                    '_overwrite' if obj else '',
+                ) if field],
+            }),
+            (_('Image'), {
+                'fields': ('image_file', 'image_alt_text'),
+                'classes': (
+                    ('collapse',)
+                    if (obj and not obj.image_file.name)
+                    else ()
+                ),
+            }),
+            (_('Download'), {
+                'fields': ('download_file',),
+                'classes': (
+                    ('collapse',)
+                    if (obj and not obj.download_file.name)
+                    else ()
+                ),
+            }),
+        ]
+
+    def get_urls(self):
+        from django.conf.urls import url
+
+        return [
+            url(
+                r'^upload/$',
+                self.admin_site.admin_view(self.upload),
+                name='cabinet_upload',
+            ),
+        ] + super().get_urls()
+
+    def folders_annotate_counts(self, folders):
+        num_subfolders = dict(
+            Folder.objects.order_by().filter(
+                parent__in=folders,
+            ).values('parent').annotate(
+                Count('id'),
+            ).values_list('parent', 'id__count'))
+
+        num_files = dict(
+            File.objects.order_by().filter(
+                folder__in=folders,
+            ).values('folder').annotate(
+                Count('id'),
+            ).values_list('folder', 'id__count'))
+
+        for f in folders:
+            f.num_subfolders = num_subfolders.get(f.id, 0)
+            f.num_files = num_files.get(f.id, 0)
+
+        return folders
+
+    def changelist_view(self, request):
+        cabinet_context = {
+            'querystring': urlencode({
+                key: value
+                for key, value in request.GET.items()
+                if key != 'folder__id__exact'
+            }),
+        }
+
+        folder = None
+        folder__id__exact = request.GET.get('folder__id__exact')
+
+        if not request.GET.get(SEARCH_VAR):
+            if folder__id__exact:
+                try:
+                    folder = Folder.objects.get(pk=folder__id__exact)
+                except Folder.DoesNotExist:
+                    return HttpResponseRedirect('?e=1')
+
+            if folder is None:
+                cabinet_context.update({
+                    'folder': None,
+                    'folder_children': self.folders_annotate_counts(
+                        Folder.objects.filter(parent__isnull=True)),
+                })
+            else:
+                cabinet_context.update({
+                    'folder': folder,
+                    'folder_children': self.folders_annotate_counts(
+                        folder.children.all()),
+                })
+
+        return super().changelist_view(request, extra_context={
+            'cabinet': cabinet_context,
+            'title': folder or _('Root folder'),
+        })
 
     def formfield_for_foreignkey(self, db_field, request, **kwargs):
         field = super().formfield_for_foreignkey(db_field, request, **kwargs)
-        if db_field.name in ('parent', 'folder'):
+        if db_field.name == 'folder':
             field.choices = list(folder_choices())
         return field
+
+    def add_view(self, request, form_url='', extra_context=None):
+        extra_context = extra_context or {}
+        if request.GET.get('folder'):
+            folder = get_object_or_404(Folder, pk=request.GET.get('folder'))
+            extra_context['cabinet'] = {'folder': folder}
+        else:
+            folder = None
+
+        response = self.changeform_view(
+            request, None, request.get_full_path(), extra_context)
+
+        if response.status_code == 302 and folder:
+            response['Location'] += '&folder=%s' % folder.id
+        return response
+
+    def upload_is_image(self, data):
+        """
+        Determine whether ``data`` is an image or not
+
+        Usage::
+
+            if upload_is_image(request.FILES['file']):
+                ...
+        """
+        # From django/forms/fields.py
+        if hasattr(data, 'temporary_file_path'):
+            file = data.temporary_file_path()
+        else:
+            if hasattr(data, 'read'):
+                file = BytesIO(data.read())
+            else:
+                file = BytesIO(data['content'])
+
+        try:
+            image = Image.open(file)
+            image.verify()
+            return True
+        except OSError:
+            return False
+
+    def upload(self, request):
+        f = File(folder_id=request.POST['folder'])
+        if self.upload_is_image(request.FILES['file']):
+            f.image_file = request.FILES['file']
+        else:
+            f.download_file = request.FILES['file']
+        f.save()
+
+        return JsonResponse({
+            'success': True,
+        })
 
     def admin_thumbnail(self, instance):
         if instance.image_file.name:
