@@ -175,3 +175,25 @@ class CabinetTestCase(TestCase):
             File.objects.count(),
             0,
         )
+
+    def test_fail(self):
+        c = self.login()
+        f = Folder.objects.create(name='Test')
+        with io.BytesIO(b'invalid') as file:
+            file.name = 'image.jpg'  # but is not
+            response = c.post('/admin/cabinet/file/upload/', {
+                'folder': f.id,
+                'file': file,
+            })
+
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(
+            response.content,
+            b'{"success": true}',
+        )
+
+        # FIXME Known failure. Looking at the file extension isn't enough.
+        with self.assertRaises(OSError):
+            response = c.get(
+                '/admin/cabinet/file/?folder__id__exact=%s' % f.id)
+            # self.assertEqual(response.status_code, 200)
