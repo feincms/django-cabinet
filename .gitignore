@@ -1,13 +1,10 @@
 *.py?
+*.sw?
 *~
-.*.sw?
 .coverage
 .tox
 /*.egg-info
 /MANIFEST
-\#*#
-_build
 build
 dist
 htmlcov
-venv
