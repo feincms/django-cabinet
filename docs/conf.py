@@ -2,6 +2,7 @@ from __future__ import unicode_literals
 
 import os
 import re
+import subprocess
 import sys
 
 sys.path.append(os.path.abspath('..'))
@@ -10,7 +11,9 @@ project = 'django-cabinet'
 author = 'Feinheit AG'
 copyright = '2017,' + author
 version = __import__('cabinet').__version__
-release = version
+release = subprocess.check_output(
+    'git fetch --tags; git describe',
+    shell=True, universal_newlines=True).strip()
 language = 'en'
 
 #######################################

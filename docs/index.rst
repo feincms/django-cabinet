@@ -2,8 +2,7 @@
 django-cabinet - Media library for Django
 =========================================
 
-.. image:: https://travis-ci.org/matthiask/django-cabinet.png?branch=master
-   :target: https://travis-ci.org/matthiask/django-cabinet
+Version |release|
 
 django-cabinet is a media library for Django implemented while trying to
 write as little code as possible to keep maintenance at a minimum. At
