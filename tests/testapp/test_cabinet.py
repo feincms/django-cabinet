@@ -136,6 +136,11 @@ class CabinetTestCase(TestCase):
         f1 = File.objects.get()
         f1_name = f1.file.name
 
+        self.assertEqual(
+            [getattr(f1, field).name for field in f1.FILE_FIELDS],
+            [f1_name, ''],
+        )
+
         with io.open(self.image_path, 'rb') as image:
             response = c.post('/admin/cabinet/file/%s/change/' % f1.id, {
                 'folder': folder.id,
