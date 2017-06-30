@@ -1,6 +1,7 @@
 import io
 import itertools
 import os
+import shutil
 
 from django.conf import settings
 from django.contrib.auth.models import User
@@ -17,6 +18,8 @@ class CabinetTestCase(TestCase):
             is_superuser=True,
         )
         self.image_path = os.path.join(settings.BASE_DIR, 'image.png')
+        if os.path.exists(settings.MEDIA_ROOT):
+            shutil.rmtree(settings.MEDIA_ROOT)
 
     def login(self):
         client = Client()
