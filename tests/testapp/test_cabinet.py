@@ -140,6 +140,7 @@ class CabinetTestCase(TestCase):
             [getattr(f1, field).name for field in f1.FILE_FIELDS],
             [f1_name, ''],
         )
+        self.assertEqual(f1.download_type, '')
 
         with io.open(self.image_path, 'rb') as image:
             response = c.post('/admin/cabinet/file/%s/change/' % f1.id, {
@@ -230,6 +231,7 @@ class CabinetTestCase(TestCase):
         )
         self.assertContains(
             response,
+            # Only looking at the extension...
             '<span class="download download-image">',
             1,
         )

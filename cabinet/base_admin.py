@@ -229,10 +229,17 @@ class FolderAdminMixin(admin.ModelAdmin):
 
 
 class IgnoreChangedDataErrorsForm(forms.ModelForm):
+    """
+    Ignore ``OSError`` exceptions when listing changed fields.
+
+    Admin's construct_change_message runs after OverwriteMixin.save()
+    and crashes when files are already gone. Simply ignore this;
+    it makes admin log messages look less nice than they should, but
+    we do not care too much.
+    """
+
     @cached_property
     def changed_data(self):
-        # Admin's construct_change_message does not like it if files are
-        # already gone. Whatever...
         try:
             return super().changed_data
         except OSError:
@@ -264,6 +271,14 @@ class FileAdminBase(FolderAdminMixin):
         ] + super().get_urls()
 
     def folders_annotate_counts(self, folders):
+        """
+        Add direct subfolders and files counts to an iterable of folders
+
+        Recursive traversal and summation isn't implemented as adjacency
+        list-based tree traversal without common table expressions is
+        expensive. We want to stay compatible even with stupid database
+        engines!
+        """
         num_subfolders = dict(
             Folder.objects.order_by().filter(
                 parent__in=folders,
@@ -286,17 +301,20 @@ class FileAdminBase(FolderAdminMixin):
 
     def changelist_view(self, request):
         cabinet_context = {
+            # Keep query params except those in the set below when changing
+            # folders
             'querystring': urlencode({
                 key: value
                 for key, value in request.GET.items()
-                if key != 'folder__id__exact'
+                if key not in {'folder__id__exact', 'p'}
             }),
         }
 
         folder = None
-        folder__id__exact = request.GET.get('folder__id__exact')
 
+        # Never filter by folder if searching
         if not request.GET.get(SEARCH_VAR):
+            folder__id__exact = request.GET.get('folder__id__exact')
             if folder__id__exact:
                 try:
                     folder = Folder.objects.get(pk=folder__id__exact)
@@ -338,6 +356,9 @@ class FileAdminBase(FolderAdminMixin):
         response = self.changeform_view(
             request, None, request.get_full_path(), extra_context)
 
+        # Keep the folder preset when redirecting. This sometimes adds the
+        # folder variable twice (once to preserved_filters and once separately
+        # but this is at most ugly and not a real problem)
         if response.status_code == 302 and folder:
             response['Location'] += '&folder=%s' % folder.id
         return response
