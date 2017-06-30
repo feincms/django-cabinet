@@ -1,5 +1,8 @@
+import inspect
+import io
 import os
 import re
+from PIL import Image
 
 from django.core.exceptions import ValidationError
 from django.core.files.base import File
@@ -10,6 +13,36 @@ from versatileimagefield.fields import PPOIField, VersatileImageField
 
 
 UPLOAD_TO = 'cabinet/%Y/%m'
+
+
+def upload_is_image(data):
+    """
+    Determine whether ``data`` is an image or not
+
+    Usage::
+
+        if upload_is_image(request.FILES['file']):
+            ...
+    """
+    # From django/forms/fields.py
+    if hasattr(data, 'temporary_file_path'):
+        file = data.temporary_file_path()
+    else:
+        if hasattr(data, 'read'):
+            file = io.BytesIO(data.read())
+        else:
+            file = io.BytesIO(data['content'])
+
+    try:
+        image = Image.open(file)
+        image.verify()
+        return True
+    except OSError:
+        return False
+
+
+class InvalidFileError(Exception):
+    pass
 
 
 class ImageMixin(models.Model):
@@ -42,6 +75,11 @@ class ImageMixin(models.Model):
 
     class Meta:
         abstract = True
+
+    def accept_file(self, value):
+        if upload_is_image(value):
+            self.image_file = value
+        raise InvalidFileError()
 
 
 class DownloadMixin(models.Model):
@@ -90,6 +128,9 @@ class DownloadMixin(models.Model):
         )) if self.download_file else ''
         super().save(*args, **kwargs)
     save.alters_data = True
+
+    def accept_file(self, value):
+        self.download_file = value
 
 
 class OverwriteMixin(models.Model):
@@ -180,6 +221,18 @@ class AbstractFileBase(models.Model):
     def file(self):
         files = (getattr(self, field) for field in self.FILE_FIELDS)
         return next(iter(f for f in files if f.name))
+
+    @file.setter
+    def file(self, value):
+        for cls in inspect.getmro(self.__class__):
+            if hasattr(cls, 'accept_file'):
+                try:
+                    cls.accept_file(self, value)
+                    break
+                except InvalidFileError:
+                    pass
+        else:
+            raise TypeError('Invalid value %r' % value)
 
     def clean(self):
         files = (getattr(self, field) for field in self.FILE_FIELDS)

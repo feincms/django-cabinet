@@ -1,6 +1,4 @@
 from collections import defaultdict
-from io import BytesIO
-from PIL import Image
 from urllib.parse import urlencode
 
 from django import forms
@@ -388,37 +386,9 @@ class FileAdmin(FolderAdminMixin):
             response['Location'] += '&folder=%s' % folder.id
         return response
 
-    def upload_is_image(self, data):
-        """
-        Determine whether ``data`` is an image or not
-
-        Usage::
-
-            if upload_is_image(request.FILES['file']):
-                ...
-        """
-        # From django/forms/fields.py
-        if hasattr(data, 'temporary_file_path'):
-            file = data.temporary_file_path()
-        else:
-            if hasattr(data, 'read'):
-                file = BytesIO(data.read())
-            else:
-                file = BytesIO(data['content'])
-
-        try:
-            image = Image.open(file)
-            image.verify()
-            return True
-        except OSError:
-            return False
-
     def upload(self, request):
         f = File(folder_id=request.POST['folder'])
-        if self.upload_is_image(request.FILES['file']):
-            f.image_file = request.FILES['file']
-        else:
-            f.download_file = request.FILES['file']
+        f.file = request.FILES['file']
         f.save()
 
         return JsonResponse({
