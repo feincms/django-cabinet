@@ -77,10 +77,9 @@ class ImageMixin(models.Model):
         abstract = True
 
     def accept_file(self, value):
-        if upload_is_image(value):
-            self.image_file = value
-        else:
+        if not upload_is_image(value):
             raise InvalidFileError()
+        self.image_file = value
 
 
 class DownloadMixin(models.Model):

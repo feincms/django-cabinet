@@ -6,6 +6,7 @@ Change log
 
 - Made file model mixins determine themselves whether they can accept an
   upload or not.
+- Refactoring and code cleanups.
 
 
 `0.3`_ (2017-06-21)
