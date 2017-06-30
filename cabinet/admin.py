@@ -63,13 +63,17 @@ class FileAdmin(FileAdminBase):
     admin_thumbnail.short_description = ''
 
     def admin_file_name(self, instance):
-        return instance.file_name
+        return format_html(
+            '{} <small>({})</small>',
+            instance.file_name,
+            filesizeformat(instance.file_size),
+        )
     admin_file_name.short_description = _('file name')
 
     def admin_details(self, instance):
         return format_html(
             '<small>{}<br>{}</small>',
-            filesizeformat(instance.file_size),
-            instance.file.name,
+            instance.caption,
+            instance.copyright,
         )
     admin_details.short_description = _('details')
