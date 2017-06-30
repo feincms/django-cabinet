@@ -102,7 +102,7 @@ class CabinetTestCase(TestCase):
 
         self.assertContains(
             response,
-            '>image.png</a>',
+            '>image.png <small>(4.9 KB)</small><',
             1,
         )
         self.assertContains(
