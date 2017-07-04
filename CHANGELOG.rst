@@ -4,9 +4,13 @@ Change log
 `Next version`_
 ~~~~~~~~~~~~~~~
 
+`0.4`_ (2017-07-04)
+~~~~~~~~~~~~~~~~~~~
+
 - Made file model mixins determine themselves whether they can accept an
   upload or not.
 - Refactoring and code cleanups.
+- Tweaked the file list a bit.
 
 
 `0.3`_ (2017-06-21)
@@ -33,4 +37,5 @@ Change log
 .. _0.1: https://github.com/matthiask/django-cabinet/commit/4b8747afd
 .. _0.2: https://github.com/matthiask/django-cabinet/compare/0.1...0.2
 .. _0.3: https://github.com/matthiask/django-cabinet/compare/0.2...0.3
-.. _Next version: https://github.com/matthiask/django-cabinet/compare/0.3...master
+.. _0.4: https://github.com/matthiask/django-cabinet/compare/0.3...0.4
+.. _Next version: https://github.com/matthiask/django-cabinet/compare/0.4...master
