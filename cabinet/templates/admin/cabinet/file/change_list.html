@@ -12,7 +12,7 @@
 &rsaquo; <a href="{% url 'admin:app_list' app_label=cl.opts.app_label %}">{{ cl.opts.app_config.verbose_name }}</a>
 &rsaquo; <a href=".">{% trans 'Root folder' %}</a>
 {% for node in cabinet.folder.ancestors reversed %}
-&rsaquo; {% if forloop.last %}{{ node }}{% else %}<a href="?folder__id__exact={{ node.id }}">{{ node }}</a>{% endif %}
+&rsaquo; {% if forloop.last %}{{ node }}{% else %}<a href="?{{ cabinet.querystring }} &amp;folder__id__exact={{ node.id }}">{{ node }}</a>{% endif %}
 {% endfor %}
 </div>
 {% endblock %}
@@ -20,7 +20,7 @@
 {% block object-tools-items %}
   {% if perms.cabinet.add_folder %}
   <li>
-    <a href="{% url 'admin:cabinet_folder_add' %}?parent={{ cabinet.folder.pk }}" class="addlink">
+    <a href="{% url 'admin:cabinet_folder_add' %}?{{ cabinet.querystring }}&amp;parent={{ cabinet.folder.pk }}" class="addlink">
       {% blocktrans with name=_('folder') %}Add {{ name }}{% endblocktrans %}
     </a>
   </li>
@@ -96,7 +96,7 @@
           {% blocktrans with num_subfolders=f.num_subfolders num_files=f.num_files trimmed %}
             {{ num_subfolders }} subfolders, {{ num_files }} files
           {% endblocktrans %}
-          <a href="{% url 'admin:cabinet_folder_change' f.id %}"
+          <a href="{% url 'admin:cabinet_folder_change' f.id %}?{{ cabinet.querystring }}"
              title="{% trans 'Change folder' %}" class="changelink"></a>
         </small>
       </td>

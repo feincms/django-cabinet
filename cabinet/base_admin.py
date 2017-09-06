@@ -77,6 +77,14 @@ class FolderForm(forms.ModelForm):
             )
 
 
+def cabinet_querystring(request):
+    return urlencode({
+        key: value
+        for key, value in request.GET.items()
+        if key not in {'folder__id__exact', 'p'}
+    })
+
+
 class FolderAdminMixin(admin.ModelAdmin):
     def get_urls(self):
         from django.conf.urls import url
@@ -168,10 +176,13 @@ class FolderAdminMixin(admin.ModelAdmin):
                 media=self.media + adminForm.media,
                 errors=helpers.AdminErrorList(form, []),
                 preserve_filters=self.get_preserved_filters(request),
+                cabinet={
+                    'querystring': cabinet_querystring(request),
+                },
             ),
             add=add,
             change=not add,
-            form_url='.',
+            form_url=request.get_full_path(),
             obj=original,
         )
         response.template_name = [
@@ -312,11 +323,7 @@ class FileAdminBase(FolderAdminMixin):
         cabinet_context = {
             # Keep query params except those in the set below when changing
             # folders
-            'querystring': urlencode({
-                key: value
-                for key, value in request.GET.items()
-                if key not in {'folder__id__exact', 'p'}
-            }),
+            'querystring': cabinet_querystring(request),
         }
 
         folder = None
