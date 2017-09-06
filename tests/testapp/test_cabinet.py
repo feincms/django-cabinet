@@ -50,9 +50,9 @@ class CabinetTestCase(TestCase):
         self.assertContains(
             response,
             '''
-            <a href="/admin/cabinet/file/folder/add/?parent=" class="addlink">
-                Add folder
-            </a>
+<a href="/admin/cabinet/file/folder/add/?&amp;parent=" class="addlink">
+    Add folder
+</a>
             ''',
             html=True,
         )
@@ -245,3 +245,35 @@ class CabinetTestCase(TestCase):
         )
 
         self.assertNoMediaFiles()
+
+    def test_raw_id_fields(self):
+        c = self.login()
+        response = c.get('/admin/cabinet/file/?_to_field=id&_popup=1')
+        self.assertContains(
+            response,
+            '''
+<a href="/admin/cabinet/file/folder/add/?_popup=1&amp;_to_field=id&amp;parent="
+    class="addlink">
+  Add folder
+</a>
+            ''',
+            html=True,
+        )
+
+        response = c.post(
+            '/admin/cabinet/file/folder/add/?_popup=1&_to_field=id',
+            {'name': 'Test'},
+        )
+        f = Folder.objects.get()
+        files_url = '/admin/cabinet/file/?_popup=1&_to_field=id&folder__id__exact=%s' % f.id  # noqa
+        self.assertRedirects(
+            response,
+            files_url,
+        )
+
+        response = c.get(files_url)
+        self.assertContains(
+            response,
+            '<a href="?_popup=1&amp;_to_field=id"><span class="folder"></span></a>',  # noqa
+        )
+        # We do not need to test adding files -- that's covered by Django.

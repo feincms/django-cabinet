@@ -78,11 +78,11 @@ class FolderForm(forms.ModelForm):
 
 
 def cabinet_querystring(request):
-    return urlencode({
-        key: value
+    return urlencode(sorted(
+        (key, value)
         for key, value in request.GET.items()
         if key not in {'folder__id__exact', 'p'}
-    })
+    ))
 
 
 class FolderAdminMixin(admin.ModelAdmin):
@@ -234,17 +234,17 @@ class FolderAdminMixin(admin.ModelAdmin):
     def redirect_to_folder(self, request, folder_id):
         info = self.model._meta.app_label, self.model._meta.model_name
         url = reverse('admin:%s_%s_changelist' % info)
-        querydict = {
-            key: value
+        querydict = [
+            (key, value)
             for key, value in request.GET.items()
             if key not in {'folder__id__exact', 'p'}
-        }
+        ]
         if folder_id:
-            querydict['folder__id__exact'] = folder_id
+            querydict.append(('folder__id__exact', folder_id))
         return HttpResponseRedirect('%s%s%s' % (
             url,
             '?' if querydict else '',
-            urlencode(querydict),
+            urlencode(sorted(querydict)),
         ))
 
 
