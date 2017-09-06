@@ -133,7 +133,7 @@ class FolderAdminMixin(admin.ModelAdmin):
                             folder,
                         ),
                         messages.SUCCESS)
-                    return self.redirect_to_folder(folder.parent_id)
+                    return self.redirect_to_folder(request, folder.parent_id)
 
                 else:
                     self.message_user(
@@ -142,7 +142,7 @@ class FolderAdminMixin(admin.ModelAdmin):
                             folder,
                         ),
                         messages.SUCCESS)
-                    return self.redirect_to_folder(folder.id)
+                    return self.redirect_to_folder(request, folder.id)
 
         else:
             form = FolderForm(**kw)
@@ -218,14 +218,23 @@ class FolderAdminMixin(admin.ModelAdmin):
                 _('The folder "%s" was deleted successfully.') % obj,
                 messages.SUCCESS)
 
-        return self.redirect_to_folder(obj.parent_id)
+        return self.redirect_to_folder(request, obj.parent_id)
 
-    def redirect_to_folder(self, folder_id):
+    def redirect_to_folder(self, request, folder_id):
         info = self.model._meta.app_label, self.model._meta.model_name
         url = reverse('admin:%s_%s_changelist' % info)
+        querydict = {
+            key: value
+            for key, value in request.GET.items()
+            if key not in {'folder__id__exact', 'p'}
+        }
         if folder_id:
-            url += '?folder__id__exact=%s' % folder_id
-        return HttpResponseRedirect(url)
+            querydict['folder__id__exact'] = folder_id
+        return HttpResponseRedirect('%s%s%s' % (
+            url,
+            '?' if querydict else '',
+            urlencode(querydict),
+        ))
 
 
 class IgnoreChangedDataErrorsForm(forms.ModelForm):
