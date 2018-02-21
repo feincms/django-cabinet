@@ -6,6 +6,7 @@ Change log
 
 - Made the folder CRUD functionality preserve query parameters so that
   ``raw_id_fields`` popups work seamlessly.
+- Fixed the changelist to not crash when images are broken.
 
 
 `0.4`_ (2017-07-04)

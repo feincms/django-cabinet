@@ -49,10 +49,13 @@ class FileAdmin(FileAdminBase):
 
     def admin_thumbnail(self, instance):
         if instance.image_file.name:
-            return format_html(
-                '<img src="{}" alt=""/>',
-                instance.image_file.crop['50x50'],
-            )
+            try:
+                return format_html(
+                    '<img src="{}" alt=""/>',
+                    instance.image_file.crop['50x50'],
+                )
+            except Exception:
+                return format_html('<span class="broken-image"></span>')
         elif instance.download_file.name:
             return format_html(
                 '<span class="download download-{}">{}</span>',
