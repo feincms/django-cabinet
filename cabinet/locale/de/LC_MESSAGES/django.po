@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2018-03-13 13:46+0100\n"
+"POT-Creation-Date: 2018-03-13 14:51+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -17,19 +17,19 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1)\n"
 
-#: admin.py:32 admin.py:51 base.py:88
+#: admin.py:53 base.py:88
 msgid "Image"
 msgstr "Bild"
 
-#: admin.py:42 admin.py:55
+#: admin.py:57
 msgid "Download"
 msgstr "Download"
 
-#: admin.py:81 base.py:204
+#: admin.py:86 base.py:204
 msgid "file name"
 msgstr "Dateiname"
 
-#: admin.py:89
+#: admin.py:94
 msgid "details"
 msgstr "Details"
 
@@ -121,7 +121,8 @@ msgstr ""
 "Standardmässig generiert Django immer neue Dateinamen, um Konflikte mit "
 "existierenden Dateien zu vermeiden."
 
-#: base.py:199 models.py:48 templates/admin/cabinet/file/change_list.html:24
+#: base.py:199 base_admin.py:86 models.py:48
+#: templates/admin/cabinet/file/change_list.html:24
 #: templates/admin/cabinet/folder/change_form.html:15
 msgid "folder"
 msgstr "Ordner"
@@ -134,7 +135,7 @@ msgstr "Dateigrösse"
 msgid "file"
 msgstr "Datei"
 
-#: base.py:215
+#: base.py:215 base_admin.py:97
 msgid "files"
 msgstr "Dateien"
 
@@ -142,47 +143,55 @@ msgstr "Dateien"
 msgid "Please fill in exactly one file field!"
 msgstr "Bitte genau ein Dateifeld ausfüllen!"
 
-#: base_admin.py:76
+#: base_admin.py:79
 msgid "Delete this folder"
 msgstr "Diesen Ordner löschen"
 
-#: base_admin.py:140
+#: base_admin.py:169
 #, python-format
 msgid "The folder \"%s\" was changed successfully."
 msgstr "Der Ordner \"%s\" wurde erfolgreich aktualisiert."
 
-#: base_admin.py:149
+#: base_admin.py:178
 #, python-format
 msgid "The folder \"%s\" was added successfully."
 msgstr "Der Ordner \"%s\" wurde erfolgreich hinzugefügt."
 
-#: base_admin.py:170
+#: base_admin.py:199
 #, python-format
 msgid "Add %s"
 msgstr "%s hinzufügen"
 
-#: base_admin.py:170
+#: base_admin.py:199
 #, python-format
 msgid "Change %s"
 msgstr "%s ändern"
 
-#: base_admin.py:208
+#: base_admin.py:240
 #, python-format
 msgid "Cannot delete %(name)s"
 msgstr "%(name)s kann nicht gelöscht werden"
 
-#: base_admin.py:215
+#: base_admin.py:247
 #, python-format
 msgid "Cannot delete %(name)s because of related objects (%(related)s)"
 msgstr ""
 "%(name)s kann wegen abhängigen Objekten nicht gelöscht werden (%(related)s)"
 
-#: base_admin.py:229
+#: base_admin.py:261
 #, python-format
 msgid "The folder \"%s\" was deleted successfully."
 msgstr "Der Ordner \"%s\" wurde erfolgreich gelöscht."
 
-#: base_admin.py:355 templates/admin/cabinet/file/change_form.html:9
+#: base_admin.py:290 base_admin.py:322
+msgid "Move files to folder"
+msgstr "Dateien in Ordner verschieben"
+
+#: base_admin.py:304
+msgid "The files have been successfully moved."
+msgstr "Die Dateien wurden erfolgreich verschoben."
+
+#: base_admin.py:451 templates/admin/cabinet/file/change_form.html:9
 #: templates/admin/cabinet/file/change_list.html:13
 #: templates/admin/cabinet/folder/change_form.html:9
 msgid "Root folder"
@@ -234,6 +243,10 @@ msgstr "%(num_subfolders)s Unterordner, %(num_files)s Dateien"
 #: templates/admin/cabinet/file/change_list.html:100
 msgid "Change folder"
 msgstr "Ordner ändern"
+
+#: templates/admin/cabinet/file/change_list.html:107
+msgid "Upload files by dropping them into the list above."
+msgstr "Dateien oben hinziehen um sie hochzuladen."
 
 #: templates/admin/cabinet/folder/change_form.html:23
 msgid "Save"
