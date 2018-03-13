@@ -4,6 +4,9 @@ Change log
 `Next version`_
 ~~~~~~~~~~~~~~~
 
+`0.5`_ (2018-03-13)
+~~~~~~~~~~~~~~~~~~~
+
 - Made the folder CRUD functionality preserve query parameters so that
   ``raw_id_fields`` popups work seamlessly.
 - Fixed the changelist to not crash when images are broken.
@@ -49,4 +52,5 @@ Change log
 .. _0.2: https://github.com/matthiask/django-cabinet/compare/0.1...0.2
 .. _0.3: https://github.com/matthiask/django-cabinet/compare/0.2...0.3
 .. _0.4: https://github.com/matthiask/django-cabinet/compare/0.3...0.4
-.. _Next version: https://github.com/matthiask/django-cabinet/compare/0.4...master
+.. _0.5: https://github.com/matthiask/django-cabinet/compare/0.4...0.5
+.. _Next version: https://github.com/matthiask/django-cabinet/compare/0.5...master
