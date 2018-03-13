@@ -7,6 +7,10 @@ from cabinet.base_admin import FileAdminBase
 from cabinet.models import File
 
 
+def fieldset(*fields):
+    return [(None, {'fields': fields})]
+
+
 @admin.register(File)
 class FileAdmin(FileAdminBase):
     list_display = (
@@ -20,32 +24,40 @@ class FileAdmin(FileAdminBase):
     )
 
     def get_fieldsets(self, request, obj=None):
-        return [
-            (None, {
-                'fields': [field for field in (
+        if obj and obj.image_file.name:
+            return fieldset(
+                'folder',
+                'image_file',
+                '_overwrite',
+                'caption',
+                'image_alt_text',
+                'copyright',
+            )
+
+        elif obj and obj.download_file.name:
+            return fieldset(
+                'folder',
+                'download_file',
+                '_overwrite',
+                'caption',
+                'copyright',
+            )
+
+        else:
+            return [
+                (None, {'fields': (
                     'folder',
                     'caption',
                     'copyright',
-                    '_overwrite' if obj else '',
-                ) if field],
-            }),
-            (_('Image'), {
-                'fields': ('image_file', 'image_alt_text'),
-                'classes': (
-                    ('collapse',)
-                    if (obj and not obj.image_file.name)
-                    else ()
-                ),
-            }),
-            (_('Download'), {
-                'fields': ('download_file',),
-                'classes': (
-                    ('collapse',)
-                    if (obj and not obj.download_file.name)
-                    else ()
-                ),
-            }),
-        ]
+                )}),
+                (_('Image'), {'fields': (
+                    'image_file',
+                    'image_alt_text',
+                )}),
+                (_('Download'), {'fields': (
+                    'download_file',
+                )}),
+            ]
 
     def admin_thumbnail(self, instance):
         if instance.image_file.name:

@@ -7,6 +7,8 @@ Change log
 - Made the folder CRUD functionality preserve query parameters so that
   ``raw_id_fields`` popups work seamlessly.
 - Fixed the changelist to not crash when images are broken.
+- Changed the admin fieldsets to only show fields related to one file
+  type when a cabinet file is filled in already.
 
 
 `0.4`_ (2017-07-04)

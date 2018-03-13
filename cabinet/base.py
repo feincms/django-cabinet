@@ -135,7 +135,7 @@ class DownloadMixin(models.Model):
 
 class OverwriteMixin(models.Model):
     _overwrite = models.BooleanField(
-        _('Overwrite the original file?'),
+        _('Keep filename when uploading new file?'),
         default=False,
         help_text=_(
             'By default, Django always generates filenames that'
