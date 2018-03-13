@@ -1,6 +1,7 @@
 from collections import defaultdict
 from urllib.parse import urlencode
 
+import django
 from django import forms
 from django.contrib import admin, messages
 from django.contrib.admin import helpers
@@ -227,8 +228,11 @@ class FolderAdminMixin(admin.ModelAdmin):
 
         # Populate deleted_objects, a data structure of all related objects
         # that will also be deleted.
-        (deleted_objects, model_count, perms_needed, protected) = get_deleted_objects(  # noqa
-            [obj], obj._meta, request.user, self.admin_site, using)
+        if django.VERSION < (2, 1):
+            (deleted_objects, model_count, perms_needed, protected) = get_deleted_objects(  # noqa
+                [obj], obj._meta, request.user, self.admin_site, using)
+        else:
+            deleted_objects, model_count, perms_needed, protected = self.get_deleted_objects([obj], request)  # noqa
 
         if protected or perms_needed:
             self.message_user(
