@@ -237,7 +237,7 @@ class FolderAdminMixin(admin.ModelAdmin):
         querydict = [
             (key, value)
             for key, value in request.GET.items()
-            if key not in {'folder__id__exact', 'p'}
+            if key not in {'folder__id__exact', 'p', 'parent'}
         ]
         if folder_id:
             querydict.append(('folder__id__exact', folder_id))

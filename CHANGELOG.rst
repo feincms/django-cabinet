@@ -9,6 +9,8 @@ Change log
 - Fixed the changelist to not crash when images are broken.
 - Changed the admin fieldsets to only show fields related to one file
   type when a cabinet file is filled in already.
+- Fixed a bug where adding subfolders would succeed, but redirect to the
+  root folder.
 
 
 `0.4`_ (2017-07-04)
