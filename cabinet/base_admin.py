@@ -14,6 +14,7 @@ from django.http import HttpResponseRedirect, JsonResponse
 from django.shortcuts import get_object_or_404
 from django.urls import reverse
 from django.utils.functional import cached_property
+from django.utils.text import capfirst
 from django.utils.translation import ugettext_lazy as _
 
 from cabinet.models import Folder
@@ -39,7 +40,7 @@ class FolderListFilter(admin.RelatedFieldListFilter):
             return queryset.filter(folder__isnull=True)
 
 
-def folder_choices():
+def folder_choices(include_blank=True):
     """
     Generate folder choices, concatenating all folders with their ancestors'
     names.
@@ -48,7 +49,8 @@ def folder_choices():
     for folder in Folder.objects.all():
         children[folder.parent_id].append(folder)
 
-    yield (None, '-' * 10)
+    if include_blank:
+        yield (None, '-' * 10)
 
     if not children:
         return
@@ -69,12 +71,33 @@ class FolderForm(forms.ModelForm):
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        self.fields['parent'].choices = list(folder_choices())
+        self.fields['parent'].choices = folder_choices()
         if self.instance.pk:
             self.fields['_delete_folder'] = forms.BooleanField(
                 required=False,
                 label=_('Delete this folder'),
             )
+
+
+class SelectFolderForm(forms.Form):
+    folder = forms.ModelChoiceField(
+        queryset=Folder.objects.all(),
+        label=capfirst(_('folder')),
+        widget=forms.RadioSelect,
+    )
+
+    def __init__(self, *args, **kwargs):
+        files = kwargs.pop('files')
+        super().__init__(*args, **kwargs)
+        self.fields['folder'].choices = folder_choices(include_blank=False)
+
+        self.fields['files'] = forms.ModelMultipleChoiceField(
+            queryset=files,
+            label=capfirst(_('files')),
+            initial=[f.id for f in files],
+            widget=forms.CheckboxSelectMultiple,
+        )
+        self.fields.move_to_end('files', last=False)
 
 
 def cabinet_querystring(request):
@@ -94,6 +117,11 @@ class FolderAdminMixin(admin.ModelAdmin):
                 r'^folder/add/$',
                 self.admin_site.admin_view(self.folder_add),
                 name='cabinet_folder_add',
+            ),
+            url(
+                r'^folder/select/$',
+                self.admin_site.admin_view(self.folder_select),
+                name='cabinet_folder_select',
             ),
             url(
                 r'^folder/(.+)/$',
@@ -237,7 +265,7 @@ class FolderAdminMixin(admin.ModelAdmin):
         querydict = [
             (key, value)
             for key, value in request.GET.items()
-            if key not in {'folder__id__exact', 'p', 'parent'}
+            if key not in {'files', 'folder__id__exact', 'p', 'parent'}
         ]
         if folder_id:
             querydict.append(('folder__id__exact', folder_id))
@@ -246,6 +274,69 @@ class FolderAdminMixin(admin.ModelAdmin):
             '?' if querydict else '',
             urlencode(sorted(querydict)),
         ))
+
+    def move_to_folder(self, request, queryset):
+        return HttpResponseRedirect('%s?%s' % (
+            reverse('admin:cabinet_folder_select'),
+            urlencode(sorted([
+                ('files', item.id)
+                for item in queryset
+            ])),
+        ))
+    move_to_folder.short_description = _('Move files to folder')
+
+    def folder_select(self, request):
+        files = self.model.objects.filter(pk__in=(
+            request.POST.getlist('files') or request.GET.getlist('files')))
+
+        if request.method == 'POST':
+            form = SelectFolderForm(request.POST, files=files)
+
+            if form.is_valid():
+                folder = form.cleaned_data['folder']
+                form.cleaned_data['files'].update(folder=folder)
+                self.message_user(
+                    request,
+                    _('The files have been successfully moved.'),
+                )
+                return self.redirect_to_folder(request, folder.id)
+
+        else:
+            form = SelectFolderForm(files=files)
+
+        adminForm = helpers.AdminForm(
+            form,
+            [[None, {'fields': list(form.fields.keys())}]],
+            {},
+            (),
+            model_admin=self)
+
+        response = self.render_change_form(
+            request,
+            dict(
+                self.admin_site.each_context(request),
+                title=_('Move files to folder'),
+                adminform=adminForm,
+                object_id=None,
+                original=None,
+                is_popup=False,
+                media=self.media + adminForm.media,
+                errors=helpers.AdminErrorList(form, []),
+                preserve_filters=self.get_preserved_filters(request),
+                cabinet={
+                    'querystring': cabinet_querystring(request),
+                },
+            ),
+            add=False,
+            change=False,
+            form_url=request.get_full_path(),
+            obj=None,
+        )
+        response.template_name = [
+            'admin/cabinet/folder/change_form.html',
+            'admin/change_form.html',
+        ]
+        return response
 
 
 class IgnoreChangedDataErrorsForm(forms.ModelForm):
@@ -267,6 +358,7 @@ class IgnoreChangedDataErrorsForm(forms.ModelForm):
 
 
 class FileAdminBase(FolderAdminMixin):
+    actions = ['move_to_folder']
     form = IgnoreChangedDataErrorsForm
     list_filter = (
         ('folder', FolderListFilter),

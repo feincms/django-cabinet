@@ -11,6 +11,8 @@ Change log
   type when a cabinet file is filled in already.
 - Fixed a bug where adding subfolders would succeed, but redirect to the
   root folder.
+- Added an admin action for moving multiple files at once to a different
+  folder.
 
 
 `0.4`_ (2017-07-04)
