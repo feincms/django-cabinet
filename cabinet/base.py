@@ -246,6 +246,17 @@ class AbstractFileBase(models.Model):
         super().save(*args, **kwargs)
     save.alters_data = True
 
+    def delete_files(self):
+        for field in self.FILE_FIELDS:
+            f_obj = getattr(self, field)
+            if not f_obj.name:
+                continue
+
+            if hasattr(f_obj, 'delete_all_created_images'):
+                f_obj.delete_all_created_images()
+            f_obj.storage.delete(f_obj.name)
+    delete_files.alters_data = True
+
 
 class AbstractFile(
     AbstractFileBase,
@@ -260,14 +271,3 @@ class AbstractFile(
 
     class Meta(AbstractFileBase.Meta):
         abstract = True
-
-    def delete_files(self):
-        for field in self.FILE_FIELDS:
-            f_obj = getattr(self, field)
-            if not f_obj.name:
-                continue
-
-            if hasattr(f_obj, 'delete_all_created_images'):
-                f_obj.delete_all_created_images()
-            f_obj.storage.delete(f_obj.name)
-    delete_files.alters_data = True
