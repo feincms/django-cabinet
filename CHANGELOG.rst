@@ -18,6 +18,9 @@ Change log
 - Disabled the drag-drop upload on the root folder (which would not have
   worked anyway, because files cannot be added to the root folder).
 - Added ``unify`` so that only one quoting style is used in the code.
+- Changed the order of ``accept_file`` methods called to the order of
+  ``FILE_FIELDS`` instead of the MRO (resp. the classes where the file
+  fields are defined initially).
 
 
 `0.5`_ (2018-03-13)
