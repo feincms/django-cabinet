@@ -121,11 +121,11 @@ class DownloadMixin(models.Model):
         abstract = True
 
     def save(self, *args, **kwargs):
-        self.download_type = next(iter(
+        self.download_type = next(
             type
             for type, title, check in self.DOWNLOAD_TYPES
             if check(self.download_file.name)
-        )) if self.download_file else ''
+        ) if self.download_file else ''
         super().save(*args, **kwargs)
     save.alters_data = True
 
@@ -220,7 +220,7 @@ class AbstractFileBase(models.Model):
     @property
     def file(self):
         files = (getattr(self, field) for field in self.FILE_FIELDS)
-        return next(iter(f for f in files if f.name))
+        return next(f for f in files if f.name)
 
     @file.setter
     def file(self, value):
