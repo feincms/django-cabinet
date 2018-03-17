@@ -162,7 +162,7 @@ class OverwriteMixin(models.Model):
         if self._overwrite and original:
             # Delete the original file
             original_file_name = original.file.name
-            original.file.delete(save=False)
+            original.delete_files()
 
             _new_file_name = f_obj.name
 
