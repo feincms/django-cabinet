@@ -4,6 +4,22 @@ Change log
 `Next version`_
 ~~~~~~~~~~~~~~~
 
+- Changed ``admin_details`` to not include superfluous ``<br>`` tags.
+- Changed the ``accept_file`` methods on file mixins to return bools and
+  not raise exceptions.
+- Fixed the ``OverwriteMixin`` to call ``delete_files`` so that e.g.
+  the ``versatileimagefield`` gets a chance of removing stale
+  thumbnails.
+- Dropped the useless ``AbstractFile``, and renamed ``AbstractFileBase``
+  to ``AbstractFile``.
+- Added a guide on how to swap out the file model.
+- Added a hint to the files changelist that drag-drop upload is
+  possible.
+- Disabled the drag-drop upload on the root folder (which would not have
+  worked anyway, because files cannot be added to the root folder).
+- Added ``unify`` so that only one quoting style is used in the code.
+
+
 `0.5`_ (2018-03-13)
 ~~~~~~~~~~~~~~~~~~~
 
