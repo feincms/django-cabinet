@@ -148,13 +148,10 @@ Next, ``admin.py``::
             else:
                 return [
                     (None, {'fields': (
-                        'folder',
-                        'caption',
-                        'copyright',
+                        'folder', 'caption', 'copyright',
                     )}),
                     (_('Image'), {'fields': (
-                        'image_file',
-                        'image_alt_text',
+                        'image_file', 'image_alt_text',
                     )}),
                     (_('PDF'), {'fields': (
                         'pdf_file',
