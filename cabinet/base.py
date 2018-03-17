@@ -4,9 +4,12 @@ import os
 import re
 from PIL import Image
 
-from django.core.exceptions import ValidationError
+from django.core.exceptions import (
+    FieldDoesNotExist, ImproperlyConfigured, ValidationError,
+)
 from django.core.files.base import File
 from django.db import models
+from django.db.models import signals
 from django.utils.translation import ugettext_lazy as _
 
 from versatileimagefield.fields import PPOIField, VersatileImageField
@@ -219,8 +222,8 @@ class AbstractFile(models.Model):
 
     @file.setter
     def file(self, value):
-        for cls in inspect.getmro(self.__class__):
-            if hasattr(cls, 'accept_file') and cls.accept_file(self, value):
+        for fn in self._accept_file_functions:
+            if fn(self, value):
                 break
         else:
             raise TypeError('Invalid value %r' % value)
@@ -247,3 +250,36 @@ class AbstractFile(models.Model):
                 f_obj.delete_all_created_images()
             f_obj.storage.delete(f_obj.name)
     delete_files.alters_data = True
+
+
+def determine_accept_file_functions(sender, **kwargs):
+    if issubclass(sender, AbstractFile) and not sender._meta.abstract:
+        fields = set(sender.FILE_FIELDS)
+        fns = {}
+        for cls in list(inspect.getmro(sender))[1:]:
+            for f in fields:
+                try:
+                    cls._meta.get_field(f)
+                except FieldDoesNotExist:
+                    pass
+                else:
+                    # File field exists on this class. There *must* be an
+                    # accept_file method as well.
+                    fns[f] = cls.accept_file
+                    fields.discard(f)
+                    break
+
+            if not fields:
+                break
+
+        if fields:
+            raise ImproperlyConfigured(
+                'No "accept_file" method found for %s' % (
+                    ', '.join(sorted(fields)),
+                ),
+            )
+
+        sender._accept_file_functions = [fns[f] for f in sender.FILE_FIELDS]
+
+
+signals.class_prepared.connect(determine_accept_file_functions)

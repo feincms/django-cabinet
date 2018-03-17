@@ -81,6 +81,8 @@ First, ``models.py``::
         class Meta:
             abstract = True
 
+        # Cabinet requires a accept_file method on all mixins which
+        # have a file field:
         def accept_file(self, value):
             if value.name.lower().endswith('.pdf'):
                 self.pdf_file = value
