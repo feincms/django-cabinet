@@ -6,7 +6,9 @@ from django.db.models import signals
 from django.dispatch import receiver
 from django.utils.translation import ugettext_lazy as _
 
-from cabinet.base import AbstractFile
+from cabinet.base import (
+    AbstractFile, DownloadMixin, ImageMixin, OverwriteMixin,
+)
 
 
 if not hasattr(settings, 'CABINET_FILE_MODEL'):
@@ -69,7 +71,14 @@ class Folder(models.Model):
             })
 
 
-class File(AbstractFile):
+class File(
+    AbstractFile,
+    ImageMixin,
+    DownloadMixin,
+    OverwriteMixin,
+):
+    FILE_FIELDS = ['image_file', 'download_file']
+
     caption = models.CharField(
         _('caption'),
         max_length=1000,

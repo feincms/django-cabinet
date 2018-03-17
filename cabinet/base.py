@@ -185,7 +185,7 @@ class OverwriteMixin(models.Model):
     save.alters_data = True
 
 
-class AbstractFileBase(models.Model):
+class AbstractFile(models.Model):
     FILE_FIELDS = []
 
     folder = models.ForeignKey(
@@ -247,18 +247,3 @@ class AbstractFileBase(models.Model):
                 f_obj.delete_all_created_images()
             f_obj.storage.delete(f_obj.name)
     delete_files.alters_data = True
-
-
-class AbstractFile(
-    AbstractFileBase,
-    ImageMixin,
-    DownloadMixin,
-    OverwriteMixin,
-):
-    FILE_FIELDS = [
-        'image_file',
-        'download_file',
-    ]
-
-    class Meta(AbstractFileBase.Meta):
-        abstract = True

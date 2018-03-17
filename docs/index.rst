@@ -68,7 +68,7 @@ First, ``models.py``::
     from django.db import models
     from django.utils.translation import ugettext_lazy as _
 
-    from cabinet.base import AbstractFileBase, ImageMixin, DownloadMixin
+    from cabinet.base import AbstractFile, ImageMixin, DownloadMixin
 
     class PDFMixin(models.Model):
         pdf_file = models.FileField(
@@ -90,7 +90,7 @@ First, ``models.py``::
     # works correctly, resp. so that PDFMixin's accept_file has a chance
     # of running before DownloadMixin's accept_file (which accepts all
     # files, regardless of their type)
-    class File(AbstractFileBase, ImageMixin, PDFMixin, DownloadMixin):
+    class File(AbstractFile, ImageMixin, PDFMixin, DownloadMixin):
         FILE_FIELDS = ['image_file', 'pdf_file', 'download_file']
 
         # Add caption and copyright, makes FileAdmin reuse easier.
@@ -123,8 +123,8 @@ Next, ``admin.py``::
     @admin.register(File)
     class FileAdmin(_FileAdmin):
         # list_display / list_display_links are probably fine if you
-        # built on top of AbstractFile; with AbstractFileBase there's
-        # additional work to do.
+        # built on top of AbstractFile and added caption/copyright
+        # fields, otherwise there is additional work to do.
 
         # You **have** to override this, or else you won't see the
         # pdf_file field of existing files:
