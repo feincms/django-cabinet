@@ -152,8 +152,6 @@ class OverwriteMixin(models.Model):
                 pass
 
         f_obj = self.file
-        self.file_name = os.path.basename(f_obj.name)
-        self.file_size = f_obj.size
         super().save(*args, **kwargs)
 
         if self._overwrite and original:
