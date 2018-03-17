@@ -25,7 +25,7 @@ def get_file_model():
     except LookupError:
         raise ImproperlyConfigured(
             "CABINET_FILE_MODEL refers to model '%s'"
-            " that has not been installed" % settings.CABINET_FILE_MODEL
+            ' that has not been installed' % settings.CABINET_FILE_MODEL
         )
 
 
