@@ -41,10 +41,6 @@ def upload_is_image(data):
         return False
 
 
-class InvalidFileError(Exception):
-    pass
-
-
 class ImageMixin(models.Model):
     image_file = VersatileImageField(
         _('image'),
@@ -77,9 +73,9 @@ class ImageMixin(models.Model):
         abstract = True
 
     def accept_file(self, value):
-        if not upload_is_image(value):
-            raise InvalidFileError()
-        self.image_file = value
+        if upload_is_image(value):
+            self.image_file = value
+            return True
 
 
 class DownloadMixin(models.Model):
@@ -131,6 +127,7 @@ class DownloadMixin(models.Model):
 
     def accept_file(self, value):
         self.download_file = value
+        return True
 
 
 class OverwriteMixin(models.Model):
@@ -225,12 +222,8 @@ class AbstractFileBase(models.Model):
     @file.setter
     def file(self, value):
         for cls in inspect.getmro(self.__class__):
-            if hasattr(cls, 'accept_file'):
-                try:
-                    cls.accept_file(self, value)
-                    break
-                except InvalidFileError:
-                    pass
+            if hasattr(cls, 'accept_file') and cls.accept_file(self, value):
+                break
         else:
             raise TypeError('Invalid value %r' % value)
 
