@@ -19,7 +19,13 @@ django.jQuery(function($) {
   $('#changelist-search input[name=folder__id__exact]').remove();
 
   var dragCounter = 0,
-    results = $('.results');
+    results = $('.results'),
+    folder = window.location.href.match(/folder__id__exact=(\d+)/);
+
+  if (!folder) {
+    $('.cabinet-upload-hint').remove();
+    return;
+  }
 
   results.on('drag dragstart dragend dragover dragenter dragleave drop', function(e) {
     e.preventDefault();
@@ -46,7 +52,7 @@ django.jQuery(function($) {
     for (var i=0; i<files.length; ++i) {
       var d = new FormData();
       d.append('csrfmiddlewaretoken', $('input[name=csrfmiddlewaretoken]').val());
-      d.append('folder', window.location.href.match(/folder__id__exact=(\d+)/)[1]);
+      d.append('folder', folder[1]);
       d.append('file', files[i]);
 
       $.ajax({
