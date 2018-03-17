@@ -94,4 +94,4 @@ class FileAdmin(FileAdminBase):
             '<small>{}</small>',
             format_html_join('<br>', '{}', ((d,) for d in details if d)),
         )
-        admin_details.short_description = _('details')
+    admin_details.short_description = _('details')
