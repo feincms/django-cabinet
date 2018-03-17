@@ -88,10 +88,6 @@ First, ``models.py``::
                 self.pdf_file = value
                 return True
 
-    # Insert PDFMixin before DownloadMixin so that drag-drop uploading
-    # works correctly, resp. so that PDFMixin's accept_file has a chance
-    # of running before DownloadMixin's accept_file (which accepts all
-    # files, regardless of their type)
     class File(AbstractFile, ImageMixin, PDFMixin, DownloadMixin):
         FILE_FIELDS = ['image_file', 'pdf_file', 'download_file']
 
