@@ -1,6 +1,6 @@
 from django.contrib import admin
 from django.template.defaultfilters import filesizeformat
-from django.utils.html import format_html
+from django.utils.html import format_html, format_html_join
 from django.utils.translation import ugettext_lazy as _
 
 from cabinet.base_admin import FileAdminBase
@@ -86,9 +86,12 @@ class FileAdmin(FileAdminBase):
     admin_file_name.short_description = _('file name')
 
     def admin_details(self, instance):
-        return format_html(
-            '<small>{}<br>{}</small>',
+        details = [
             instance.caption,
             instance.copyright,
+        ]
+        return format_html(
+            '<small>{}</small>',
+            format_html_join('<br>', '{}', ((d,) for d in details if d)),
         )
-    admin_details.short_description = _('details')
+        admin_details.short_description = _('details')
