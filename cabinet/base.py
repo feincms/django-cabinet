@@ -169,6 +169,10 @@ class OverwriteMixin(models.Model):
             new_file._committed = True
             setattr(self, new_file.field.name, original_file_name)
 
+            # Better be safe than sorry:
+            new_file.name = original_file_name
+            self.file_name = os.path.basename(new_file.name)
+
             super().save(*args, **kwargs)
 
         else:
