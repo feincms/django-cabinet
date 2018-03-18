@@ -114,7 +114,7 @@ Next, ``admin.py``::
 
     from django.contrib import admin
 
-    from cabinet.admin import FileAdmin as _FileAdmin, fieldset
+    from cabinet.admin import FileAdmin as _FileAdmin
 
     from .models import File
 
@@ -128,20 +128,20 @@ Next, ``admin.py``::
         # pdf_file field of existing files:
         def get_fieldsets(self, request, obj=None):
             if obj and obj.image_file.name:
-                return fieldset(
+                return [(None, {'fields': (
                     'folder', 'image_file', 'caption', 'image_alt_text',
                     'copyright',
-                )
+                )})]
 
             elif obj and obj.pdf_file.name:
-                return fieldset(
+                return [(None, {'fields': (
                     'folder', 'pdf_file', 'caption', 'copyright',
-                )
+                )})]
 
             elif obj and obj.download_file.name:
-                return fieldset(
+                return [(None, {'fields': (
                     'folder', 'download_file', 'caption', 'copyright',
-                )
+                )})]
 
             else:
                 return [

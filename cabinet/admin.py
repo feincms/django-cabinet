@@ -7,10 +7,6 @@ from cabinet.base_admin import FileAdminBase
 from cabinet.models import File
 
 
-def fieldset(*fields):
-    return [(None, {'fields': fields})]
-
-
 @admin.register(File)
 class FileAdmin(FileAdminBase):
     list_display = ('admin_thumbnail', 'admin_file_name', 'admin_details')
@@ -18,16 +14,27 @@ class FileAdmin(FileAdminBase):
 
     def get_fieldsets(self, request, obj=None):
         if obj and obj.image_file.name:
-            return fieldset(
-                'folder', 'image_file', '_overwrite', 'caption',
-                'image_alt_text', 'copyright',
-            )
+            return [
+                (None, {'fields': (
+                    'folder', 'image_file', 'caption', 'image_alt_text',
+                    'copyright',
+                )}),
+                (_('Advanced'), {
+                    'fields': ('_overwrite',),
+                    'classes': ('collapse',),
+                }),
+            ]
 
         elif obj and obj.download_file.name:
-            return fieldset(
-                'folder', 'download_file', '_overwrite', 'caption',
-                'copyright',
-            )
+            return [
+                (None, {'fields': (
+                    'folder', 'download_file', 'caption', 'copyright',
+                )}),
+                (_('Advanced'), {
+                    'fields': ('_overwrite',),
+                    'classes': ('collapse',),
+                }),
+            ]
 
         else:
             return [
