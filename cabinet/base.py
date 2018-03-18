@@ -7,7 +7,6 @@ from PIL import Image
 from django.core.exceptions import (
     FieldDoesNotExist, ImproperlyConfigured, ValidationError,
 )
-from django.core.files.base import File
 from django.db import models
 from django.db.models import signals
 from django.utils.translation import ugettext_lazy as _
@@ -150,32 +149,27 @@ class OverwriteMixin(models.Model):
         original = None
         if self.pk:
             try:
-                original = self.__class__._default_manager.get(pk=self.pk)
+                original = self.__class__._base_manager.get(pk=self.pk)
             except self.__class__.DoesNotExist:
                 pass
 
-        f_obj = self.file
-        super().save(*args, **kwargs)
-
         if self._overwrite and original:
-            # Delete the original file
-            original_file_name = original.file.name
+            original_file = original.file
+            original_file_name = original_file.name
             original.delete_files()
+            original_file.delete(save=False)
 
-            _new_file_name = f_obj.name
-
-            f_obj.open()
-            f_obj.storage.save(
+            new_file = self.file
+            assert not new_file._committed
+            new_file.storage.save(
                 original_file_name,
-                File(f_obj),
-                max_length=f_obj.field.max_length,
+                new_file.file,
+                max_length=new_file.field.max_length,
             )
-            setattr(self, f_obj.field.name, original_file_name)
-            f_obj._committed = True
-            super().save(*args, **kwargs)
+            new_file._committed = True
+            setattr(self, new_file.field.name, original_file_name)
 
-            # Delete file from new location (because we prefer the old)
-            f_obj.storage.delete(_new_file_name)
+            super().save(*args, **kwargs)
 
         else:
             super().save(*args, **kwargs)
@@ -248,7 +242,8 @@ class AbstractFile(models.Model):
 
             if hasattr(f_obj, 'delete_all_created_images'):
                 f_obj.delete_all_created_images()
-            f_obj.storage.delete(f_obj.name)
+            # f_obj.storage.delete(f_obj.name)
+            f_obj.delete(save=False)
     delete_files.alters_data = True
 
 

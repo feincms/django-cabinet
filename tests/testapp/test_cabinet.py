@@ -17,7 +17,8 @@ class CabinetTestCase(TestCase):
             is_staff=True,
             is_superuser=True,
         )
-        self.image_path = os.path.join(settings.BASE_DIR, 'image.png')
+        self.image1_path = os.path.join(settings.BASE_DIR, 'image.png')
+        self.image2_path = os.path.join(settings.BASE_DIR, 'image-neg.png')
         if os.path.exists(settings.MEDIA_ROOT):
             shutil.rmtree(settings.MEDIA_ROOT)
 
@@ -89,7 +90,7 @@ class CabinetTestCase(TestCase):
         folder = Folder.objects.create(name='Test')
         c = self.login()
 
-        with io.open(self.image_path, 'rb') as image:
+        with io.open(self.image1_path, 'rb') as image:
             response = c.post('/admin/cabinet/file/add/', {
                 'folder': folder.id,
                 'image_file_0': image,
@@ -138,6 +139,7 @@ class CabinetTestCase(TestCase):
 
         f1 = File.objects.get()
         f1_name = f1.file.name
+        f1_bytes = f1.file.read()
 
         self.assertEqual(
             [getattr(f1, field).name for field in f1.FILE_FIELDS],
@@ -145,7 +147,7 @@ class CabinetTestCase(TestCase):
         )
         self.assertEqual(f1.download_type, '')
 
-        with io.open(self.image_path, 'rb') as image:
+        with io.open(self.image1_path, 'rb') as image:
             response = c.post('/admin/cabinet/file/%s/change/' % f1.id, {
                 'folder': folder.id,
                 'image_file_0': image,
@@ -158,13 +160,18 @@ class CabinetTestCase(TestCase):
 
         f2 = File.objects.get()
         f2_name = f2.file.name
+        f2_bytes = f2.file.read()
 
         self.assertNotEqual(
             f1_name,
             f2_name,
         )
+        self.assertEqual(
+            f1_bytes,
+            f2_bytes,
+        )
 
-        with io.open(self.image_path, 'rb') as image:
+        with io.open(self.image2_path, 'rb') as image:
             response = c.post('/admin/cabinet/file/%s/change/' % f1.id, {
                 'folder': folder.id,
                 'image_file_0': image,
@@ -178,13 +185,17 @@ class CabinetTestCase(TestCase):
 
         f3 = File.objects.get()
         f3_name = f3.file.name
+        f3_bytes = f3.file.read()
 
         self.assertEqual(
             f2_name,
             f3_name,
         )
-
-        # print(response, response.content.decode('utf-8'))
+        self.assertNotEqual(
+            f2_bytes,
+            f3_bytes,
+        )
+        print(f2_bytes)
 
         self.assertNoMediaFiles()
 
@@ -213,7 +224,7 @@ class CabinetTestCase(TestCase):
             b'{"success": true}',
         )
 
-        with io.open(self.image_path, 'rb') as image:
+        with io.open(self.image1_path, 'rb') as image:
             response = c.post('/admin/cabinet/file/upload/', {
                 'folder': f.id,
                 'file': image,

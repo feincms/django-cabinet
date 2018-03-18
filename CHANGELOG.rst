@@ -21,6 +21,8 @@ Change log
 - Changed the order of ``accept_file`` methods called to the order of
   ``FILE_FIELDS`` instead of the MRO (resp. the classes where the file
   fields are defined initially).
+- Fixed the double saves in ``OverwriteMixin``, and hopefully avoided
+  edge case-y problems with ``delete_files``.
 
 
 `0.5`_ (2018-03-13)
