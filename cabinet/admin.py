@@ -1,6 +1,6 @@
 from django.contrib import admin
 from django.template.defaultfilters import filesizeformat
-from django.utils.html import format_html, format_html_join
+from django.utils.html import format_html, format_html_join, mark_safe
 from django.utils.translation import ugettext_lazy as _
 
 from cabinet.base_admin import FileAdminBase
@@ -50,7 +50,7 @@ class FileAdmin(FileAdminBase):
                     instance.image_file.crop['50x50'],
                 )
             except Exception:
-                return format_html('<span class="broken-image"></span>')
+                return mark_safe('<span class="broken-image"></span>')
         elif instance.download_file.name:
             return format_html(
                 '<span class="download download-{}">{}</span>',
@@ -75,6 +75,10 @@ class FileAdmin(FileAdminBase):
         ]
         return format_html(
             '<small>{}</small>',
-            format_html_join('<br>', '{}', ((d,) for d in details if d)),
+            format_html_join(
+                mark_safe('<br>'),
+                '{}',
+                ((d,) for d in details if d),
+            ),
         )
     admin_details.short_description = _('details')
