@@ -137,9 +137,9 @@ class OverwriteMixin(models.Model):
         _('Keep filename when uploading new file?'),
         default=False,
         help_text=_(
-            'By default, Django always generates filenames that'
-            ' do not clash with existing files.'
-        )
+            'By default, a new and unique filename is generated for each file,'
+            ' which also helps with caching.'
+        ),
     )
 
     class Meta:

@@ -15,6 +15,7 @@ class Migration(migrations.Migration):
         migrations.AddField(
             model_name='file',
             name='_overwrite',
-            field=models.BooleanField(default=False, help_text='By default, Django always generates filenames that do not clash with existing files.', verbose_name='Overwrite the original file?'),
+            field=models.BooleanField(default=False, help_text='By default, a new and unique filename is generated for each file, which also helps with caching.', verbose_name='Keep filename when uploading new file?'),
         ),
     ]
+
