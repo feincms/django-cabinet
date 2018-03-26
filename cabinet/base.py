@@ -11,7 +11,7 @@ from django.db import models
 from django.db.models import signals
 from django.utils.translation import ugettext_lazy as _
 
-from versatileimagefield.fields import PPOIField, VersatileImageField
+from imagefield.fields import ImageField, PPOIField
 
 
 UPLOAD_TO = 'cabinet/%Y/%m'
@@ -44,7 +44,7 @@ def upload_is_image(data):
 
 
 class ImageMixin(models.Model):
-    image_file = VersatileImageField(
+    image_file = ImageField(
         _('image'),
         upload_to=UPLOAD_TO,
         width_field='image_width',

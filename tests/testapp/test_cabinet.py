@@ -93,7 +93,8 @@ class CabinetTestCase(TestCase):
         with io.open(self.image1_path, 'rb') as image:
             response = c.post('/admin/cabinet/file/add/', {
                 'folder': folder.id,
-                'image_file_0': image,
+                'image_file': image,
+                'image_ppoi': '0.5x0.5',
             })
 
         self.assertRedirects(
@@ -150,7 +151,8 @@ class CabinetTestCase(TestCase):
         with io.open(self.image1_path, 'rb') as image:
             response = c.post('/admin/cabinet/file/%s/change/' % f1.id, {
                 'folder': folder.id,
-                'image_file_0': image,
+                'image_file': image,
+                'image_ppoi': '0.5x0.5',
             })
 
         self.assertRedirects(
@@ -174,7 +176,8 @@ class CabinetTestCase(TestCase):
         with io.open(self.image2_path, 'rb') as image:
             response = c.post('/admin/cabinet/file/%s/change/' % f1.id, {
                 'folder': folder.id,
-                'image_file_0': image,
+                'image_file': image,
+                'image_ppoi': '0.5x0.5',
                 '_overwrite': True,
             })
 
@@ -195,7 +198,6 @@ class CabinetTestCase(TestCase):
             f2_bytes,
             f3_bytes,
         )
-        print(f2_bytes)
 
         self.assertNoMediaFiles()
 
@@ -251,7 +253,7 @@ class CabinetTestCase(TestCase):
         )
         self.assertContains(
             response,
-            '<img src="__sized__/cabinet/',
+            '<img src="__processed__/',
             1,
         )
 

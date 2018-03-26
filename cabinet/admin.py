@@ -52,9 +52,12 @@ class FileAdmin(FileAdminBase):
     def admin_thumbnail(self, instance):
         if instance.image_file.name:
             try:
+                target = instance.image_file.process(
+                    ['default', ('crop', (50, 50))],
+                )
                 return format_html(
                     '<img src="{}" alt=""/>',
-                    instance.image_file.crop['50x50'],
+                    instance.image_file.storage.url(target),
                 )
             except Exception:
                 return mark_safe('<span class="broken-image"></span>')

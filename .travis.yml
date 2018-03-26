@@ -17,6 +17,6 @@ matrix:
       env: REQ="https://github.com/django/django/archive/master.zip#egg=Django"
 install:
   - pip install -U pip wheel
-  - pip install $REQ django-versatileimagefield flake8
+  - pip install $REQ django-imagefield flake8
   - python setup.py install
 script: "cd tests && ./manage.py test testapp && cd .. && flake8 ."

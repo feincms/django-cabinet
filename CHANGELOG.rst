@@ -11,7 +11,7 @@ Change log
 - Changed the ``accept_file`` methods on file mixins to return bools and
   not raise exceptions.
 - Fixed the ``OverwriteMixin`` to call ``delete_files`` so that e.g.
-  the ``versatileimagefield`` gets a chance of removing stale
+  the ``imagefield`` gets a chance of removing stale
   thumbnails.
 - Dropped the useless ``AbstractFile``, and renamed ``AbstractFileBase``
   to ``AbstractFile``.

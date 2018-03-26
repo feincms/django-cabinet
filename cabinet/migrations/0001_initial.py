@@ -4,7 +4,7 @@ from __future__ import unicode_literals
 
 from django.db import migrations, models
 import django.db.models.deletion
-import versatileimagefield.fields
+import imagefield.fields
 
 
 class Migration(migrations.Migration):
@@ -19,10 +19,10 @@ class Migration(migrations.Migration):
             name='File',
             fields=[
                 ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('image_file', versatileimagefield.fields.VersatileImageField(blank=True, height_field='image_height', upload_to='cabinet/%Y/%m', verbose_name='image', width_field='image_width')),
+                ('image_file', imagefield.fields.ImageField(blank=True, height_field='image_height', upload_to='cabinet/%Y/%m', verbose_name='image', width_field='image_width')),
                 ('image_width', models.PositiveIntegerField(blank=True, editable=False, null=True, verbose_name='image width')),
                 ('image_height', models.PositiveIntegerField(blank=True, editable=False, null=True, verbose_name='image height')),
-                ('image_ppoi', versatileimagefield.fields.PPOIField(default='0.5x0.5', editable=False, max_length=20, verbose_name='primary point of interest')),
+                ('image_ppoi', imagefield.fields.PPOIField(default='0.5x0.5', editable=False, max_length=20, verbose_name='primary point of interest')),
                 ('download_file', models.FileField(blank=True, upload_to='cabinet/%Y/%m', verbose_name='download')),
                 ('download_type', models.CharField(editable=False, max_length=20, verbose_name='download type')),
                 ('file_name', models.CharField(max_length=1000, verbose_name='file name')),

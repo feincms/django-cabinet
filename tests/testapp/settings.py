@@ -21,7 +21,7 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'testapp',
     'cabinet',
-    'versatileimagefield',
+    'imagefield',
 ]
 
 MEDIA_ROOT = '/media/'
