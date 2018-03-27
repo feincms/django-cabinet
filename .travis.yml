@@ -2,7 +2,7 @@ language: python
 sudo: false
 cache: pip
 python:
-- "3.4"
+- "3.6"
 - "3.5"
 env:
 # - REQ="Django>=1.10,<1.11"
@@ -12,9 +12,6 @@ env:
 matrix:
   allow_failures:
     - env: REQ="https://github.com/django/django/archive/master.zip#egg=Django"
-  exclude:
-    - python: "3.4"
-      env: REQ="https://github.com/django/django/archive/master.zip#egg=Django"
 install:
   - pip install -U pip wheel
   - pip install $REQ django-imagefield flake8
