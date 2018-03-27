@@ -4,6 +4,12 @@ Change log
 `Next version`_
 ~~~~~~~~~~~~~~~
 
+- Switched the image field from django-versatileimagefield_ to
+  django-imagefield_. The latter uses the same database layout
+  as the former, but there are differences when it comes to image
+  generation and generating thumbnail URLs.
+
+
 `0.6`_ (2018-03-18)
 ~~~~~~~~~~~~~~~~~~~
 
@@ -71,6 +77,9 @@ Change log
 ~~~~~~~~~~~~~~~~~~~
 
 - Initial public version.
+
+.. _django-imagefield: https://django-imagefield.readthedocs.io/
+.. _django-versatileimagefield: https://django-versatileimagefield.readthedocs.io/
 
 .. _0.1: https://github.com/matthiask/django-cabinet/commit/4b8747afd
 .. _0.2: https://github.com/matthiask/django-cabinet/compare/0.1...0.2
