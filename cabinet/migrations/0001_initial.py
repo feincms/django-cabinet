@@ -22,7 +22,7 @@ class Migration(migrations.Migration):
                 ('image_file', imagefield.fields.ImageField(blank=True, height_field='image_height', upload_to='cabinet/%Y/%m', verbose_name='image', width_field='image_width')),
                 ('image_width', models.PositiveIntegerField(blank=True, editable=False, null=True, verbose_name='image width')),
                 ('image_height', models.PositiveIntegerField(blank=True, editable=False, null=True, verbose_name='image height')),
-                ('image_ppoi', imagefield.fields.PPOIField(default='0.5x0.5', editable=False, max_length=20, verbose_name='primary point of interest')),
+                ('image_ppoi', imagefield.fields.PPOIField(default='0.5x0.5', max_length=20, verbose_name='primary point of interest')),
                 ('download_file', models.FileField(blank=True, upload_to='cabinet/%Y/%m', verbose_name='download')),
                 ('download_type', models.CharField(editable=False, max_length=20, verbose_name='download type')),
                 ('file_name', models.CharField(max_length=1000, verbose_name='file name')),
