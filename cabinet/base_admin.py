@@ -26,6 +26,7 @@ class FolderListFilter(admin.RelatedFieldListFilter):
     Filters are hidden in the file changelist; this filter is only responsible
     for filtering files by folders.
     """
+
     def has_output(self):
         return True
 
@@ -35,7 +36,7 @@ class FolderListFilter(admin.RelatedFieldListFilter):
                 return queryset.filter(**self.used_parameters)
             except ValidationError as e:
                 raise IncorrectLookupParameters(e)
-        elif 'q' in request.GET:
+        elif "q" in request.GET:
             return queryset
         else:
             return queryset.filter(folder__isnull=True)
@@ -51,7 +52,7 @@ def folder_choices(include_blank=True):
         children[folder.parent_id].append(folder)
 
     if include_blank:
-        yield (None, '-' * 10)
+        yield (None, "-" * 10)
 
     if not children:
         return
@@ -59,7 +60,7 @@ def folder_choices(include_blank=True):
     def iterate(parent_id, ancestors):
         for node in children[parent_id]:
             anc = ancestors + [node.name]
-            yield node.id, ' / '.join(anc)
+            yield node.id, " / ".join(anc)
             yield from iterate(node.id, anc)
 
     yield from iterate(None, [])
@@ -68,45 +69,46 @@ def folder_choices(include_blank=True):
 class FolderForm(forms.ModelForm):
     class Meta:
         model = Folder
-        fields = ('parent', 'name')
+        fields = ("parent", "name")
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        self.fields['parent'].choices = folder_choices()
+        self.fields["parent"].choices = folder_choices()
         if self.instance.pk:
-            self.fields['_delete_folder'] = forms.BooleanField(
-                required=False,
-                label=_('Delete this folder'),
+            self.fields["_delete_folder"] = forms.BooleanField(
+                required=False, label=_("Delete this folder")
             )
 
 
 class SelectFolderForm(forms.Form):
     folder = forms.ModelChoiceField(
         queryset=Folder.objects.all(),
-        label=capfirst(_('folder')),
+        label=capfirst(_("folder")),
         widget=forms.RadioSelect,
     )
 
     def __init__(self, *args, **kwargs):
-        files = kwargs.pop('files')
+        files = kwargs.pop("files")
         super().__init__(*args, **kwargs)
-        self.fields['folder'].choices = folder_choices(include_blank=False)
+        self.fields["folder"].choices = folder_choices(include_blank=False)
 
-        self.fields['files'] = forms.ModelMultipleChoiceField(
+        self.fields["files"] = forms.ModelMultipleChoiceField(
             queryset=files,
-            label=capfirst(_('files')),
+            label=capfirst(_("files")),
             initial=[f.id for f in files],
             widget=forms.CheckboxSelectMultiple,
         )
-        self.fields.move_to_end('files', last=False)
+        self.fields.move_to_end("files", last=False)
 
 
 def cabinet_querystring(request):
-    return urlencode(sorted(
-        (key, value)
-        for key, value in request.GET.items()
-        if key not in {'folder__id__exact', 'p'}
-    ))
+    return urlencode(
+        sorted(
+            (key, value)
+            for key, value in request.GET.items()
+            if key not in {"folder__id__exact", "p"}
+        )
+    )
 
 
 class FolderAdminMixin(admin.ModelAdmin):
@@ -115,38 +117,36 @@ class FolderAdminMixin(admin.ModelAdmin):
 
         return [
             url(
-                r'^folder/add/$',
+                r"^folder/add/$",
                 self.admin_site.admin_view(self.folder_add),
-                name='cabinet_folder_add',
+                name="cabinet_folder_add",
             ),
             url(
-                r'^folder/select/$',
+                r"^folder/select/$",
                 self.admin_site.admin_view(self.folder_select),
-                name='cabinet_folder_select',
+                name="cabinet_folder_select",
             ),
             url(
-                r'^folder/(.+)/$',
+                r"^folder/(.+)/$",
                 self.admin_site.admin_view(self.folder_change),
-                name='cabinet_folder_change',
+                name="cabinet_folder_change",
             ),
         ] + super().get_urls()
 
     def folder_add(self, request):
         with transaction.atomic(using=router.db_for_write(self.model)):
-            return self._folder_form(request, {
-                'initial': {
-                    'parent': request.GET.get('parent'),
-                },
-            })
+            return self._folder_form(
+                request, {"initial": {"parent": request.GET.get("parent")}}
+            )
 
     def folder_change(self, request, object_id):
         with transaction.atomic(using=router.db_for_write(self.model)):
-            return self._folder_form(request, {
-                'instance': get_object_or_404(Folder, pk=object_id),
-            })
+            return self._folder_form(
+                request, {"instance": get_object_or_404(Folder, pk=object_id)}
+            )
 
     def _folder_form(self, request, kw):
-        original = kw.get('instance')
+        original = kw.get("instance")
         add = not original
 
         if add:
@@ -156,29 +156,27 @@ class FolderAdminMixin(admin.ModelAdmin):
             if not self.has_change_permission(request, original):
                 raise PermissionDenied
 
-        if request.method == 'POST':
+        if request.method == "POST":
             form = FolderForm(request.POST, **kw)
             if form.is_valid():
-                if original and form.cleaned_data.get('_delete_folder'):
+                if original and form.cleaned_data.get("_delete_folder"):
                     return self._folder_form_delete(request, original)
 
                 folder = form.save()
                 if original:
                     self.message_user(
                         request,
-                        _('The folder "%s" was changed successfully.') % (
-                            folder,
-                        ),
-                        messages.SUCCESS)
+                        _('The folder "%s" was changed successfully.') % (folder,),
+                        messages.SUCCESS,
+                    )
                     return self.redirect_to_folder(request, folder.parent_id)
 
                 else:
                     self.message_user(
                         request,
-                        _('The folder "%s" was added successfully.') % (
-                            folder,
-                        ),
-                        messages.SUCCESS)
+                        _('The folder "%s" was added successfully.') % (folder,),
+                        messages.SUCCESS,
+                    )
                     return self.redirect_to_folder(request, folder.id)
 
         else:
@@ -186,18 +184,18 @@ class FolderAdminMixin(admin.ModelAdmin):
 
         adminForm = helpers.AdminForm(
             form,
-            [[None, {'fields': list(form.fields.keys())}]],
+            [[None, {"fields": list(form.fields.keys())}]],
             {},
             (),
-            model_admin=self)
+            model_admin=self,
+        )
 
         response = self.render_change_form(
             request,
             dict(
                 self.admin_site.each_context(request),
-                title=(
-                    _('Add %s') if add else _('Change %s')
-                ) % Folder._meta.verbose_name,
+                title=(_("Add %s") if add else _("Change %s"))
+                % Folder._meta.verbose_name,
                 adminform=adminForm,
                 object_id=original.pk if original else None,
                 original=original,
@@ -205,9 +203,7 @@ class FolderAdminMixin(admin.ModelAdmin):
                 media=self.media + adminForm.media,
                 errors=helpers.AdminErrorList(form, []),
                 preserve_filters=self.get_preserved_filters(request),
-                cabinet={
-                    'querystring': cabinet_querystring(request),
-                },
+                cabinet={"querystring": cabinet_querystring(request)},
             ),
             add=add,
             change=not add,
@@ -215,8 +211,8 @@ class FolderAdminMixin(admin.ModelAdmin):
             obj=original,
         )
         response.template_name = [
-            'admin/cabinet/folder/change_form.html',
-            'admin/change_form.html',
+            "admin/cabinet/folder/change_form.html",
+            "admin/change_form.html",
         ]
         return response
 
@@ -229,26 +225,39 @@ class FolderAdminMixin(admin.ModelAdmin):
         # Populate deleted_objects, a data structure of all related objects
         # that will also be deleted.
         if django.VERSION < (2, 1):
-            (deleted_objects, model_count, perms_needed, protected) = get_deleted_objects(  # noqa
-                [obj], obj._meta, request.user, self.admin_site, using)
+            (
+                deleted_objects,
+                model_count,
+                perms_needed,
+                protected,
+            ) = get_deleted_objects(  # noqa
+                [obj], obj._meta, request.user, self.admin_site, using
+            )
         else:
-            deleted_objects, model_count, perms_needed, protected = self.get_deleted_objects([obj], request)  # noqa
+            (
+                deleted_objects,
+                model_count,
+                perms_needed,
+                protected,
+            ) = self.get_deleted_objects(
+                [obj], request
+            )  # noqa
 
         if protected or perms_needed:
             self.message_user(
                 request,
-                _('Cannot delete %(name)s') % {'name': obj._meta.verbose_name},
+                _("Cannot delete %(name)s") % {"name": obj._meta.verbose_name},
                 messages.ERROR,
             )
 
         elif len(deleted_objects) > 1:
             self.message_user(
                 request,
-                _('Cannot delete %(name)s because of related objects (%(related)s)') % {  # noqa
-                    'name': obj._meta.verbose_name,
-                    'related': ', '.join(
-                        '%s %s' % (count, name)
-                        for name, count in model_count.items()
+                _("Cannot delete %(name)s because of related objects (%(related)s)")
+                % {  # noqa
+                    "name": obj._meta.verbose_name,
+                    "related": ", ".join(
+                        "%s %s" % (count, name) for name, count in model_count.items()
                     ),
                 },
                 messages.ERROR,
@@ -259,50 +268,48 @@ class FolderAdminMixin(admin.ModelAdmin):
             self.message_user(
                 request,
                 _('The folder "%s" was deleted successfully.') % obj,
-                messages.SUCCESS)
+                messages.SUCCESS,
+            )
 
         return self.redirect_to_folder(request, obj.parent_id)
 
     def redirect_to_folder(self, request, folder_id):
         info = self.model._meta.app_label, self.model._meta.model_name
-        url = reverse('admin:%s_%s_changelist' % info)
+        url = reverse("admin:%s_%s_changelist" % info)
         querydict = [
             (key, value)
             for key, value in request.GET.items()
-            if key not in {'files', 'folder__id__exact', 'p', 'parent'}
+            if key not in {"files", "folder__id__exact", "p", "parent"}
         ]
         if folder_id:
-            querydict.append(('folder__id__exact', folder_id))
-        return HttpResponseRedirect('%s%s%s' % (
-            url,
-            '?' if querydict else '',
-            urlencode(sorted(querydict)),
-        ))
+            querydict.append(("folder__id__exact", folder_id))
+        return HttpResponseRedirect(
+            "%s%s%s" % (url, "?" if querydict else "", urlencode(sorted(querydict)))
+        )
 
     def move_to_folder(self, request, queryset):
-        return HttpResponseRedirect('%s?%s' % (
-            reverse('admin:cabinet_folder_select'),
-            urlencode(sorted([
-                ('files', item.id)
-                for item in queryset
-            ])),
-        ))
-    move_to_folder.short_description = _('Move files to folder')
+        return HttpResponseRedirect(
+            "%s?%s"
+            % (
+                reverse("admin:cabinet_folder_select"),
+                urlencode(sorted([("files", item.id) for item in queryset])),
+            )
+        )
+
+    move_to_folder.short_description = _("Move files to folder")
 
     def folder_select(self, request):
-        files = self.model.objects.filter(pk__in=(
-            request.POST.getlist('files') or request.GET.getlist('files')))
+        files = self.model.objects.filter(
+            pk__in=(request.POST.getlist("files") or request.GET.getlist("files"))
+        )
 
-        if request.method == 'POST':
+        if request.method == "POST":
             form = SelectFolderForm(request.POST, files=files)
 
             if form.is_valid():
-                folder = form.cleaned_data['folder']
-                form.cleaned_data['files'].update(folder=folder)
-                self.message_user(
-                    request,
-                    _('The files have been successfully moved.'),
-                )
+                folder = form.cleaned_data["folder"]
+                form.cleaned_data["files"].update(folder=folder)
+                self.message_user(request, _("The files have been successfully moved."))
                 return self.redirect_to_folder(request, folder.id)
 
         else:
@@ -310,16 +317,17 @@ class FolderAdminMixin(admin.ModelAdmin):
 
         adminForm = helpers.AdminForm(
             form,
-            [[None, {'fields': list(form.fields.keys())}]],
+            [[None, {"fields": list(form.fields.keys())}]],
             {},
             (),
-            model_admin=self)
+            model_admin=self,
+        )
 
         response = self.render_change_form(
             request,
             dict(
                 self.admin_site.each_context(request),
-                title=_('Move files to folder'),
+                title=_("Move files to folder"),
                 adminform=adminForm,
                 object_id=None,
                 original=None,
@@ -327,9 +335,7 @@ class FolderAdminMixin(admin.ModelAdmin):
                 media=self.media + adminForm.media,
                 errors=helpers.AdminErrorList(form, []),
                 preserve_filters=self.get_preserved_filters(request),
-                cabinet={
-                    'querystring': cabinet_querystring(request),
-                },
+                cabinet={"querystring": cabinet_querystring(request)},
             ),
             add=False,
             change=False,
@@ -337,8 +343,8 @@ class FolderAdminMixin(admin.ModelAdmin):
             obj=None,
         )
         response.template_name = [
-            'admin/cabinet/folder/change_form.html',
-            'admin/change_form.html',
+            "admin/cabinet/folder/change_form.html",
+            "admin/change_form.html",
         ]
         return response
 
@@ -362,28 +368,24 @@ class IgnoreChangedDataErrorsForm(forms.ModelForm):
 
 
 class FileAdminBase(FolderAdminMixin):
-    actions = ['move_to_folder']
+    actions = ["move_to_folder"]
     form = IgnoreChangedDataErrorsForm
-    list_filter = (
-        ('folder', FolderListFilter),
-    )
-    search_fields = (
-        'file_name',
-    )
+    list_filter = (("folder", FolderListFilter),)
+    search_fields = ("file_name",)
 
     class Media:
-        css = {'all': ('cabinet/cabinet.css',)}
-        js = ('cabinet/cabinet.js',)
+        css = {"all": ("cabinet/cabinet.css",)}
+        js = ("cabinet/cabinet.js",)
 
     def get_urls(self):
         from django.conf.urls import url
 
         return [
             url(
-                r'^upload/$',
+                r"^upload/$",
                 self.admin_site.admin_view(self.upload),
-                name='cabinet_upload',
-            ),
+                name="cabinet_upload",
+            )
         ] + super().get_urls()
 
     def folders_annotate_counts(self, folders):
@@ -396,18 +398,20 @@ class FileAdminBase(FolderAdminMixin):
         engines!
         """
         num_subfolders = dict(
-            Folder.objects.order_by().filter(
-                parent__in=folders,
-            ).values('parent').annotate(
-                Count('id'),
-            ).values_list('parent', 'id__count'))
+            Folder.objects.order_by()
+            .filter(parent__in=folders)
+            .values("parent")
+            .annotate(Count("id"))
+            .values_list("parent", "id__count")
+        )
 
         num_files = dict(
-            self.model._default_manager.order_by().filter(
-                folder__in=folders,
-            ).values('folder').annotate(
-                Count('id'),
-            ).values_list('folder', 'id__count'))
+            self.model._default_manager.order_by()
+            .filter(folder__in=folders)
+            .values("folder")
+            .annotate(Count("id"))
+            .values_list("folder", "id__count")
+        )
 
         for f in folders:
             f.num_subfolders = num_subfolders.get(f.id, 0)
@@ -419,67 +423,75 @@ class FileAdminBase(FolderAdminMixin):
         cabinet_context = {
             # Keep query params except those in the set below when changing
             # folders
-            'querystring': cabinet_querystring(request),
+            "querystring": cabinet_querystring(request)
         }
 
         folder = None
 
         # Never filter by folder if searching
         if not request.GET.get(SEARCH_VAR):
-            folder__id__exact = request.GET.get('folder__id__exact')
+            folder__id__exact = request.GET.get("folder__id__exact")
             if folder__id__exact:
                 try:
                     folder = Folder.objects.get(pk=folder__id__exact)
                 except Folder.DoesNotExist:
-                    return HttpResponseRedirect('?e=1')
+                    return HttpResponseRedirect("?e=1")
 
             if folder is None:
-                cabinet_context.update({
-                    'folder': None,
-                    'folder_children': self.folders_annotate_counts(
-                        Folder.objects.filter(parent__isnull=True)),
-                })
+                cabinet_context.update(
+                    {
+                        "folder": None,
+                        "folder_children": self.folders_annotate_counts(
+                            Folder.objects.filter(parent__isnull=True)
+                        ),
+                    }
+                )
             else:
-                cabinet_context.update({
-                    'folder': folder,
-                    'folder_children': self.folders_annotate_counts(
-                        folder.children.all()),
-                })
+                cabinet_context.update(
+                    {
+                        "folder": folder,
+                        "folder_children": self.folders_annotate_counts(
+                            folder.children.all()
+                        ),
+                    }
+                )
 
-        return super().changelist_view(request, extra_context={
-            'cabinet': cabinet_context,
-            'title': folder or _('Root folder'),
-        })
+        return super().changelist_view(
+            request,
+            extra_context={
+                "cabinet": cabinet_context,
+                "title": folder or _("Root folder"),
+            },
+        )
 
     def formfield_for_foreignkey(self, db_field, request, **kwargs):
         field = super().formfield_for_foreignkey(db_field, request, **kwargs)
-        if db_field.name == 'folder':
+        if db_field.name == "folder":
             field.choices = list(folder_choices())
         return field
 
-    def add_view(self, request, form_url='', extra_context=None):
+    def add_view(self, request, form_url="", extra_context=None):
         extra_context = extra_context or {}
-        if request.GET.get('folder'):
-            folder = get_object_or_404(Folder, pk=request.GET.get('folder'))
-            extra_context['cabinet'] = {'folder': folder}
+        if request.GET.get("folder"):
+            folder = get_object_or_404(Folder, pk=request.GET.get("folder"))
+            extra_context["cabinet"] = {"folder": folder}
         else:
             folder = None
 
         response = self.changeform_view(
-            request, None, request.get_full_path(), extra_context)
+            request, None, request.get_full_path(), extra_context
+        )
 
         # Keep the folder preset when redirecting. This sometimes adds the
         # folder variable twice (once to preserved_filters and once separately
         # but this is at most ugly and not a real problem)
         if response.status_code == 302 and folder:
-            response['Location'] += '&folder=%s' % folder.id
+            response["Location"] += "&folder=%s" % folder.id
         return response
 
     def upload(self, request):
-        f = self.model(folder_id=request.POST['folder'])
-        f.file = request.FILES['file']
+        f = self.model(folder_id=request.POST["folder"])
+        f.file = request.FILES["file"]
         f.save()
 
-        return JsonResponse({
-            'success': True,
-        })
+        return JsonResponse({"success": True})

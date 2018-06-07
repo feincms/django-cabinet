@@ -3,5 +3,5 @@ from django.utils.translation import ugettext_lazy as _
 
 
 class CabinetConfig(AppConfig):
-    name = 'cabinet'
-    verbose_name = _('Cabinet media library')
+    name = "cabinet"
+    verbose_name = _("Cabinet media library")

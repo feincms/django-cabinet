@@ -7,24 +7,26 @@ from django.db import migrations, models
 
 class Migration(migrations.Migration):
 
-    dependencies = [
-        ('cabinet', '0001_initial'),
-    ]
+    dependencies = [("cabinet", "0001_initial")]
 
     operations = [
         migrations.AddField(
-            model_name='file',
-            name='caption',
-            field=models.CharField(blank=True, max_length=1000, verbose_name='caption'),
+            model_name="file",
+            name="caption",
+            field=models.CharField(blank=True, max_length=1000, verbose_name="caption"),
         ),
         migrations.AddField(
-            model_name='file',
-            name='copyright',
-            field=models.CharField(blank=True, max_length=1000, verbose_name='copyright'),
+            model_name="file",
+            name="copyright",
+            field=models.CharField(
+                blank=True, max_length=1000, verbose_name="copyright"
+            ),
         ),
         migrations.AddField(
-            model_name='file',
-            name='image_alt_text',
-            field=models.CharField(blank=True, max_length=1000, verbose_name='alternative text'),
+            model_name="file",
+            name="image_alt_text",
+            field=models.CharField(
+                blank=True, max_length=1000, verbose_name="alternative text"
+            ),
         ),
     ]
