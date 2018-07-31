@@ -24,5 +24,6 @@ jobs:
       env: REQ=none
       install: skip
       script:
-        - pip install flake8
+        - pip install black flake8
         - flake8 .
+        - black --check cabinet tests
