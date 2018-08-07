@@ -4,6 +4,11 @@ Change log
 `Next version`_
 ~~~~~~~~~~~~~~~
 
+- Fix a problem where newer Django versions would crash because of a
+  missing ``inline_admin_formsets`` variable in the admin change form
+  context.
+
+
 `0.7`_ (2018-03-28)
 ~~~~~~~~~~~~~~~~~~~
 
