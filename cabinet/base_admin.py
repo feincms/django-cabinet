@@ -197,6 +197,7 @@ class FolderAdminMixin(admin.ModelAdmin):
                 title=(_("Add %s") if add else _("Change %s"))
                 % Folder._meta.verbose_name,
                 adminform=adminForm,
+                inline_admin_formsets=[],
                 object_id=original.pk if original else None,
                 original=original,
                 is_popup=False,
