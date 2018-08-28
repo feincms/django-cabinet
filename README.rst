@@ -9,8 +9,6 @@ django-cabinet - Media library for Django
     :target: https://django-cabinet.readthedocs.io/en/latest/?badge=latest
     :alt: Documentation Status
 
-.. image:: https://codeclimate.com/github/matthiask/django-cabinet.svg
-    :target: https://codeclimate.com/github/matthiask/django-cabinet
 
 django-cabinet is a media library for Django implemented while trying to
 write as little code as possible to keep maintenance at a minimum.
