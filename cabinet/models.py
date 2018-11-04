@@ -60,12 +60,12 @@ class Folder(models.Model):
                 break
 
     def clean(self):
-        if (
-            self.id
-            and self.parent_id
-            and (self.id in [node.id for node in self.parent.ancestors()])
-        ):
-            raise ValidationError({"parent": _("Loop detected.")})
+        if self.id and self.parent_id:
+            seen = {self.id}
+            for node in self.parent.ancestors():
+                if node.id in seen:
+                    raise ValidationError({"parent": _("Loop detected.")})
+                seen.add(node.id)
 
 
 class File(AbstractFile, ImageMixin, DownloadMixin, OverwriteMixin):
