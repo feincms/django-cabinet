@@ -5,9 +5,11 @@ import shutil
 
 from django.conf import settings
 from django.contrib.auth.models import User
+from django.core.exceptions import ImproperlyConfigured, ValidationError
 from django.test import Client, TestCase
+from django.test.utils import override_settings
 
-from cabinet.models import File, Folder
+from cabinet.models import File, Folder, get_file_model
 
 
 class CabinetTestCase(TestCase):
@@ -205,3 +207,25 @@ class CabinetTestCase(TestCase):
             '<a href="?_popup=1&amp;_to_field=id"><span class="folder"></span></a>',  # noqa
         )
         # We do not need to test adding files -- that's covered by Django.
+
+    def test_get_file_model(self):
+        self.assertEqual(settings.CABINET_FILE_MODEL, "cabinet.File")
+        self.assertEqual(get_file_model(), File)
+
+        with override_settings(CABINET_FILE_MODEL="bla"):
+            self.assertRaises(ImproperlyConfigured, get_file_model)
+
+        with override_settings(CABINET_FILE_MODEL="stuff.stuff"):
+            self.assertRaises(ImproperlyConfigured, get_file_model)
+
+    def test_no_loop(self):
+        f1 = Folder.objects.create(name="f1")
+        f2 = Folder.objects.create(name="f2", parent=f1)
+        f3 = Folder.objects.create(name="f3", parent=f2)
+
+        self.assertEqual(list(f3.ancestors()), [f3, f2, f1])
+        f1.clean()  # No error.
+        f3.clean()  # No error.
+
+        f1.parent = f3
+        self.assertRaises(ValidationError, f1.clean)

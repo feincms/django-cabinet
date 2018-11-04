@@ -9,7 +9,7 @@ from django.utils.translation import ugettext_lazy as _
 from cabinet.base import AbstractFile, DownloadMixin, ImageMixin, OverwriteMixin
 
 
-if not hasattr(settings, "CABINET_FILE_MODEL"):
+if not hasattr(settings, "CABINET_FILE_MODEL"):  # pragma: no branch
     settings.CABINET_FILE_MODEL = "cabinet.File"
 
 

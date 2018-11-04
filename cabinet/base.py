@@ -75,7 +75,7 @@ class ImageMixin(models.Model):
 
 
 class DownloadMixin(models.Model):
-    DOWNLOAD_TYPES = [
+    DOWNLOAD_TYPES = [  # pragma: no branch (last condition always matches)
         # Should we be using imghdr.what instead of extension guessing?
         (
             "image",
@@ -128,7 +128,7 @@ class DownloadMixin(models.Model):
         abstract = True
 
     def save(self, *args, **kwargs):
-        self.download_type = (
+        self.download_type = (  # pragma: no branch
             next(
                 type
                 for type, title, check in self.DOWNLOAD_TYPES
