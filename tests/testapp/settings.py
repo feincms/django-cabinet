@@ -49,3 +49,5 @@ MIDDLEWARE = (
     "django.middleware.locale.LocaleMiddleware",
 )
 ROOT_URLCONF = "testapp.urls"
+
+SILENCED_SYSTEM_CHECKS = ["admin.E130"]  # https://code.djangoproject.com/ticket/29917
