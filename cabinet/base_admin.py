@@ -39,7 +39,7 @@ class FolderListFilter(admin.RelatedFieldListFilter):
         elif "q" in request.GET:
             return queryset
         else:
-            return queryset.filter(folder__isnull=True)
+            return queryset.none()  # No files in root folder, never.
 
 
 def folder_choices(include_blank=True):
