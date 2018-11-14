@@ -2,7 +2,7 @@ from django.apps import apps
 from django.conf import settings
 from django.core.exceptions import ImproperlyConfigured, ValidationError
 from django.db import models
-from django.db.models import signals
+from django.db.models import Q, signals
 from django.dispatch import receiver
 from django.utils.translation import ugettext_lazy as _
 
@@ -66,6 +66,11 @@ class Folder(models.Model):
                 if node.id in seen:
                     raise ValidationError({"parent": _("Loop detected.")})
                 seen.add(node.id)
+        if not self.parent_id:
+            if Folder.objects.filter(~Q(pk=self.pk), Q(name=self.name)).exists():
+                raise ValidationError(
+                    {"name": _("Root folder with same name exists already.")}
+                )
 
 
 class File(AbstractFile, ImageMixin, DownloadMixin, OverwriteMixin):

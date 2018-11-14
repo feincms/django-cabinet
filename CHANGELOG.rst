@@ -9,6 +9,8 @@ Change log
   context.
 - Fixed the folder hierarchy loop detection to not enter an infinite
   loop itself.
+- Fixed the breadcrumbs parent folder links.
+- Also prevented root folders with same name.
 
 
 `0.7`_ (2018-03-28)
