@@ -293,7 +293,7 @@ class FolderAdminMixin(admin.ModelAdmin):
             "%s?%s"
             % (
                 reverse("admin:cabinet_folder_select"),
-                urlencode(sorted([("files", item.id) for item in queryset])),
+                urlencode(sorted(("files", item.id) for item in queryset)),
             )
         )
 
