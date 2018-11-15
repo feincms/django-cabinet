@@ -20,7 +20,7 @@ setup(
     platforms=["OS Independent"],
     packages=find_packages(exclude=["tests"]),
     include_package_data=True,
-    install_requires=["django-imagefield"],
+    install_requires=["django-imagefield", "django-tree-queries"],
     classifiers=[
         "Environment :: Web Environment",
         "Framework :: Django",

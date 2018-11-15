@@ -7,6 +7,7 @@ from django.dispatch import receiver
 from django.utils.translation import ugettext_lazy as _
 
 from cabinet.base import AbstractFile, DownloadMixin, ImageMixin, OverwriteMixin
+from tree_queries.models import TreeNode
 
 
 if not hasattr(settings, "CABINET_FILE_MODEL"):  # pragma: no branch
@@ -30,7 +31,7 @@ def get_file_model():
         )
 
 
-class Folder(models.Model):
+class Folder(TreeNode):
     parent = models.ForeignKey(
         "self",
         on_delete=models.CASCADE,
@@ -50,27 +51,16 @@ class Folder(models.Model):
     def __str__(self):
         return self.name
 
-    def ancestors(self):
-        node = self
-        while True:
-            yield node
-            if node.parent_id:
-                node = node.parent
-            else:
-                break
-
     def clean(self):
-        if self.id and self.parent_id:
-            seen = {self.id}
-            for node in self.parent.ancestors():
-                if node.id in seen:
-                    raise ValidationError({"parent": _("Loop detected.")})
-                seen.add(node.id)
+        super().clean()
         if not self.parent_id:
             if Folder.objects.filter(~Q(pk=self.pk), Q(name=self.name)).exists():
                 raise ValidationError(
                     {"name": _("Root folder with same name exists already.")}
                 )
+
+    def ancestors_including_self(self):
+        return self.ancestors(include_self=True)
 
 
 class File(AbstractFile, ImageMixin, DownloadMixin, OverwriteMixin):
