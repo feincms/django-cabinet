@@ -31,13 +31,19 @@ class FolderListFilter(admin.RelatedFieldListFilter):
         return True
 
     def queryset(self, request, queryset):
+        if "q" in request.GET:
+            folder = self.used_parameters.get("folder__id__exact")
+            if folder:
+                return queryset.filter(
+                    folder__in=Folder.objects.descendants(folder, include_self=True)
+                )
+            return queryset
+
         if self.used_parameters:
             try:
                 return queryset.filter(**self.used_parameters)
             except ValidationError as e:
                 raise IncorrectLookupParameters(e)
-        elif "q" in request.GET:
-            return queryset
         else:
             return queryset.none()  # No files in root folder, never.
 

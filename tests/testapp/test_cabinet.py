@@ -5,7 +5,7 @@ import shutil
 
 from django.conf import settings
 from django.contrib.auth.models import User
-from django.core.exceptions import ImproperlyConfigured, ValidationError
+from django.core.exceptions import ImproperlyConfigured
 from django.test import Client, TestCase
 from django.test.utils import override_settings
 
@@ -94,8 +94,22 @@ class CabinetTestCase(TestCase):
         )
         self.assertContains(response, '<p class="paginator"> 0 files </p>', html=True)
 
+        # Top level search
         response = c.get("/admin/cabinet/file/?q=image")
         self.assertContains(response, '<p class="paginator"> 1 file </p>', html=True)
+
+        # Folder with file inside
+        response = c.get(
+            "/admin/cabinet/file/?folder__id__exact={}&q=image".format(folder.pk)
+        )
+        self.assertContains(response, '<p class="paginator"> 1 file </p>', html=True)
+
+        # Other folder
+        f2 = Folder.objects.create(name="Second")
+        response = c.get(
+            "/admin/cabinet/file/?folder__id__exact={}&q=image".format(f2.pk)
+        )
+        self.assertContains(response, '<p class="paginator"> 0 files </p>', html=True)
 
         f1 = File.objects.get()
         f1_name = f1.file.name
@@ -217,15 +231,3 @@ class CabinetTestCase(TestCase):
 
         with override_settings(CABINET_FILE_MODEL="stuff.stuff"):
             self.assertRaises(ImproperlyConfigured, get_file_model)
-
-    def test_no_loop(self):
-        f1 = Folder.objects.create(name="f1")
-        f2 = Folder.objects.create(name="f2", parent=f1)
-        f3 = Folder.objects.create(name="f3", parent=f2)
-
-        self.assertEqual(list(f3.ancestors()), [f3, f2, f1])
-        f1.clean()  # No error.
-        f3.clean()  # No error.
-
-        f1.parent = f3
-        self.assertRaises(ValidationError, f1.clean)

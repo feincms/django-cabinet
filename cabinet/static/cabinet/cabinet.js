@@ -15,9 +15,6 @@ django.jQuery(function($) {
   // Prepend folders to result list
   $('#result_list>tbody').prepend(document.getElementById('cabinet-folder-list').innerHTML);
 
-  // Search searches all files; remove folder filter
-  $('#changelist-search input[name=folder__id__exact]').remove();
-
   var dragCounter = 0,
     results = $('.results'),
     folder = window.location.href.match(/folder__id__exact=(\d+)/);
