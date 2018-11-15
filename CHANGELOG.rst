@@ -11,6 +11,9 @@ Change log
   loop itself.
 - Fixed the breadcrumbs parent folder links.
 - Also prevented root folders with same name.
+- Added django-tree-queries_ for helping manage the folder tree.
+- Made search only search the current folder and its descendants.
+- Changed ``OverwriteMixin`` to only overwrite files once as intended.
 
 
 `0.7`_ (2018-03-28)
@@ -91,6 +94,7 @@ Change log
 - Initial public version.
 
 .. _django-imagefield: https://django-imagefield.readthedocs.io/
+.. _django-tree-queries: https://github.com/matthiask/django-tree-queries/
 .. _django-versatileimagefield: https://django-versatileimagefield.readthedocs.io/
 
 .. _0.1: https://github.com/matthiask/django-cabinet/commit/4b8747afd

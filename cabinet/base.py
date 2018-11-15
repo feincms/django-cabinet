@@ -148,7 +148,7 @@ class DownloadMixin(models.Model):
 
 class OverwriteMixin(models.Model):
     _overwrite = models.BooleanField(
-        _("Keep filename when uploading new file?"),
+        _("Keep filename this time when uploading new file?"),
         default=False,
         help_text=_(
             "By default, a new and unique filename is generated for each file,"
@@ -185,6 +185,7 @@ class OverwriteMixin(models.Model):
             new_file.name = original_file_name
             self.file_name = os.path.basename(new_file.name)
 
+            self._overwrite = False  # Only overwrite once.
             super().save(*args, **kwargs)
 
         else:
