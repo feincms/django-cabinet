@@ -94,23 +94,6 @@ class CabinetTestCase(TestCase):
         )
         self.assertContains(response, '<p class="paginator"> 0 files </p>', html=True)
 
-        # Top level search
-        response = c.get("/admin/cabinet/file/?q=image")
-        self.assertContains(response, '<p class="paginator"> 1 file </p>', html=True)
-
-        # Folder with file inside
-        response = c.get(
-            "/admin/cabinet/file/?folder__id__exact={}&q=image".format(folder.pk)
-        )
-        self.assertContains(response, '<p class="paginator"> 1 file </p>', html=True)
-
-        # Other folder
-        f2 = Folder.objects.create(name="Second")
-        response = c.get(
-            "/admin/cabinet/file/?folder__id__exact={}&q=image".format(f2.pk)
-        )
-        self.assertContains(response, '<p class="paginator"> 0 files </p>', html=True)
-
         f1 = File.objects.get()
         f1_name = f1.file.name
         f1_bytes = f1.file.read()
@@ -154,6 +137,38 @@ class CabinetTestCase(TestCase):
 
         self.assertEqual(f2_name, f3_name)
         self.assertNotEqual(f2_bytes, f3_bytes)
+
+        # Top level search
+        response = c.get("/admin/cabinet/file/?q=image")
+        self.assertContains(response, '<p class="paginator"> 1 file </p>', html=True)
+
+        # Folder with file inside
+        response = c.get(
+            "/admin/cabinet/file/?folder__id__exact={}&q=image".format(folder.pk)
+        )
+        self.assertContains(response, '<p class="paginator"> 1 file </p>', html=True)
+
+        # Other folder
+        f2 = Folder.objects.create(name="Second")
+        response = c.get(
+            "/admin/cabinet/file/?folder__id__exact={}&q=image".format(f2.pk)
+        )
+        self.assertContains(response, '<p class="paginator"> 0 files </p>', html=True)
+
+        subfolder = Folder.objects.create(parent=folder, name="sub")
+        f = File.objects.get()
+        f.folder = subfolder
+        f.save()
+
+        # File is in a subfolder now
+        response = c.get("/admin/cabinet/file/?folder__id__exact={}".format(folder.pk))
+        self.assertContains(response, '<p class="paginator"> 0 files </p>', html=True)
+
+        # But can be found by searching
+        response = c.get(
+            "/admin/cabinet/file/?folder__id__exact={}&q=image".format(folder.pk)
+        )
+        self.assertContains(response, '<p class="paginator"> 1 file </p>', html=True)
 
         self.assertNoMediaFiles()
 
