@@ -35,7 +35,8 @@ class FolderListFilter(admin.RelatedFieldListFilter):
             folder = self.used_parameters.get("folder__id__exact")
             if folder:
                 return queryset.filter(
-                    folder__in=list(  # Avoid problems because of table aliasses
+                    # Avoid problems because of table aliasses (Django 1.11)
+                    folder__in=list(
                         Folder.objects.descendants(
                             folder, include_self=True
                         ).values_list("id", flat=True)
