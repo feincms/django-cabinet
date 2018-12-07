@@ -32,6 +32,10 @@ class CabinetFileRawIdWidget(ForeignKeyRawIdWidget):
 
 
 class CabinetForeignKey(models.ForeignKey):
+    def deconstruct(self):
+        name, path, args, kwargs = super().deconstruct()
+        return (name, "django.db.models.ForeignKey", args, kwargs)
+
     def formfield(self, **kwargs):
         if isinstance(kwargs["widget"], ForeignKeyRawIdWidget):
             kwargs["widget"].__class__ = CabinetFileRawIdWidget
