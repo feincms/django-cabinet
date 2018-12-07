@@ -16,6 +16,10 @@ Change log
 - Changed ``OverwriteMixin`` to only overwrite files once as intended.
 - Fixed a crash when moving several files at once with newer Django
   versions.
+- Reinstated the PPOI functionality in the default file admin interface.
+- Added a ``cabinet.fields.CabinetForeignKey`` drop-in replacement which
+  extends the ``raw_id_fields`` administration interface with a direct
+  upload facility.
 
 
 `0.7`_ (2018-03-28)

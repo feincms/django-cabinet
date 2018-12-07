@@ -21,6 +21,7 @@ class FileAdmin(FileAdminBase):
                         "fields": (
                             "folder",
                             "image_file",
+                            "image_ppoi",
                             "caption",
                             "image_alt_text",
                             "copyright",
@@ -39,7 +40,10 @@ class FileAdmin(FileAdminBase):
         else:
             return [
                 (None, {"fields": ("folder", "caption", "copyright")}),
-                (_("Image"), {"fields": ("image_file", "image_alt_text")}),
+                (
+                    _("Image"),
+                    {"fields": ("image_file", "image_ppoi", "image_alt_text")},
+                ),
                 (_("Download"), {"fields": ("download_file",)}),
             ]
 
