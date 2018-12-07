@@ -1,5 +1,6 @@
 import io
 import itertools
+import json
 import os
 import shutil
 
@@ -197,14 +198,14 @@ class CabinetTestCase(TestCase):
                 "/admin/cabinet/file/upload/", {"folder": f.id, "file": file}
             )
         self.assertEqual(response.status_code, 200)
-        self.assertEqual(response.content, b'{"success": true}')
+        self.assertEqual(json.loads(response.content.decode("utf-8"))["success"], True)
 
         with io.open(self.image1_path, "rb") as image:
             response = c.post(
                 "/admin/cabinet/file/upload/", {"folder": f.id, "file": image}
             )
         self.assertEqual(response.status_code, 200)
-        self.assertEqual(response.content, b'{"success": true}')
+        self.assertEqual(json.loads(response.content.decode("utf-8"))["success"], True)
 
         response = c.get("/admin/cabinet/file/?folder__id__exact=%s" % f.id)
 

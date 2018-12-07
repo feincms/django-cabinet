@@ -505,4 +505,4 @@ class FileAdminBase(FolderAdminMixin):
         f.file = request.FILES["file"]
         f.save()
 
-        return JsonResponse({"success": True})
+        return JsonResponse({"success": True, "pk": f.pk, "name": str(f)})
