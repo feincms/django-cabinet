@@ -14,6 +14,8 @@ Change log
 - Added django-tree-queries_ for helping manage the folder tree.
 - Made search only search the current folder and its descendants.
 - Changed ``OverwriteMixin`` to only overwrite files once as intended.
+- Fixed a crash when moving several files at once with newer Django
+  versions.
 
 
 `0.7`_ (2018-03-28)
