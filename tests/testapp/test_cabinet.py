@@ -157,8 +157,20 @@ class CabinetTestCase(TestCase):
 
         subfolder = Folder.objects.create(parent=folder, name="sub")
         f = File.objects.get()
-        f.folder = subfolder
-        f.save()
+
+        response = c.get(
+            "/admin/cabinet/file/folder/select/?files={}".format(f.pk)
+        )
+        # TODO self.assertContains
+
+        response = c.post(
+            "/admin/cabinet/file/folder/select/",
+            {"files": f.pk, "folder": subfolder.pk},
+        )
+        self.assertRedirects(response, "/admin/cabinet/file/?folder__id__exact={}".format(subfolder.pk))
+
+        # f.folder = subfolder
+        # f.save()
 
         # File is in a subfolder now
         response = c.get("/admin/cabinet/file/?folder__id__exact={}".format(folder.pk))

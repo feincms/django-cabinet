@@ -315,17 +315,15 @@ class FolderAdminMixin(admin.ModelAdmin):
             pk__in=(request.POST.getlist("files") or request.GET.getlist("files"))
         )
 
-        if request.method == "POST":
-            form = SelectFolderForm(request.POST, files=files)
+        form = SelectFolderForm(
+            request.POST if request.method == "POST" else None, files=files
+        )
 
-            if form.is_valid():
-                folder = form.cleaned_data["folder"]
-                form.cleaned_data["files"].update(folder=folder)
-                self.message_user(request, _("The files have been successfully moved."))
-                return self.redirect_to_folder(request, folder.id)
-
-        else:
-            form = SelectFolderForm(files=files)
+        if form.is_valid():
+            folder = form.cleaned_data["folder"]
+            form.cleaned_data["files"].update(folder=folder)
+            self.message_user(request, _("The files have been successfully moved."))
+            return self.redirect_to_folder(request, folder.id)
 
         adminForm = helpers.AdminForm(
             form,
@@ -341,6 +339,7 @@ class FolderAdminMixin(admin.ModelAdmin):
                 self.admin_site.each_context(request),
                 title=_("Move files to folder"),
                 adminform=adminForm,
+                inline_admin_formsets=[],
                 object_id=None,
                 original=None,
                 is_popup=False,
