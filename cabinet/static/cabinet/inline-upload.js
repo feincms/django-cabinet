@@ -1,3 +1,4 @@
+/* global django */
 django.jQuery(function($) {
   $(".cabinet-inline-wrap").each(function() {
     var wrap = $(this);

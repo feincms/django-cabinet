@@ -1,3 +1,4 @@
+/* global django */
 django.jQuery(function($) {
   if (!document.body.classList.contains('change-list'))
     return;
@@ -27,13 +28,13 @@ django.jQuery(function($) {
   results.on('drag dragstart dragend dragover dragenter dragleave drop', function(e) {
     e.preventDefault();
     e.stopPropagation();
-  }).on('dragover dragenter', function(e) {
+  }).on('dragover dragenter', function() {
     ++dragCounter;
     results.addClass('dragover');
-  }).on('dragleave dragend', function(e) {
+  }).on('dragleave dragend', function() {
     if (--dragCounter <= 0)
       results.removeClass('dragover');
-  }).on('mouseleave mouseout drop', function(e) {
+  }).on('mouseleave mouseout drop', function() {
     dragCounter = 0;
     results.removeClass('dragover');
   }).on('drop', function(e) {
