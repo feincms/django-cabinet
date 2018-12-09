@@ -2,7 +2,7 @@
 django.jQuery(function($) {
   $(".cabinet-inline-wrap").each(function() {
     var wrap = $(this);
-    wrap.find("input[type='file']").attr("disabled", !wrap.find(".cabinet-inline-upload select").value);
+    wrap.find("input[type='file']").attr("disabled", !wrap.find(".cabinet-inline-upload select").val());
   });
 
   $(document.body).on("change", ".cabinet-inline-upload select", function() {
