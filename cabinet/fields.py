@@ -1,6 +1,9 @@
 from django import forms
 from django.contrib.admin.widgets import ForeignKeyRawIdWidget
+from django.core.exceptions import ValidationError
 from django.db import models
+from django.urls import NoReverseMatch, reverse
+from django.utils.text import Truncator
 from django.utils.translation import ugettext_lazy as _
 
 from cabinet.base_admin import folder_choices
@@ -25,10 +28,43 @@ class CabinetFileRawIdWidget(ForeignKeyRawIdWidget):
 
     def get_context(self, name, value, attrs):
         context = super().get_context(name, value, attrs)
+        instance = getattr(self, "instance", None)
         context["cabinet"] = {
-            "upload_form": UploadForm(prefix="cu-{}".format(id(self)))
+            "upload_form": UploadForm(
+                prefix="cu-{}".format(id(self)),
+                initial={"folder": instance and instance.folder_id},
+            ),
+            "instance": instance,
         }
+        if instance:
+            context["related_url"] += "&folder__id__exact={}".format(instance.folder_id)
         return context
+
+    def label_and_url_for_value(self, value):
+        # Copied from django/contrib/admin/widgets.py with the addition of
+        # saving the obj as self.instance
+        key = self.rel.get_related_field().name
+        try:
+            obj = self.rel.model._default_manager.using(self.db).get(**{key: value})
+        except (ValueError, self.rel.model.DoesNotExist, ValidationError):
+            obj = None
+            return "", ""
+
+        try:
+            url = reverse(
+                "%s:%s_%s_change"
+                % (
+                    self.admin_site.name,
+                    obj._meta.app_label,
+                    obj._meta.object_name.lower(),
+                ),
+                args=(obj.pk,),
+            )
+        except NoReverseMatch:
+            url = ""  # Admin not registered for target model.
+
+        self.instance = obj
+        return Truncator(obj).words(14, truncate="..."), url
 
 
 class CabinetForeignKey(models.ForeignKey):
