@@ -16,7 +16,7 @@ class Migration(migrations.Migration):
             field=models.BooleanField(
                 default=False,
                 help_text="By default, a new and unique filename is generated for each file, which also helps with caching.",
-                verbose_name="Keep filename when uploading new file?",
+                verbose_name="Keep filename this time when uploading new file?",
             ),
         )
     ]
