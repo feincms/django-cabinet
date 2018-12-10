@@ -1,14 +1,14 @@
 .cabinet-inline-wrap {
-  display: flex;
-  flex-flow: row wrap;
-  justify-content: space-between;
+    display: flex;
+    flex-flow: row wrap;
+    justify-content: space-between;
 }
 
 .cabinet-inline-wrap select,
-.cabinet-inline-wrap input[type='file'] {
-  margin: 0;
+.cabinet-inline-wrap input[type="file"] {
+    margin: 0;
 }
 
-.cabinet-inline-wrap input[type='file'][disabled] {
-  opacity: 0.5;
+.cabinet-inline-wrap input[type="file"][disabled] {
+    opacity: 0.5;
 }

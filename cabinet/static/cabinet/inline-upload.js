@@ -2,7 +2,9 @@
 django.jQuery(function($) {
   $(".cabinet-inline-wrap").each(function() {
     var wrap = $(this);
-    wrap.find("input[type='file']").attr("disabled", !wrap.find(".cabinet-inline-upload select").val());
+    wrap
+      .find("input[type='file']")
+      .attr("disabled", !wrap.find(".cabinet-inline-upload select").val());
   });
 
   $(document.body).on("change", ".cabinet-inline-upload select", function() {
@@ -24,14 +26,14 @@ django.jQuery(function($) {
       url: wrap.data("url"),
       type: "POST",
       data: d,
-      contentType: false,  // request
-      processData: false,  // request
-      dataType: "json",  // response
+      contentType: false, // request
+      processData: false, // request
+      dataType: "json", // response
       success: function(data) {
         wrap.find(".cabinet-inline-field input").val(data.pk);
         wrap.find(".cabinet-inline-upload input").val("");
         wrap.find(".cabinet-inline-field strong>a").text(data.name);
-      },
+      }
     });
   }
 });

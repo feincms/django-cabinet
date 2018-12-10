@@ -20,6 +20,7 @@ Change log
 - Added a ``cabinet.fields.CabinetForeignKey`` drop-in replacement which
   extends the ``raw_id_fields`` administration interface with a direct
   upload facility.
+- Added configuration to make running prettier and ESLint easy.
 
 
 `0.7`_ (2018-03-28)
