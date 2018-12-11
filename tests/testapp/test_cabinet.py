@@ -3,7 +3,9 @@ import itertools
 import json
 import os
 import shutil
+from unittest import skipIf
 
+import django
 from django.conf import settings
 from django.contrib.auth.models import User
 from django.core.exceptions import ImproperlyConfigured
@@ -12,12 +14,17 @@ from django.test.utils import override_settings
 
 from cabinet.models import File, Folder, get_file_model
 
+try:
+    from django.urls import reverse
+except ImportError:
+    from django.core.urlresolvers import reverse
+
 
 class CabinetTestCase(TestCase):
     def setUp(self):
-        self.user = User.objects.create(
-            username="test", is_staff=True, is_superuser=True
-        )
+        self.user = User(username="test", is_staff=True, is_superuser=True)
+        self.user.set_password("test")
+        self.user.save()
         self.image1_path = os.path.join(settings.BASE_DIR, "image.png")
         self.image2_path = os.path.join(settings.BASE_DIR, "image-neg.png")
         if os.path.exists(settings.MEDIA_ROOT):
@@ -25,7 +32,7 @@ class CabinetTestCase(TestCase):
 
     def login(self):
         client = Client()
-        client.force_login(self.user)
+        client.login(username="test", password="test")
         return client
 
     def assertNoMediaFiles(self):
@@ -106,7 +113,7 @@ class CabinetTestCase(TestCase):
 
         with io.open(self.image1_path, "rb") as image:
             response = c.post(
-                "/admin/cabinet/file/%s/change/" % f1.id,
+                reverse("admin:cabinet_file_change", args=(f1.id,)),
                 {"folder": folder.id, "image_file": image, "image_ppoi": "0.5x0.5"},
             )
 
@@ -121,7 +128,7 @@ class CabinetTestCase(TestCase):
 
         with io.open(self.image2_path, "rb") as image:
             response = c.post(
-                "/admin/cabinet/file/%s/change/" % f1.id,
+                reverse("admin:cabinet_file_change", args=(f1.id,)),
                 {
                     "folder": folder.id,
                     "image_file": image,
@@ -250,6 +257,7 @@ class CabinetTestCase(TestCase):
         )
         # We do not need to test adding files -- that's covered by Django.
 
+    @skipIf(django.VERSION < (1, 11), "get_file_model() is not compatible.")
     def test_get_file_model(self):
         self.assertEqual(settings.CABINET_FILE_MODEL, "cabinet.File")
         self.assertEqual(get_file_model(), File)

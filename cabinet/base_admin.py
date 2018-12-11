@@ -13,12 +13,16 @@ from django.db import router, transaction
 from django.db.models import Count
 from django.http import HttpResponseRedirect, JsonResponse
 from django.shortcuts import get_object_or_404
-from django.urls import reverse
 from django.utils.functional import cached_property
 from django.utils.text import capfirst
 from django.utils.translation import ugettext_lazy as _
 
 from cabinet.models import Folder
+
+try:
+    from django.urls import reverse
+except ImportError:
+    from django.core.urlresolvers import reverse
 
 
 class FolderListFilter(admin.RelatedFieldListFilter):
