@@ -32,14 +32,6 @@ def get_file_model():
 
 
 class Folder(TreeNode):
-    parent = models.ForeignKey(
-        "self",
-        on_delete=models.CASCADE,
-        blank=True,
-        null=True,
-        verbose_name=_("parent"),
-        related_name="children",
-    )
     name = models.CharField(_("name"), max_length=100)
 
     class Meta:
