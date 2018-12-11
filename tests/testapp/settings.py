@@ -5,7 +5,9 @@ import os
 
 BASE_DIR = os.path.dirname(os.path.dirname(__file__))
 
-DATABASES = {"default": {"ENGINE": "django.db.backends.postgresql", "NAME": "cabinet"}}
+DATABASES = {
+    "default": {"ENGINE": "django.db.backends.postgresql_psycopg2", "NAME": "cabinet"}
+}
 if os.environ.get("DB") == "sqlite3":
     DATABASES = {
         "default": {"ENGINE": "django.db.backends.sqlite3", "NAME": ":memory:"}
