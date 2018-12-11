@@ -133,8 +133,8 @@ Next, ``admin.py``::
         def get_fieldsets(self, request, obj=None):
             if obj and obj.image_file.name:
                 return [(None, {'fields': (
-                    'folder', 'image_file', 'caption', 'image_alt_text',
-                    'copyright',
+                    'folder', 'image_file', 'image_ppoi', 'caption',
+                    'image_alt_text', 'copyright',
                 )})]
 
             elif obj and obj.pdf_file.name:
