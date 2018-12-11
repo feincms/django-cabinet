@@ -21,8 +21,9 @@ Change log
   extends the ``raw_id_fields`` administration interface with a direct
   upload facility.
 - Added configuration to make running prettier and ESLint easy.
-- Addded compatibility with Django 1.8 so that migrating files from
+- Added compatibility with Django 1.8 so that migrating files from
   prehistoric django-filer versions gets easier.
+- Added more visible UI to upload several files at once.
 
 
 `0.7`_ (2018-03-28)
