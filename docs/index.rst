@@ -113,6 +113,7 @@ Next, ``admin.py``::
     # still should take a long look at cabinet.base_admin.FileAdminBase
 
     from django.contrib import admin
+    from django.utils.translation import ugettext_lazy as _
 
     from cabinet.admin import FileAdmin as _FileAdmin
 
@@ -120,6 +121,9 @@ Next, ``admin.py``::
 
     @admin.register(File)
     class FileAdmin(_FileAdmin):
+        change_form_template = "admin/cabinet/file/change_form.html"
+        change_list_template = "admin/cabinet/file/change_list.html"
+
         # list_display / list_display_links are probably fine if you
         # built on top of AbstractFile and added caption/copyright
         # fields, otherwise there is additional work to do.
