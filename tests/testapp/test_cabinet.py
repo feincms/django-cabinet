@@ -219,7 +219,7 @@ class CabinetTestCase(TestCase):
         self.assertContains(response, '<p class="paginator"> 2 files </p>', html=True)
         self.assertContains(
             response,
-            # Only looking at the extension...
+            # One valid image and a file with an image-like extension
             '<span class="download download-image">',
             1,
         )

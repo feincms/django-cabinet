@@ -39,9 +39,9 @@ def upload_is_image(data):
 
     try:
         image = Image.open(file)
-        image.verify()
+        image.resize([20, 20], Image.LANCZOS)  # Verify image some more
         return True
-    except OSError:
+    except Exception:  # OSError, errors while resizing
         return False
 
 
