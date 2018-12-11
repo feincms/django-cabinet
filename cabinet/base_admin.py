@@ -388,6 +388,10 @@ class FileAdminBase(FolderAdminMixin):
     list_filter = (("folder", FolderListFilter),)
     search_fields = ("file_name",)
 
+    # Useful when swapping the file model
+    change_form_template = "admin/cabinet/file/change_form.html"
+    change_list_template = "admin/cabinet/file/change_list.html"
+
     class Media:
         css = {"all": ("cabinet/cabinet.css",)}
         js = ("cabinet/cabinet.js",)

@@ -121,9 +121,6 @@ Next, ``admin.py``::
 
     @admin.register(File)
     class FileAdmin(_FileAdmin):
-        change_form_template = "admin/cabinet/file/change_form.html"
-        change_list_template = "admin/cabinet/file/change_list.html"
-
         # list_display / list_display_links are probably fine if you
         # built on top of AbstractFile and added caption/copyright
         # fields, otherwise there is additional work to do.
