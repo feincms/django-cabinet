@@ -47,54 +47,66 @@ django.jQuery(function($) {
     .on("drop", function(e) {
       dragCounter = 0;
       results.removeClass("dragover");
-
-      var files = e.originalEvent.dataTransfer.files,
-        success = 0,
-        progress = $('<div class="progress">0 / ' + files.length + "</div>");
-
-      progress.appendTo(results);
-
-      for (var i = 0; i < files.length; ++i) {
-        var d = new FormData();
-        d.append(
-          "csrfmiddlewaretoken",
-          $("input[name=csrfmiddlewaretoken]").val()
-        );
-        d.append("folder", folder[1]);
-        d.append("file", files[i]);
-
-        $.ajax({
-          url: "./upload/",
-          type: "POST",
-          data: d,
-          contentType: false,
-          processData: false,
-          success: function() {
-            progress.html("" + ++success + " / " + files.length);
-            if (success >= files.length) {
-              window.location.reload();
-            }
-          },
-          xhr: function() {
-            var xhr = new XMLHttpRequest();
-            xhr.upload.addEventListener(
-              "progress",
-              function(e) {
-                if (e.lengthComputable) {
-                  progress.html(
-                    Math.round((e.loaded / e.total) * 100) +
-                      "% of " +
-                      (success + 1) +
-                      " / " +
-                      files.length
-                  );
-                }
-              },
-              false
-            );
-            return xhr;
-          }
-        });
-      }
+      uploadFiles(e.originalEvent.dataTransfer.files);
     });
+
+  var cabinetUpload = $("#cabinet-upload"),
+    cabinetUploadInput = cabinetUpload.find("input");
+  cabinetUpload.on("click", "a", function(e) {
+    e.preventDefault();
+    cabinetUploadInput.trigger("click");
+  });
+  cabinetUploadInput.on("change", function(e) {
+    uploadFiles(e.target.files);
+  });
+
+  function uploadFiles(files) {
+    var success = 0,
+      progress = $('<div class="progress">0 / ' + files.length + "</div>");
+
+    progress.appendTo(results);
+
+    for (var i = 0; i < files.length; ++i) {
+      var d = new FormData();
+      d.append(
+        "csrfmiddlewaretoken",
+        $("input[name=csrfmiddlewaretoken]").val()
+      );
+      d.append("folder", folder[1]);
+      d.append("file", files[i]);
+
+      $.ajax({
+        url: "./upload/",
+        type: "POST",
+        data: d,
+        contentType: false,
+        processData: false,
+        success: function() {
+          progress.html("" + ++success + " / " + files.length);
+          if (success >= files.length) {
+            window.location.reload();
+          }
+        },
+        xhr: function() {
+          var xhr = new XMLHttpRequest();
+          xhr.upload.addEventListener(
+            "progress",
+            function(e) {
+              if (e.lengthComputable) {
+                progress.html(
+                  Math.round((e.loaded / e.total) * 100) +
+                    "% of " +
+                    (success + 1) +
+                    " / " +
+                    files.length
+                );
+              }
+            },
+            false
+          );
+          return xhr;
+        }
+      });
+    }
+  }
 });

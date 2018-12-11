@@ -32,6 +32,10 @@
       {% blocktrans with cl.opts.verbose_name as name %}Add {{ name }}{% endblocktrans %}
     </a>
   </li>
+  <li id="cabinet-upload">
+    <a href="#" class="addlink">{% trans "Upload multiple files" %}</a>
+    <input type="file" multiple style="display:none">
+  </li>
   {% endif %}
 {% endblock %}
 

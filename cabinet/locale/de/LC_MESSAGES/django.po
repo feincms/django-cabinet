@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2018-11-15 15:12+0100\n"
+"POT-Creation-Date: 2018-12-11 21:55+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -17,23 +17,23 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1)\n"
 
-#: admin.py:30 admin.py:36
+#: admin.py:31 admin.py:37
 msgid "Advanced"
 msgstr "Fortgeschritten"
 
-#: admin.py:42 base.py:82
+#: admin.py:44 base.py:82
 msgid "Image"
 msgstr "Bild"
 
-#: admin.py:43
+#: admin.py:47
 msgid "Download"
 msgstr "Download"
 
-#: admin.py:72 base.py:213
+#: admin.py:76 base.py:213
 msgid "file name"
 msgstr "Dateiname"
 
-#: admin.py:81
+#: admin.py:85
 msgid "details"
 msgstr "Details"
 
@@ -125,7 +125,7 @@ msgstr ""
 "Standardmässig wird jeweils ein neuer Dateiname generiert, was auch beim "
 "Caching hilft."
 
-#: base.py:209 base_admin.py:97 models.py:48
+#: base.py:209 base_admin.py:101 fields.py:14 models.py:40
 #: templates/admin/cabinet/file/change_list.html:24
 #: templates/admin/cabinet/folder/change_form.html:15
 msgid "folder"
@@ -135,11 +135,11 @@ msgstr "Ordner"
 msgid "file size"
 msgstr "Dateigrösse"
 
-#: base.py:219
+#: base.py:219 fields.py:15
 msgid "file"
 msgstr "Datei"
 
-#: base.py:220 base_admin.py:108
+#: base.py:220 base_admin.py:112
 msgid "files"
 msgstr "Dateien"
 
@@ -147,81 +147,77 @@ msgstr "Dateien"
 msgid "Please fill in exactly one file field!"
 msgstr "Bitte genau ein Dateifeld ausfüllen!"
 
-#: base_admin.py:90
+#: base_admin.py:94
 msgid "Delete this folder"
 msgstr "Diesen Ordner löschen"
 
-#: base_admin.py:180
+#: base_admin.py:184
 #, python-format
 msgid "The folder \"%s\" was changed successfully."
 msgstr "Der Ordner \"%s\" wurde erfolgreich aktualisiert."
 
-#: base_admin.py:188
+#: base_admin.py:192
 #, python-format
 msgid "The folder \"%s\" was added successfully."
 msgstr "Der Ordner \"%s\" wurde erfolgreich hinzugefügt."
 
-#: base_admin.py:208
+#: base_admin.py:212
 #, python-format
 msgid "Add %s"
 msgstr "%s hinzufügen"
 
-#: base_admin.py:208
+#: base_admin.py:212
 #, python-format
 msgid "Change %s"
 msgstr "%s ändern"
 
-#: base_admin.py:261
+#: base_admin.py:265
 #, python-format
 msgid "Cannot delete %(name)s"
 msgstr "%(name)s kann nicht gelöscht werden"
 
-#: base_admin.py:268
+#: base_admin.py:272
 #, python-format
 msgid "Cannot delete %(name)s because of related objects (%(related)s)"
 msgstr ""
 "%(name)s kann wegen abhängigen Objekten nicht gelöscht werden (%(related)s)"
 
-#: base_admin.py:282
+#: base_admin.py:286
 #, python-format
 msgid "The folder \"%s\" was deleted successfully."
 msgstr "Der Ordner \"%s\" wurde erfolgreich gelöscht."
 
-#: base_admin.py:311 base_admin.py:342
+#: base_admin.py:315 base_admin.py:344
 msgid "Move files to folder"
 msgstr "Dateien in Ordner verschieben"
 
-#: base_admin.py:324
+#: base_admin.py:329
 msgid "The files have been successfully moved."
 msgstr "Die Dateien wurden erfolgreich verschoben."
 
-#: base_admin.py:475 templates/admin/cabinet/file/change_form.html:9
+#: base_admin.py:482 templates/admin/cabinet/file/change_form.html:9
 #: templates/admin/cabinet/file/change_list.html:13
 #: templates/admin/cabinet/folder/change_form.html:9
 msgid "Root folder"
 msgstr "Oberster Ordner"
 
-#: models.py:40
-msgid "parent"
-msgstr "übergeordnet"
-
-#: models.py:43
+#: models.py:35
 msgid "name"
 msgstr "Name"
 
-#: models.py:49
+#: models.py:41
 msgid "folders"
 msgstr "Ordner"
 
-#: models.py:59
+#: models.py:51
 msgid "Root folder with same name exists already."
-msgstr ""
+msgstr "Ordner mit gleichem Namen existiert schon auf oberster Ebene."
 
-#: models.py:69
+#: models.py:61
 msgid "caption"
 msgstr "Legende"
 
-#: models.py:70
+#: models.py:62
 msgid "copyright"
 msgstr "Copyright"
 
@@ -239,22 +235,23 @@ msgstr "Start"
 msgid "Add %(name)s"
 msgstr "%(name)s hinzufügen"
 
-#: templates/admin/cabinet/file/change_list.html:96
+#: templates/admin/cabinet/file/change_list.html:36
+msgid "Upload multiple files"
+msgstr "Mehrere Dateien hochladen"
+
+#: templates/admin/cabinet/file/change_list.html:100
 #, python-format
 msgid "%(num_subfolders)s subfolders, %(num_files)s files"
 msgstr "%(num_subfolders)s Unterordner, %(num_files)s Dateien"
 
-#: templates/admin/cabinet/file/change_list.html:100
+#: templates/admin/cabinet/file/change_list.html:104
 msgid "Change folder"
 msgstr "Ordner ändern"
 
-#: templates/admin/cabinet/file/change_list.html:107
+#: templates/admin/cabinet/file/change_list.html:111
 msgid "Upload files by dropping them into the list above."
 msgstr "Dateien oben hinziehen um sie hochzuladen."
 
 #: templates/admin/cabinet/folder/change_form.html:23
 msgid "Save"
 msgstr "Sichern"
-
-#~ msgid "Loop detected."
-#~ msgstr "Ring entdeckt."
