@@ -200,7 +200,15 @@ class OverwriteMixin(models.Model):
     save.alters_data = True
 
 
-class AbstractFile(models.Model):
+class TimestampsMixin(models.Model):
+    created_at = models.DateTimeField(_("created at"), auto_now_add=True)
+    updated_at = models.DateTimeField(_("updated at"), auto_now=True)
+
+    class Meta:
+        abstract = True
+
+
+class AbstractFile(TimestampsMixin):
     FILE_FIELDS = []
 
     folder = models.ForeignKey(

@@ -24,6 +24,7 @@ Change log
 - Added compatibility with Django 1.8 so that migrating files from
   prehistoric django-filer versions gets easier.
 - Added more visible UI to upload several files at once.
+- Added timestamps to folders and files.
 
 
 `0.7`_ (2018-03-28)

@@ -6,7 +6,13 @@ from django.db.models import Q, signals
 from django.dispatch import receiver
 from django.utils.translation import ugettext_lazy as _
 
-from cabinet.base import AbstractFile, DownloadMixin, ImageMixin, OverwriteMixin
+from cabinet.base import (
+    AbstractFile,
+    DownloadMixin,
+    ImageMixin,
+    OverwriteMixin,
+    TimestampsMixin,
+)
 from tree_queries.models import TreeNode
 
 
@@ -31,7 +37,7 @@ def get_file_model():
         )
 
 
-class Folder(TreeNode):
+class Folder(TimestampsMixin, TreeNode):
     name = models.CharField(_("name"), max_length=100)
 
     class Meta:
