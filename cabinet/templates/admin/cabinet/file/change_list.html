@@ -102,6 +102,10 @@
           {% endblocktrans %}
           <a href="{% url 'admin:cabinet_folder_change' f.id %}?{{ cabinet.querystring }}"
              title="{% trans 'Change folder' %}" class="changelink"></a>
+          <br>
+          {% blocktrans with created_at=f.created_at|date:"SHORT_DATE_FORMAT" updated_at=f.updated_at|date:"SHORT_DATE_FORMAT" trimmed %}
+            Created {{ created_at }}, last modified {{ updated_at }}
+          {% endblocktrans %}
         </small>
       </td>
     </tr>

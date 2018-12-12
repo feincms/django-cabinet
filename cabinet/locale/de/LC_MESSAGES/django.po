@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2018-12-11 21:55+0100\n"
+"POT-Creation-Date: 2018-12-12 10:18+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -17,23 +17,28 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1)\n"
 
-#: admin.py:31 admin.py:37
+#: admin.py:32 admin.py:38
 msgid "Advanced"
 msgstr "Fortgeschritten"
 
-#: admin.py:44 base.py:82
+#: admin.py:45 base.py:82
 msgid "Image"
 msgstr "Bild"
 
-#: admin.py:47
+#: admin.py:48
 msgid "Download"
 msgstr "Download"
 
-#: admin.py:76 base.py:213
+#: admin.py:77 base.py:221
 msgid "file name"
 msgstr "Dateiname"
 
-#: admin.py:85
+#: admin.py:83 templates/admin/cabinet/file/change_list.html:106
+#, python-format
+msgid "Created %(created_at)s, last modified %(updated_at)s"
+msgstr "Erstellt %(created_at)s, letzte Änderung %(updated_at)s"
+
+#: admin.py:93
 msgid "details"
 msgstr "Details"
 
@@ -125,25 +130,33 @@ msgstr ""
 "Standardmässig wird jeweils ein neuer Dateiname generiert, was auch beim "
 "Caching hilft."
 
-#: base.py:209 base_admin.py:101 fields.py:14 models.py:40
+#: base.py:204
+msgid "created at"
+msgstr "erstellt um"
+
+#: base.py:205
+msgid "updated at"
+msgstr "aktualisiert um"
+
+#: base.py:217 base_admin.py:101 fields.py:14 models.py:46
 #: templates/admin/cabinet/file/change_list.html:24
 #: templates/admin/cabinet/folder/change_form.html:15
 msgid "folder"
 msgstr "Ordner"
 
-#: base.py:214
+#: base.py:222
 msgid "file size"
 msgstr "Dateigrösse"
 
-#: base.py:219 fields.py:15
+#: base.py:227 fields.py:15
 msgid "file"
 msgstr "Datei"
 
-#: base.py:220 base_admin.py:112
+#: base.py:228 base_admin.py:112
 msgid "files"
 msgstr "Dateien"
 
-#: base.py:241
+#: base.py:249
 msgid "Please fill in exactly one file field!"
 msgstr "Bitte genau ein Dateifeld ausfüllen!"
 
@@ -201,23 +214,23 @@ msgstr "Die Dateien wurden erfolgreich verschoben."
 msgid "Root folder"
 msgstr "Oberster Ordner"
 
-#: models.py:35
+#: models.py:41
 msgid "name"
 msgstr "Name"
 
-#: models.py:41
+#: models.py:47
 msgid "folders"
 msgstr "Ordner"
 
-#: models.py:51
+#: models.py:57
 msgid "Root folder with same name exists already."
 msgstr "Ordner mit gleichem Namen existiert schon auf oberster Ebene."
 
-#: models.py:61
+#: models.py:67
 msgid "caption"
 msgstr "Legende"
 
-#: models.py:62
+#: models.py:68
 msgid "copyright"
 msgstr "Copyright"
 
@@ -248,7 +261,7 @@ msgstr "%(num_subfolders)s Unterordner, %(num_files)s Dateien"
 msgid "Change folder"
 msgstr "Ordner ändern"
 
-#: templates/admin/cabinet/file/change_list.html:111
+#: templates/admin/cabinet/file/change_list.html:115
 msgid "Upload files by dropping them into the list above."
 msgstr "Dateien oben hinziehen um sie hochzuladen."
 

@@ -1,5 +1,6 @@
 from django.contrib import admin
 from django.template.defaultfilters import filesizeformat
+from django.utils.formats import date_format
 from django.utils.html import format_html, format_html_join, mark_safe
 from django.utils.translation import ugettext_lazy as _
 
@@ -76,7 +77,15 @@ class FileAdmin(FileAdminBase):
     admin_file_name.short_description = _("file name")
 
     def admin_details(self, instance):
-        details = [instance.caption, instance.copyright]
+        details = [
+            instance.caption,
+            instance.copyright,
+            _("Created %(created_at)s, last modified %(updated_at)s")
+            % {
+                "created_at": date_format(instance.created_at, "SHORT_DATE_FORMAT"),
+                "updated_at": date_format(instance.updated_at, "SHORT_DATE_FORMAT"),
+            },
+        ]
         return format_html(
             "<small>{}</small>",
             format_html_join(mark_safe("<br>"), "{}", ((d,) for d in details if d)),
