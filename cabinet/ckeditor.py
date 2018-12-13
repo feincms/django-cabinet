@@ -6,7 +6,7 @@ from django.utils.html import format_html
 # FIXME Remove inline JS again.
 TEMPLATE = """\
 <a href="{url}" onclick="\
-opener.CKEDITOR.tools.callFunction({num}, this.getAttribute(\'href\'));\
+opener.CKEDITOR.tools.callFunction({num}, this.getAttribute('href'));\
 window.close();return false">{result}</a>
 """
 
