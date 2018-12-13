@@ -9,6 +9,7 @@ import django
 from django.conf import settings
 from django.contrib.auth.models import User
 from django.core.exceptions import ImproperlyConfigured
+from django.core.files.base import ContentFile
 from django.test import Client, TestCase
 from django.test.utils import override_settings
 
@@ -267,3 +268,18 @@ class CabinetTestCase(TestCase):
 
         with override_settings(CABINET_FILE_MODEL="stuff.stuff"):
             self.assertRaises(ImproperlyConfigured, get_file_model)
+
+    def test_ckeditor_filebrowser(self):
+        folder = Folder.objects.create(name="Root")
+        file = File(folder=folder)
+        content = ContentFile("Hello")
+        file.download_file.save("hello.txt", content)
+
+        client = self.login()
+        response = client.get(
+            "/admin/cabinet/file/?_popup=1&CKEditor=editor&CKEditorFuncNum=1"
+            "&langCode=en&folder__id__exact={}".format(folder.pk)
+        )
+        self.assertContains(
+            response, "opener.CKEDITOR.tools.callFunction", 2  # Icon and name
+        )
