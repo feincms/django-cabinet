@@ -280,6 +280,4 @@ class CabinetTestCase(TestCase):
             "/admin/cabinet/file/?_popup=1&CKEditor=editor&CKEditorFuncNum=1"
             "&langCode=en&folder__id__exact={}".format(folder.pk)
         )
-        self.assertContains(
-            response, "opener.CKEDITOR.tools.callFunction", 2  # Icon and name
-        )
+        self.assertContains(response, "data-ckeditor-function", 2)  # Icon and name

@@ -1,14 +1,7 @@
+from django import forms
 from django.contrib import admin
 from django.contrib.admin.views.main import ChangeList
 from django.utils.html import format_html
-
-
-# FIXME Remove inline JS again.
-TEMPLATE = """\
-<a href="{url}" onclick="\
-opener.CKEDITOR.tools.callFunction({num}, this.getAttribute('href'));\
-window.close();return false">{result}</a>
-"""
 
 
 class CKEditorFilebrowserMixin(admin.ModelAdmin):
@@ -16,6 +9,10 @@ class CKEditorFilebrowserMixin(admin.ModelAdmin):
         if request.GET.get("CKEditorFuncNum"):
             return CKFileBrowserChangeList
         return ChangeList
+
+    @property
+    def media(self):
+        return super().media + forms.Media(js=["cabinet/ckeditor.js"])
 
 
 class CKFileBrowserChangeList(ChangeList):
@@ -49,7 +46,7 @@ class Link(object):
         fn = getattr(self.cl.model_admin, self.name)
         result = fn(obj)
         return format_html(
-            TEMPLATE,
+            '<a href="{url}" data-ckeditor-function="{num}">{result}</a>',
             url=obj.file.url,
             num=self.cl.ck_context["CKEditorFuncNum"],
             result=result,
