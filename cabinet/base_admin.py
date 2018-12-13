@@ -8,7 +8,7 @@ from django.contrib.admin import helpers
 from django.contrib.admin.options import IncorrectLookupParameters
 from django.contrib.admin.utils import get_deleted_objects
 from django.contrib.admin.views.main import SEARCH_VAR
-from django.core.exceptions import PermissionDenied, ValidationError
+from django.core.exceptions import FieldDoesNotExist, PermissionDenied, ValidationError
 from django.db import router, transaction
 from django.db.models import Count
 from django.http import HttpResponseRedirect, JsonResponse
@@ -514,3 +514,36 @@ class FileAdminBase(FolderAdminMixin):
         f.save()
 
         return JsonResponse({"success": True, "pk": f.pk, "name": str(f)})
+
+    top_fields = ["folder", "caption", "copyright"]
+    advanced_fields = ["_overwrite"]
+
+    def get_fieldsets(self, request, obj=None):
+        def exists(field):
+            try:
+                self.model._meta.get_field(field)
+            except FieldDoesNotExist:
+                return False
+            return True
+
+        fieldsets = [
+            (None, {"fields": [field for field in self.top_fields if exists(field)]})
+        ]
+        for row in self.model._file_mixin_fieldsets:
+            if getattr(obj, row["file_field"], None):
+                fieldsets[0][1]["fields"].extend(row["fields"])
+            else:
+                fieldsets.append(
+                    (
+                        row["verbose_name"],
+                        {
+                            "fields": row["fields"],
+                            "classes": ["collapse"] if obj else [],
+                        },
+                    )
+                )
+
+        advanced = [field for field in self.advanced_fields if exists(field)]
+        if advanced:
+            [(_("Advanced"), {"fields": advanced, "classes": ["collapse"]})]
+        return fieldsets

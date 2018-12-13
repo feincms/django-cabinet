@@ -11,43 +11,8 @@ from cabinet.models import File
 
 @admin.register(File)
 class FileAdmin(CKEditorFilebrowserMixin, FileAdminBase):
-    list_display = ("admin_thumbnail", "admin_file_name", "admin_details")
-    list_display_links = ("admin_thumbnail", "admin_file_name")
-
-    def get_fieldsets(self, request, obj=None):
-        if obj and obj.image_file.name:
-            return [
-                (
-                    None,
-                    {
-                        "fields": (
-                            "folder",
-                            "image_file",
-                            "image_ppoi",
-                            "caption",
-                            "image_alt_text",
-                            "copyright",
-                        )
-                    },
-                ),
-                (_("Advanced"), {"fields": ("_overwrite",), "classes": ("collapse",)}),
-            ]
-
-        elif obj and obj.download_file.name:
-            return [
-                (None, {"fields": ("folder", "download_file", "caption", "copyright")}),
-                (_("Advanced"), {"fields": ("_overwrite",), "classes": ("collapse",)}),
-            ]
-
-        else:
-            return [
-                (None, {"fields": ("folder", "caption", "copyright")}),
-                (
-                    _("Image"),
-                    {"fields": ("image_file", "image_ppoi", "image_alt_text")},
-                ),
-                (_("Download"), {"fields": ("download_file",)}),
-            ]
+    list_display = ["admin_thumbnail", "admin_file_name", "admin_details"]
+    list_display_links = ["admin_thumbnail", "admin_file_name"]
 
     def admin_thumbnail(self, instance):
         if instance.image_file.name:

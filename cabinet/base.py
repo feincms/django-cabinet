@@ -67,6 +67,8 @@ class ImageMixin(models.Model):
 
     class Meta:
         abstract = True
+        verbose_name = _("image")
+        verbose_name_plural = _("images")
 
     def accept_file(self, value):
         if upload_is_image(value):
@@ -126,6 +128,8 @@ class DownloadMixin(models.Model):
 
     class Meta:
         abstract = True
+        verbose_name = _("download")
+        verbose_name_plural = _("downloads")
 
     def save(self, *args, **kwargs):
         self.download_type = (  # pragma: no branch
@@ -274,6 +278,8 @@ def determine_accept_file_functions(sender, **kwargs):
     if issubclass(sender, AbstractFile) and not sender._meta.abstract:
         fields = set(sender.FILE_FIELDS)
         fns = {}
+        fieldsets = []
+
         for cls in list(inspect.getmro(sender))[1:]:
             for f in fields:
                 try:
@@ -285,6 +291,17 @@ def determine_accept_file_functions(sender, **kwargs):
                     # accept_file method as well.
                     fns[f] = cls.accept_file
                     fields.discard(f)
+                    fieldsets.append(
+                        {
+                            "verbose_name": cls._meta.verbose_name,
+                            "fields": [
+                                field.name
+                                for field in cls._meta.local_fields
+                                if field.editable
+                            ],
+                            "file_field": f,
+                        }
+                    )
                     break
 
             if not fields:
@@ -296,6 +313,7 @@ def determine_accept_file_functions(sender, **kwargs):
             )
 
         sender._accept_file_functions = [fns[f] for f in sender.FILE_FIELDS]
+        sender._file_mixin_fieldsets = fieldsets
 
 
 signals.class_prepared.connect(determine_accept_file_functions)
