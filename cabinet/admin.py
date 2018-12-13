@@ -5,11 +5,12 @@ from django.utils.html import format_html, format_html_join, mark_safe
 from django.utils.translation import ugettext_lazy as _
 
 from cabinet.base_admin import FileAdminBase
+from cabinet.ckeditor import CKEditorFilebrowserMixin
 from cabinet.models import File
 
 
 @admin.register(File)
-class FileAdmin(FileAdminBase):
+class FileAdmin(CKEditorFilebrowserMixin, FileAdminBase):
     list_display = ("admin_thumbnail", "admin_file_name", "admin_details")
     list_display_links = ("admin_thumbnail", "admin_file_name")
 
