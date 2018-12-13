@@ -17,9 +17,6 @@ class CKEditorFilebrowserMixin(admin.ModelAdmin):
             return CKFileBrowserChangeList
         return ChangeList
 
-    def admin_thumbnail_ckeditor(self, instance):
-        pass
-
 
 class CKFileBrowserChangeList(ChangeList):
     def __init__(self, *args, **kwargs):
@@ -47,6 +44,8 @@ class Link(object):
         self.__name__ = name
 
     def __call__(self, obj):
+        # Currently, only supports callables (sufficient for admin_thumbnail
+        # and admin_file_name)
         fn = getattr(self.cl.model_admin, self.name)
         result = fn(obj)
         return format_html(
