@@ -57,6 +57,22 @@ class FolderListFilter(admin.RelatedFieldListFilter):
             return queryset.none()  # No files in root folder, never.
 
 
+class FileTypeFilter(admin.SimpleListFilter):
+    parameter_name = "file_type"
+    title = _("file type")
+
+    def lookups(self, request, model_admin):
+        return [
+            (row["file_field"], row["verbose_name"])
+            for row in model_admin.model._file_mixin_fieldsets
+        ]
+
+    def queryset(self, request, queryset):
+        if self.value():
+            return queryset.exclude(**{self.value(): ""})
+        return queryset
+
+
 def folder_choices(include_blank=True):
     """
     Generate folder choices, concatenating all folders with their ancestors'
@@ -385,7 +401,7 @@ class IgnoreChangedDataErrorsForm(forms.ModelForm):
 class FileAdminBase(FolderAdminMixin):
     actions = ["move_to_folder"]
     form = IgnoreChangedDataErrorsForm
-    list_filter = (("folder", FolderListFilter),)
+    list_filter = [("folder", FolderListFilter), FileTypeFilter]
     search_fields = ("file_name",)
 
     # Useful when swapping the file model
