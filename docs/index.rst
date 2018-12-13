@@ -44,10 +44,7 @@ High-level overview
 django-cabinet comes with two concrete models, ``cabinet.File`` and
 ``cabinet.Folder``.
 
-**Folders** can be nested into a hierarchy. The folder
-tree intentionally uses an adjacency list model without any query
-optimization strategies (such as nested sets or recursive CTEs) so that
-no dependencies are necessary.
+**Folders** can be nested into a hierarchy.
 
 **Files** by default have two file fields, one for images based on
 django-imagefield_ and one for downloads, a standard Django
@@ -80,6 +77,8 @@ First, ``models.py``::
 
         class Meta:
             abstract = True
+            verbose_name = _("PDF")
+            verbose_name_plural = _("PDFs")
 
         # Cabinet requires a accept_file method on all mixins which
         # have a file field:
@@ -113,52 +112,14 @@ Next, ``admin.py``::
     # still should take a long look at cabinet.base_admin.FileAdminBase
 
     from django.contrib import admin
-    from django.utils.translation import ugettext_lazy as _
 
-    from cabinet.admin import FileAdmin as _FileAdmin
+    from cabinet.admin import FileAdmin
 
     from .models import File
 
-    @admin.register(File)
-    class FileAdmin(_FileAdmin):
-        # list_display / list_display_links are probably fine if you
-        # built on top of AbstractFile and added caption/copyright
-        # fields, otherwise there is additional work to do.
+    # The default should probably work fine.
+    admin.site.register(File, FileAdmin)
 
-        # You **have** to override this, or else you won't see the
-        # pdf_file field of existing files:
-        def get_fieldsets(self, request, obj=None):
-            if obj and obj.image_file.name:
-                return [(None, {'fields': (
-                    'folder', 'image_file', 'image_ppoi', 'caption',
-                    'image_alt_text', 'copyright',
-                )})]
-
-            elif obj and obj.pdf_file.name:
-                return [(None, {'fields': (
-                    'folder', 'pdf_file', 'caption', 'copyright',
-                )})]
-
-            elif obj and obj.download_file.name:
-                return [(None, {'fields': (
-                    'folder', 'download_file', 'caption', 'copyright',
-                )})]
-
-            else:
-                return [
-                    (None, {'fields': (
-                        'folder', 'caption', 'copyright',
-                    )}),
-                    (_('Image'), {'fields': (
-                        'image_file', 'image_alt_text',
-                    )}),
-                    (_('PDF'), {'fields': (
-                        'pdf_file',
-                    )}),
-                    (_('Download'), {'fields': (
-                        'download_file',
-                    )}),
-                ]
 
 Last, add ``CABINET_FILE_MODEL = 'yourapp.File'`` to your Django
 settings.
