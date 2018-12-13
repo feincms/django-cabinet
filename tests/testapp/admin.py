@@ -1,8 +1,7 @@
-from cabinet import admin
-from cabinet_ckeditor.admin import CKEditorFilebrowserMixin
+from cabinet import admin, ckeditor
 
 
-class FileAdmin(CKEditorFilebrowserMixin, admin.FileAdmin):
+class FileAdmin(ckeditor.CKEditorFilebrowserMixin, admin.FileAdmin):
     pass
 
 
