@@ -191,6 +191,13 @@ class CabinetTestCase(TestCase):
         )
         self.assertContains(response, '<p class="paginator"> 1 file </p>', html=True)
 
+        response = c.get(
+            "/admin/cabinet/file/?folder__id__exact={}&file_type=image_file".format(
+                folder.pk
+            )
+        )
+        self.assertContains(response, '<p class="paginator"> 0 files </p>', html=True)
+
         self.assertNoMediaFiles()
 
     def test_stuff(self):
