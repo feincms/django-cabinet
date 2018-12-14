@@ -508,21 +508,33 @@ class FileAdminBase(FolderAdminMixin):
     def add_view(self, request, form_url="", extra_context=None):
         extra_context = extra_context or {}
         if request.GET.get("folder"):
-            folder = get_object_or_404(Folder, pk=request.GET.get("folder"))
-            extra_context["cabinet"] = {"folder": folder}
-        else:
-            folder = None
+            extra_context["cabinet"] = {
+                "folder": get_object_or_404(Folder, pk=request.GET.get("folder"))
+            }
 
-        response = self.changeform_view(
+        return self.changeform_view(
             request, None, request.get_full_path(), extra_context
         )
 
+    def _add_folder_if_redirect(self, response, folder_id):
         # Keep the folder preset when redirecting. This sometimes adds the
         # folder variable twice (once to preserved_filters and once separately
         # but this is at most ugly and not a real problem)
-        if response.status_code == 302 and folder:
-            response["Location"] += "&folder=%s" % folder.id
+        if response.status_code == 302 and folder_id:
+            response["Location"] += "{}folder={}".format(
+                "&" if "?" in response["Location"] else "?", folder_id
+            )
         return response
+
+    def response_add(self, request, obj, **kwargs):
+        return self._add_folder_if_redirect(
+            super().response_add(request, obj, **kwargs), obj.folder_id
+        )
+
+    def response_change(self, request, obj, **kwargs):
+        return self._add_folder_if_redirect(
+            super().response_change(request, obj, **kwargs), obj.folder_id
+        )
 
     def upload(self, request):
         f = self.model(folder_id=request.POST["folder"])

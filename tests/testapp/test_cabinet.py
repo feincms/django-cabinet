@@ -89,7 +89,9 @@ class CabinetTestCase(TestCase):
                 {"folder": folder.id, "image_file": image, "image_ppoi": "0.5x0.5"},
             )
 
-        self.assertRedirects(response, "/admin/cabinet/file/")
+        self.assertRedirects(
+            response, "/admin/cabinet/file/?folder={}".format(folder.id)
+        )
 
         response = c.get("/admin/cabinet/file/?folder__id__exact=%s" % folder.id)
 
@@ -118,7 +120,9 @@ class CabinetTestCase(TestCase):
                 {"folder": folder.id, "image_file": image, "image_ppoi": "0.5x0.5"},
             )
 
-        self.assertRedirects(response, "/admin/cabinet/file/")
+        self.assertRedirects(
+            response, "/admin/cabinet/file/?folder={}".format(folder.id)
+        )
 
         f2 = File.objects.get()
         f2_name = f2.file.name
@@ -138,7 +142,9 @@ class CabinetTestCase(TestCase):
                 },
             )
 
-        self.assertRedirects(response, "/admin/cabinet/file/")
+        self.assertRedirects(
+            response, "/admin/cabinet/file/?folder={}".format(folder.id)
+        )
 
         f3 = File.objects.get()
         f3_name = f3.file.name
@@ -307,9 +313,7 @@ class CabinetTestCase(TestCase):
             },
         )
         self.assertRedirects(
-            # XXX "/admin/cabinet/file/?folder__id__exact={}".format(folder.id)
-            response,
-            "/admin/cabinet/file/",
+            response, "/admin/cabinet/file/?folder={}".format(folder.id)
         )
 
     def test_invalid_folder(self):
