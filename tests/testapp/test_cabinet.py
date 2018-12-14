@@ -288,3 +288,27 @@ class CabinetTestCase(TestCase):
             "&langCode=en&folder__id__exact={}".format(folder.pk)
         )
         self.assertContains(response, "data-ckeditor-function", 2)  # Icon and name
+
+    def test_editing(self):
+        folder = Folder.objects.create(name="Root")
+        file = File(folder=folder)
+        content = ContentFile("Hello")
+        file.download_file.save("hello.txt", content)
+
+        c = self.login()
+        response = c.post(
+            reverse("admin:cabinet_file_change", args=(file.id,)),
+            {
+                "folder": folder.id,
+                "caption": "Hello world",
+                "image_ppoi": file.image_ppoi,
+                "download_file": "",
+                "image_file": "",
+            },
+        )
+        print(response, response.content.decode("utf-8"))
+        self.assertRedirects(
+            # XXX "/admin/cabinet/file/?folder__id__exact={}".format(folder.id)
+            response,
+            "/admin/cabinet/file/",
+        )
