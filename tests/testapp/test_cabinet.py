@@ -316,6 +316,31 @@ class CabinetTestCase(TestCase):
             response, "/admin/cabinet/file/?folder__id__exact={}".format(folder.id)
         )
 
+    def test_overwrite_without_new(self):
+        folder = Folder.objects.create(name="Root")
+        file = File(folder=folder)
+        content = ContentFile("Hello")
+        file.download_file.save("hello.txt", content)
+
+        c = self.login()
+        response = c.post(
+            reverse("admin:cabinet_file_change", args=(file.id,)),
+            {
+                "folder": folder.id,
+                "caption": "Hello world",
+                "image_ppoi": file.image_ppoi,
+                "download_file": "",
+                "image_file": "",
+                "_overwrite": "on",
+            },
+        )
+        self.assertRedirects(
+            response, "/admin/cabinet/file/?folder__id__exact={}".format(folder.id)
+        )
+
+        file.refresh_from_db()
+        self.assertFalse(file._overwrite)
+
     def test_invalid_folder(self):
         c = self.login()
         response = c.get("/admin/cabinet/file/?folder__id__exact=anything")

@@ -171,14 +171,13 @@ class OverwriteMixin(models.Model):
             except self.__class__.DoesNotExist:
                 pass
 
-        if self._overwrite and original:
+        if self._overwrite and original and not self.file._committed:
             original_file = original.file
             original_file_name = original_file.name
             original.delete_files()
             original_file.delete(save=False)
 
             new_file = self.file
-            assert not new_file._committed
             new_file.storage.save(
                 original_file_name, new_file.file, max_length=new_file.field.max_length
             )
@@ -193,6 +192,7 @@ class OverwriteMixin(models.Model):
             super().save(*args, **kwargs)
 
         else:
+            self._overwrite = False  # Only overwrite once.
             super().save(*args, **kwargs)
 
             if original and (
