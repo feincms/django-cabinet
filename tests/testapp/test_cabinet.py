@@ -90,7 +90,7 @@ class CabinetTestCase(TestCase):
             )
 
         self.assertRedirects(
-            response, "/admin/cabinet/file/?folder={}".format(folder.id)
+            response, "/admin/cabinet/file/?folder__id__exact={}".format(folder.id)
         )
 
         response = c.get("/admin/cabinet/file/?folder__id__exact=%s" % folder.id)
@@ -121,7 +121,7 @@ class CabinetTestCase(TestCase):
             )
 
         self.assertRedirects(
-            response, "/admin/cabinet/file/?folder={}".format(folder.id)
+            response, "/admin/cabinet/file/?folder__id__exact={}".format(folder.id)
         )
 
         f2 = File.objects.get()
@@ -143,7 +143,7 @@ class CabinetTestCase(TestCase):
             )
 
         self.assertRedirects(
-            response, "/admin/cabinet/file/?folder={}".format(folder.id)
+            response, "/admin/cabinet/file/?folder__id__exact={}".format(folder.id)
         )
 
         f3 = File.objects.get()
@@ -313,7 +313,7 @@ class CabinetTestCase(TestCase):
             },
         )
         self.assertRedirects(
-            response, "/admin/cabinet/file/?folder={}".format(folder.id)
+            response, "/admin/cabinet/file/?folder__id__exact={}".format(folder.id)
         )
 
     def test_invalid_folder(self):

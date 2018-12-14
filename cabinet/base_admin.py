@@ -521,7 +521,7 @@ class FileAdminBase(FolderAdminMixin):
         # folder variable twice (once to preserved_filters and once separately
         # but this is at most ugly and not a real problem)
         if response.status_code == 302 and folder_id:
-            response["Location"] += "{}folder={}".format(
+            response["Location"] += "{}folder__id__exact={}".format(
                 "&" if "?" in response["Location"] else "?", folder_id
             )
         return response
