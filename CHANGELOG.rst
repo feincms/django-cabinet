@@ -25,6 +25,18 @@ Change log
   prehistoric django-filer versions gets easier.
 - Added more visible UI to upload several files at once.
 - Added timestamps to folders and files.
+- Added support for using django-cabinet as a CKEditor filebrowser.
+- Changed ``FileAdmin.get_fieldsets`` to automatically generate fitting
+  fieldsets using the file mixins' verbose name and editable fields.
+- Added a filter for only showing files of a certain type.
+- Improved test coverage a bit and updated the documentation after
+  actually using a swappable file model in a project.
+- Fixed a crash when an invalid primary key was specified as a query
+  parameter in the admin changelist.
+- Modified responses when adding or editing files to always redirect to
+  the containing folder instead of the root folder.
+- Fixed a possible crash when setting ``_overwrite`` to true but
+  uploading no new file.
 
 
 `0.7`_ (2018-03-28)
