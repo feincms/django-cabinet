@@ -4,6 +4,9 @@ Change log
 `Next version`_
 ~~~~~~~~~~~~~~~
 
+`0.8`_ (2018-12-14)
+~~~~~~~~~~~~~~~~~~~
+
 - Fix a problem where newer Django versions would crash because of a
   missing ``inline_admin_formsets`` variable in the admin change form
   context.
@@ -127,4 +130,5 @@ Change log
 .. _0.5: https://github.com/matthiask/django-cabinet/compare/0.4...0.5
 .. _0.6: https://github.com/matthiask/django-cabinet/compare/0.5...0.6
 .. _0.7: https://github.com/matthiask/django-cabinet/compare/0.6...0.7
-.. _Next version: https://github.com/matthiask/django-cabinet/compare/0.7...master
+.. _0.8: https://github.com/matthiask/django-cabinet/compare/0.7...0.8
+.. _Next version: https://github.com/matthiask/django-cabinet/compare/0.8...master
