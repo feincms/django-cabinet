@@ -306,9 +306,13 @@ class CabinetTestCase(TestCase):
                 "image_file": "",
             },
         )
-        print(response, response.content.decode("utf-8"))
         self.assertRedirects(
             # XXX "/admin/cabinet/file/?folder__id__exact={}".format(folder.id)
             response,
             "/admin/cabinet/file/",
         )
+
+    def test_invalid_folder(self):
+        c = self.login()
+        response = c.get("/admin/cabinet/file/?folder__id__exact=anything")
+        self.assertRedirects(response, "/admin/cabinet/file/?e=1")

@@ -469,7 +469,7 @@ class FileAdminBase(FolderAdminMixin):
             if folder__id__exact:
                 try:
                     folder = Folder.objects.get(pk=folder__id__exact)
-                except Folder.DoesNotExist:
+                except (Folder.DoesNotExist, ValueError):
                     return HttpResponseRedirect("?e=1")
 
             if folder is None:
