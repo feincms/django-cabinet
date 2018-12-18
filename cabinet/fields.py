@@ -1,4 +1,5 @@
 from django import forms
+from django.conf import settings
 from django.contrib.admin.widgets import ForeignKeyRawIdWidget
 from django.core.exceptions import ValidationError
 from django.db import models
@@ -72,6 +73,9 @@ class CabinetFileRawIdWidget(ForeignKeyRawIdWidget):
 
 
 class CabinetForeignKey(models.ForeignKey):
+    def __init__(self, to=None, **kwargs):
+        super().__init__(to or settings.CABINET_FILE_MODEL, **kwargs)
+
     def deconstruct(self):
         name, path, args, kwargs = super().deconstruct()
         return (name, "django.db.models.ForeignKey", args, kwargs)
