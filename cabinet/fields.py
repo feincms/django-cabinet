@@ -81,6 +81,7 @@ class CabinetForeignKey(models.ForeignKey):
         return (name, "django.db.models.ForeignKey", args, kwargs)
 
     def formfield(self, **kwargs):
-        if isinstance(kwargs["widget"], ForeignKeyRawIdWidget):
-            kwargs["widget"].__class__ = CabinetFileRawIdWidget
+        widget = kwargs.get("widget")
+        if widget and isinstance(widget, ForeignKeyRawIdWidget):
+            widget.__class__ = CabinetFileRawIdWidget
         return super().formfield(**kwargs)
