@@ -9,6 +9,10 @@
     margin: 0;
 }
 
+.cabinet-inline-wrap select {
+    max-width: 25em;
+}
+
 .cabinet-inline-wrap input[type="file"][disabled] {
     opacity: 0.5;
 }
