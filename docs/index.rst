@@ -121,8 +121,9 @@ Next, ``admin.py``::
     admin.site.register(File, FileAdmin)
 
 
-Last, add ``CABINET_FILE_MODEL = 'yourapp.File'`` to your Django
-settings.
+Then, add ``CABINET_FILE_MODEL = 'yourapp.File'`` to your Django
+settings and at last you're ready for running ``./manage.py
+makemigrations`` and ``./manage.py migrate``.
 
 
 .. include:: ../CHANGELOG.rst

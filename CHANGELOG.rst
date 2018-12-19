@@ -10,6 +10,9 @@ Change log
 - Limited the maximum width of the inline folder select widget.
 - Added tests for the ``CabinetForeignKey``.
 - Hardened the file upload route a bit.
+- Removed a leftover call to versatileimagefields'
+  ``delete_all_created_images`` function.
+- Improved test coverage, mainly by actually writing more tests.
 
 
 `0.8`_ (2018-12-14)
