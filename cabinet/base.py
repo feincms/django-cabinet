@@ -234,22 +234,26 @@ class AbstractFile(TimestampsMixin):
     def __str__(self):
         return self.file_name
 
+    def __files(self):
+        for field in self.FILE_FIELDS:
+            f = getattr(self, field)
+            if f and f.name:
+                yield f
+
     @property
     def file(self):
-        files = (getattr(self, field) for field in self.FILE_FIELDS)
-        return next(f for f in files if f.name)
+        return next(self.__files())
 
     @file.setter
     def file(self, value):
         for fn in self._accept_file_functions:
             if fn(self, value):
                 break
-        else:
+        else:  # pragma: no cover (improper configuration!)
             raise TypeError("Invalid value %r" % value)
 
     def clean(self):
-        files = (getattr(self, field) for field in self.FILE_FIELDS)
-        if len([f for f in files if f.name]) != 1:
+        if len(list(self.__files())) != 1:
             raise ValidationError(_("Please fill in exactly one file field!"))
 
     def save(self, *args, **kwargs):

@@ -8,7 +8,7 @@ from unittest import skipIf
 import django
 from django.conf import settings
 from django.contrib.auth.models import User
-from django.core.exceptions import ImproperlyConfigured
+from django.core.exceptions import ImproperlyConfigured, ValidationError
 from django.core.files.base import ContentFile
 from django.test import Client, TestCase
 from django.test.utils import override_settings
@@ -396,3 +396,16 @@ class CabinetTestCase(TestCase):
                 folder.id
             ),
         )
+
+    def test_two_files(self):
+        folder = Folder.objects.create(name="Root")
+        file = File(folder=folder)
+        with io.open(self.image1_path, "rb") as image:
+            file.image_file.save("hello.jpg", ContentFile(image.read()))
+
+        file.full_clean()  # Everything well
+
+        content = ContentFile("Hello")
+        file.download_file.save("hello.txt", content, save=False)
+        with self.assertRaises(ValidationError):
+            file.full_clean()
