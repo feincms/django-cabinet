@@ -436,3 +436,18 @@ class CabinetTestCase(TestCase):
         folder.full_clean()  # Cleaning self works.
         with self.assertRaises(ValidationError):
             Folder(name="Root").full_clean()
+
+    def test_invalid_files_no_admin_crash(self):
+        folder = Folder.objects.create(name="Root")
+        file = File(folder=folder)
+
+        with io.open(self.image1_path, "rb") as image:
+            image1_bytes = image.read()
+
+        file.image_file.save("image.png", ContentFile(image1_bytes[:500]))
+
+        File(folder=folder, file_size=0).save_base()  # No file at all
+
+        c = self.login()
+        response = c.get("/admin/cabinet/file/?folder__id__exact={}".format(folder.id))
+        self.assertContains(response, '<span class="broken-image"></span>', 1)
