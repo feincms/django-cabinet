@@ -11,7 +11,7 @@ from cabinet.models import Folder
 
 try:
     from django.urls import NoReverseMatch, reverse
-except ImportError:
+except ImportError:  # pragma: no cover
     from django.core.urlresolvers import NoReverseMatch, reverse
 
 

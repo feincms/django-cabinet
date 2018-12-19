@@ -20,7 +20,7 @@ from testapp.models import Stuff
 
 try:
     from django.urls import reverse
-except ImportError:
+except ImportError:  # pragma: no cover
     from django.core.urlresolvers import reverse
 
 
