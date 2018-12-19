@@ -15,6 +15,8 @@ from django.test.utils import override_settings
 
 from cabinet.models import File, Folder, get_file_model
 
+from testapp.models import Stuff
+
 try:
     from django.urls import reverse
 except ImportError:
@@ -345,3 +347,28 @@ class CabinetTestCase(TestCase):
         c = self.login()
         response = c.get("/admin/cabinet/file/?folder__id__exact=anything")
         self.assertRedirects(response, "/admin/cabinet/file/?e=1")
+
+    def test_cabinet_foreign_key(self):
+        folder = Folder.objects.create(name="Root")
+        file = File(folder=folder)
+        content = ContentFile("Hello")
+        file.download_file.save("hello.txt", content)
+
+        c = self.login()
+        response = c.get("/admin/testapp/stuff/add/")
+
+        self.assertContains(response, 'class="cabinet-inline-upload"')
+        self.assertContains(response, 'type="file"')
+        self.assertContains(response, 'href="/admin/cabinet/file/?_to_field=id"')
+
+        stuff = Stuff.objects.create(title="Test", file=file)
+        response = c.get(reverse("admin:testapp_stuff_change", args=(stuff.id,)))
+
+        self.assertContains(response, 'class="cabinet-inline-upload"')
+        self.assertContains(response, 'type="file"')
+        self.assertContains(
+            response,
+            'href="/admin/cabinet/file/?_to_field=id&amp;folder__id__exact={}"'.format(
+                folder.id
+            ),
+        )
