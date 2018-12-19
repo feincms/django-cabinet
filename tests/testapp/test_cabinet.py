@@ -66,16 +66,36 @@ class CabinetTestCase(TestCase):
         )
         self.assertNotContains(response, "Add file")
 
+        response = c.get("/admin/cabinet/file/folder/add/")
+        self.assertContains(response, "Add folder")
+        self.assertNotContains(response, "_delete_folder")
+
         response = c.post("/admin/cabinet/file/folder/add/", {"name": "Test 1"})
         folder = Folder.objects.get()
         self.assertRedirects(
             response, "/admin/cabinet/file/?folder__id__exact=%s" % folder.id
         )
 
+        response = c.get("/admin/cabinet/file/folder/%s/" % folder.id)
+        self.assertContains(response, "_delete_folder")
+
+        file = File(folder=folder)
+        content = ContentFile("Hello")
+        file.download_file.save("hello.txt", content)
+
         response = c.post(
             "/admin/cabinet/file/folder/%s/" % folder.id,
             {"name": folder.name, "_delete_folder": True},
         )
+        self.assertRedirects(response, "/admin/cabinet/file/")
+        self.assertEqual(Folder.objects.count(), 1)  # not deleted
+
+        file.delete()
+        response = c.post(
+            "/admin/cabinet/file/folder/%s/" % folder.id,
+            {"name": folder.name, "_delete_folder": True},
+        )
+
         self.assertRedirects(response, "/admin/cabinet/file/")
         self.assertEqual(Folder.objects.count(), 0)
 
