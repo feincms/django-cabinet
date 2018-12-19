@@ -348,6 +348,7 @@ class CabinetTestCase(TestCase):
         response = c.get("/admin/cabinet/file/?folder__id__exact=anything")
         self.assertRedirects(response, "/admin/cabinet/file/?e=1")
 
+    @skipIf(django.VERSION < (1, 11), "inline upload is not supported on Django<1.11")
     def test_cabinet_foreign_key(self):
         folder = Folder.objects.create(name="Root")
         file = File(folder=folder)
