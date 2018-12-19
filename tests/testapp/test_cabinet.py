@@ -6,6 +6,7 @@ import shutil
 from unittest import skipIf
 
 import django
+from django import forms
 from django.conf import settings
 from django.contrib.auth.models import User
 from django.core.exceptions import ImproperlyConfigured, ValidationError
@@ -396,6 +397,13 @@ class CabinetTestCase(TestCase):
                 folder.id
             ),
         )
+
+        filefield = Stuff._meta.get_field("file")
+        formfield = filefield.formfield()
+        self.assertTrue(isinstance(formfield.widget, forms.Select))
+
+        name, path, args, kwargs = filefield.deconstruct()
+        self.assertEqual(path, "django.db.models.ForeignKey")
 
     def test_two_files(self):
         folder = Folder.objects.create(name="Root")
