@@ -166,10 +166,7 @@ class OverwriteMixin(models.Model):
     def save(self, *args, **kwargs):
         original = None
         if self.pk:
-            try:
-                original = self.__class__._base_manager.get(pk=self.pk)
-            except self.__class__.DoesNotExist:
-                pass
+            original = self.__class__._base_manager.filter(pk=self.pk).first()
 
         if self._overwrite and original and not self.file._committed:
             original_file = original.file
@@ -306,10 +303,7 @@ def determine_accept_file_functions(sender, **kwargs):
                     )
                     break
 
-            if not fields:
-                break
-
-        if fields:
+        if fields:  # pragma: no cover
             raise ImproperlyConfigured(
                 'No "accept_file" method found for %s' % (", ".join(sorted(fields)),)
             )
