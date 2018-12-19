@@ -463,3 +463,16 @@ class CabinetTestCase(TestCase):
             )
         self.assertEqual(response.status_code, 200)
         self.assertEqual(json.loads(response.content.decode("utf-8"))["success"], True)
+
+    def test_folder_editing(self):
+        parent = Folder.objects.create(name="Root")
+        folder = Folder.objects.create(name="Test", parent=parent)
+
+        c = self.login()
+        response = c.post(
+            "/admin/cabinet/file/folder/{}/".format(folder.id),
+            {"name": folder.name, "parent": parent.id},
+        )
+        self.assertRedirects(
+            response, "/admin/cabinet/file/?folder__id__exact={}".format(parent.id)
+        )
