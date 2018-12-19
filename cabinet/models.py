@@ -51,11 +51,13 @@ class Folder(TimestampsMixin, TreeNode):
 
     def clean(self):
         super().clean()
-        if not self.parent_id:
-            if Folder.objects.filter(~Q(pk=self.pk), Q(name=self.name)).exists():
-                raise ValidationError(
-                    {"name": _("Root folder with same name exists already.")}
-                )
+        if (
+            not self.parent_id
+            and Folder.objects.filter(~Q(pk=self.pk), Q(name=self.name)).exists()
+        ):
+            raise ValidationError(
+                {"name": _("Root folder with same name exists already.")}
+            )
 
     def ancestors_including_self(self):
         return self.ancestors(include_self=True)

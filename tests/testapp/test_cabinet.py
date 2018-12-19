@@ -430,3 +430,9 @@ class CabinetTestCase(TestCase):
         self.assertContains(
             response, '<option value="{}" selected>Root</option>'.format(folder.id)
         )
+
+    def test_folder_duplicate(self):
+        folder = Folder.objects.create(name="Root")
+        folder.full_clean()  # Cleaning self works.
+        with self.assertRaises(ValidationError):
+            Folder(name="Root").full_clean()
