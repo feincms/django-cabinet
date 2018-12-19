@@ -270,8 +270,6 @@ class AbstractFile(TimestampsMixin):
             if not f_obj.name:
                 continue
 
-            if hasattr(f_obj, "delete_all_created_images"):
-                f_obj.delete_all_created_images()
             # f_obj.storage.delete(f_obj.name)
             f_obj.delete(save=False)
 
