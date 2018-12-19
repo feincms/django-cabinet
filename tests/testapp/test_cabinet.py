@@ -451,3 +451,15 @@ class CabinetTestCase(TestCase):
         c = self.login()
         response = c.get("/admin/cabinet/file/?folder__id__exact={}".format(folder.id))
         self.assertContains(response, '<span class="broken-image"></span>', 1)
+
+    def test_large_upload(self):
+        c = self.login()
+        f = Folder.objects.create(name="Test")
+        # Big enough for Django to create a temporary file
+        with io.BytesIO(b"0123456789" * 1024 * 1024) as file:
+            file.name = "blob.txt"
+            response = c.post(
+                "/admin/cabinet/file/upload/", {"folder": f.id, "file": file}
+            )
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(json.loads(response.content.decode("utf-8"))["success"], True)
