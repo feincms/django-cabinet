@@ -9,6 +9,7 @@ Change log
   by default.
 - Limited the maximum width of the inline folder select widget.
 - Added tests for the ``CabinetForeignKey``.
+- Hardened the file upload route a bit.
 
 
 `0.8`_ (2018-12-14)

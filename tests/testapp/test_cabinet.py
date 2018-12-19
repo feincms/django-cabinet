@@ -105,6 +105,9 @@ class CabinetTestCase(TestCase):
         folder = Folder.objects.create(name="Test")
         c = self.login()
 
+        response = c.get("/admin/cabinet/file/upload/")
+        self.assertEqual(response.status_code, 400)
+
         with io.open(self.image1_path, "rb") as image:
             response = c.post(
                 "/admin/cabinet/file/add/",

@@ -398,6 +398,11 @@ class IgnoreChangedDataErrorsForm(forms.ModelForm):
             return []
 
 
+class UploadForm(forms.Form):
+    folder = forms.ModelChoiceField(queryset=Folder.objects.all())
+    file = forms.FileField()
+
+
 class FileAdminBase(FolderAdminMixin):
     actions = ["move_to_folder"]
     form = IgnoreChangedDataErrorsForm
@@ -537,8 +542,12 @@ class FileAdminBase(FolderAdminMixin):
         )
 
     def upload(self, request):
-        f = self.model(folder_id=request.POST["folder"])
-        f.file = request.FILES["file"]
+        form = UploadForm(request.POST, request.FILES)
+        if not form.is_valid():
+            return JsonResponse({"success": False}, status=400)
+
+        f = self.model(folder=form.cleaned_data["folder"])
+        f.file = form.cleaned_data["file"]
         f.save()
 
         return JsonResponse({"success": True, "pk": f.pk, "name": str(f)})
