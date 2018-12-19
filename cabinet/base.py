@@ -32,10 +32,7 @@ def upload_is_image(data):
     if hasattr(data, "temporary_file_path"):
         file = data.temporary_file_path()
     else:
-        if hasattr(data, "read"):
-            file = io.BytesIO(data.read())
-        else:
-            file = io.BytesIO(data["content"])
+        file = io.BytesIO(data.read())
 
     try:
         image = Image.open(file)
