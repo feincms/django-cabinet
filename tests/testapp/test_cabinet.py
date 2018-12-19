@@ -371,7 +371,7 @@ class CabinetTestCase(TestCase):
         response = c.get("/admin/cabinet/file/?folder__id__exact=anything")
         self.assertRedirects(response, "/admin/cabinet/file/?e=1")
 
-    @skipIf(django.VERSION < (1, 11), "inline upload is not supported on Django<1.11")
+    @skipIf(django.VERSION < (1, 11), "No widget-based rendering in Django<1.11.")
     def test_cabinet_foreign_key(self):
         folder = Folder.objects.create(name="Root")
         file = File(folder=folder)
@@ -409,3 +409,16 @@ class CabinetTestCase(TestCase):
         file.download_file.save("hello.txt", content, save=False)
         with self.assertRaises(ValidationError):
             file.full_clean()
+
+    @skipIf(django.VERSION < (1, 11), 'selected="selected" is annoying')
+    def test_file_add_folder_preselect(self):
+        folder = Folder.objects.create(name="Root")
+        c = self.login()
+
+        response = c.get("/admin/cabinet/file/add/")
+        self.assertContains(response, '<option value="" selected>----------</option>')
+
+        response = c.get("/admin/cabinet/file/add/?folder={}".format(folder.id))
+        self.assertContains(
+            response, '<option value="{}" selected>Root</option>'.format(folder.id)
+        )

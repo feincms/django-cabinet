@@ -514,7 +514,7 @@ class FileAdminBase(FolderAdminMixin):
         extra_context = extra_context or {}
         if request.GET.get("folder"):
             extra_context["cabinet"] = {
-                "folder": get_object_or_404(Folder, pk=request.GET.get("folder"))
+                "folder": Folder.objects.filter(pk=request.GET["folder"]).first()
             }
 
         return self.changeform_view(
