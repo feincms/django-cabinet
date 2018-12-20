@@ -542,6 +542,8 @@ class FileAdminBase(FolderAdminMixin):
         )
 
     def upload(self, request):
+        if request.method != "POST":
+            return self.redirect_to_folder(request, None)
         form = UploadForm(request.POST, request.FILES)
         if not form.is_valid():
             return JsonResponse({"success": False}, status=400)

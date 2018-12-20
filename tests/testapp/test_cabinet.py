@@ -107,6 +107,9 @@ class CabinetTestCase(TestCase):
         c = self.login()
 
         response = c.get("/admin/cabinet/file/upload/")
+        self.assertRedirects(response, "/admin/cabinet/file/")
+
+        response = c.post("/admin/cabinet/file/upload/", {})
         self.assertEqual(response.status_code, 400)
 
         with io.open(self.image1_path, "rb") as image:
