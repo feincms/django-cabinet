@@ -13,6 +13,7 @@ Change log
 - Removed a leftover call to versatileimagefields'
   ``delete_all_created_images`` function.
 - Improved test coverage, mainly by actually writing more tests.
+- Changed ``reverse`` call sites to explicitly specify ``current_app``.
 
 
 `0.8`_ (2018-12-14)

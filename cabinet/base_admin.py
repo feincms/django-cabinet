@@ -221,6 +221,7 @@ class FolderAdminMixin(admin.ModelAdmin):
             model_admin=self,
         )
 
+        # render_change_form sets request.current_app
         response = self.render_change_form(
             request,
             dict(
@@ -307,7 +308,7 @@ class FolderAdminMixin(admin.ModelAdmin):
 
     def redirect_to_folder(self, request, folder_id):
         info = self.model._meta.app_label, self.model._meta.model_name
-        url = reverse("admin:%s_%s_changelist" % info)
+        url = reverse("admin:%s_%s_changelist" % info, current_app=self.admin_site.name)
         querydict = [
             (key, value)
             for key, value in request.GET.items()
@@ -323,7 +324,9 @@ class FolderAdminMixin(admin.ModelAdmin):
         return HttpResponseRedirect(
             "%s?%s"
             % (
-                reverse("admin:cabinet_folder_select"),
+                reverse(
+                    "admin:cabinet_folder_select", current_app=self.admin_site.name
+                ),
                 urlencode(sorted(("files", item.id) for item in queryset)),
             )
         )

@@ -57,13 +57,10 @@ class CabinetFileRawIdWidget(ForeignKeyRawIdWidget):
 
         try:
             url = reverse(
-                "%s:%s_%s_change"
-                % (
-                    self.admin_site.name,
-                    obj._meta.app_label,
-                    obj._meta.object_name.lower(),
-                ),
+                "admin:%s_%s_change"
+                % (obj._meta.app_label, obj._meta.object_name.lower()),
                 args=(obj.pk,),
+                current_app=self.admin_site.name,
             )
         except NoReverseMatch:
             url = ""  # Admin not registered for target model.
