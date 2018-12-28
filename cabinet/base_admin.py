@@ -132,14 +132,14 @@ class SelectFolderForm(forms.Form):
         self.fields.move_to_end("files", last=False)
 
 
-def cabinet_querystring(request):
-    return urlencode(
-        sorted(
-            (key, value)
-            for key, value in request.GET.items()
-            if key not in {"folder__id__exact", "p"}
-        )
-    )
+def cabinet_querystring(request, **kwargs):
+    values = {
+        key: value
+        for key, value in request.GET.items()
+        if key not in {"folder__id__exact", "p"}
+    }
+    values.update(kwargs)
+    return urlencode(sorted(values.items()))
 
 
 class FolderAdminMixin(admin.ModelAdmin):
@@ -463,6 +463,17 @@ class FileAdminBase(FolderAdminMixin):
         return folders
 
     def changelist_view(self, request):
+        folder__id__exact = request.GET.get("folder__id__exact")
+        if folder__id__exact == "last" and request.session["last_cabinet_folder"]:
+            return HttpResponseRedirect(
+                "?{}".format(
+                    cabinet_querystring(
+                        request,
+                        folder__id__exact=request.session["last_cabinet_folder"],
+                    )
+                )
+            )
+
         cabinet_context = {
             # Keep query params except those in the set below when changing
             # folders
@@ -473,7 +484,6 @@ class FileAdminBase(FolderAdminMixin):
 
         # Never filter by folder if searching
         if not request.GET.get(SEARCH_VAR):
-            folder__id__exact = request.GET.get("folder__id__exact")
             if folder__id__exact:
                 try:
                     folder = Folder.objects.get(pk=folder__id__exact)
@@ -489,6 +499,8 @@ class FileAdminBase(FolderAdminMixin):
                         ),
                     }
                 )
+                request.session["last_cabinet_folder"] = None
+
             else:
                 cabinet_context.update(
                     {
@@ -498,6 +510,7 @@ class FileAdminBase(FolderAdminMixin):
                         ),
                     }
                 )
+                request.session["last_cabinet_folder"] = folder.pk
 
         return super().changelist_view(
             request,

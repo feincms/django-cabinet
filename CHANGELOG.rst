@@ -14,6 +14,8 @@ Change log
   ``delete_all_created_images`` function.
 - Improved test coverage, mainly by actually writing more tests.
 - Changed ``reverse`` call sites to explicitly specify ``current_app``.
+- Implemented optional autoselection of the last visited folder by
+  explicitly specifying ``?folder__id__exact=last``.
 
 
 `0.8`_ (2018-12-14)

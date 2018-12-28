@@ -479,3 +479,13 @@ class CabinetTestCase(TestCase):
         self.assertRedirects(
             response, "/admin/cabinet/file/?folder__id__exact={}".format(parent.id)
         )
+
+    def test_last_folder(self):
+        folder = Folder.objects.create(name="Root")
+
+        c = self.login()
+        c.get("/admin/cabinet/file/?folder__id__exact={}".format(folder.id))
+        response = c.get("/admin/cabinet/file/?folder__id__exact=last")
+        self.assertRedirects(
+            response, "/admin/cabinet/file/?folder__id__exact={}".format(folder.id)
+        )
