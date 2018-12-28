@@ -464,12 +464,11 @@ class FileAdminBase(FolderAdminMixin):
 
     def changelist_view(self, request):
         folder__id__exact = request.GET.get("folder__id__exact")
-        if folder__id__exact == "last" and request.session["last_cabinet_folder"]:
+        if folder__id__exact == "last" and request.COOKIES.get("cabinet_folder"):
             return HttpResponseRedirect(
                 "?{}".format(
                     cabinet_querystring(
-                        request,
-                        folder__id__exact=request.session["last_cabinet_folder"],
+                        request, folder__id__exact=request.COOKIES["cabinet_folder"]
                     )
                 )
             )
@@ -499,7 +498,6 @@ class FileAdminBase(FolderAdminMixin):
                         ),
                     }
                 )
-                request.session["last_cabinet_folder"] = None
 
             else:
                 cabinet_context.update(
@@ -510,15 +508,16 @@ class FileAdminBase(FolderAdminMixin):
                         ),
                     }
                 )
-                request.session["last_cabinet_folder"] = folder.pk
 
-        return super().changelist_view(
+        response = super().changelist_view(
             request,
             extra_context={
                 "cabinet": cabinet_context,
                 "title": folder or _("Root folder"),
             },
         )
+        response.set_cookie("cabinet_folder", folder.pk if folder else "")
+        return response
 
     def formfield_for_foreignkey(self, db_field, request, **kwargs):
         field = super().formfield_for_foreignkey(db_field, request, **kwargs)
