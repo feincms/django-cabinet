@@ -489,3 +489,8 @@ class CabinetTestCase(TestCase):
         self.assertRedirects(
             response, "/admin/cabinet/file/?folder__id__exact={}".format(folder.id)
         )
+        self.assertEqual(c.cookies["cabinet_folder"].value, str(folder.id))
+
+        response = c.get("/admin/cabinet/file/")
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(c.cookies["cabinet_folder"].value, "")
