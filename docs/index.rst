@@ -60,7 +60,9 @@ require additional or different functionality. If, for example, you'd
 want to move all PDFs to a different storage, build on the following
 example code.
 
-First, ``models.py``::
+First, ``models.py``:
+
+.. code-block:: python
 
     from django.db import models
     from django.utils.translation import ugettext_lazy as _
@@ -105,7 +107,9 @@ First, ``models.py``::
         # Add additional fields if you want to.
 
 
-Next, ``admin.py``::
+Next, ``admin.py``:
+
+.. code-block:: python
 
     # You do not have to build on top of FileAdmin, but if there's no
     # good reason not to it's probably much less work. If not, you
