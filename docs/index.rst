@@ -126,6 +126,25 @@ settings and at last you're ready for running ``./manage.py
 makemigrations`` and ``./manage.py migrate``.
 
 
+Using django-cabinet as a CKEditor filebrowser
+==============================================
+
+django-cabinet has built-in support for being used as a `CKEditor 4 file
+manager
+<https://ckeditor.com/docs/ckeditor4/latest/guide/dev_file_browse_upload.html>`__.
+Currently, it only supports browsing files or images. Directly uploading
+files isn't supported since the file browser API does not know about
+cabinet's folders and folders are required for adding files to cabinet.
+
+The values for using django-cabinet as a file and image browser follow
+(assuming you're using the default file model):
+
+.. code-block:: javascript
+
+    CKEDITOR.config.filebrowserBrowseUrl = "/admin/cabinet/file/?_popup=1";
+    CKEDITOR.config.filebrowserImageUrl = "/admin/cabinet/file/?_popup=1&file_type=image_file";
+
+
 .. include:: ../CHANGELOG.rst
 
 .. _django-imagefield: https://django-imagefield.readthedocs.io/
