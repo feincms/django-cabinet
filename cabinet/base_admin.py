@@ -464,13 +464,12 @@ class FileAdminBase(FolderAdminMixin):
 
     def changelist_view(self, request):
         folder__id__exact = request.GET.get("folder__id__exact")
-        if folder__id__exact == "last" and request.COOKIES.get("cabinet_folder"):
+        if folder__id__exact == "last":
+            kw = {}
+            if request.COOKIES.get("cabinet_folder"):
+                kw["folder__id__exact"] = request.COOKIES["cabinet_folder"]
             return HttpResponseRedirect(
-                "?{}".format(
-                    cabinet_querystring(
-                        request, folder__id__exact=request.COOKIES["cabinet_folder"]
-                    )
-                )
+                "?{}".format(cabinet_querystring(request, **kw))
             )
 
         cabinet_context = {

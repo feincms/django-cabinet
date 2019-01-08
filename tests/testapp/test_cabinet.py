@@ -484,6 +484,9 @@ class CabinetTestCase(TestCase):
         folder = Folder.objects.create(name="Root")
 
         c = self.login()
+        response = c.get("/admin/cabinet/file/?_popup=1&folder__id__exact=last")
+        self.assertRedirects(response, "/admin/cabinet/file/?_popup=1")
+
         c.get("/admin/cabinet/file/?folder__id__exact={}".format(folder.id))
         response = c.get("/admin/cabinet/file/?folder__id__exact=last")
         self.assertRedirects(
