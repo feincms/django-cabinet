@@ -41,8 +41,9 @@ class CabinetFileRawIdWidget(ForeignKeyRawIdWidget):
             ),
             "instance": instance,
         }
-        if instance:
-            context["related_url"] += "&folder__id__exact={}".format(instance.folder_id)
+        context["related_url"] += "&folder__id__exact={}".format(
+            instance.folder_id if instance else "last"
+        )
         return context
 
     def label_and_url_for_value(self, value):

@@ -16,6 +16,8 @@ Change log
 - Changed ``reverse`` call sites to explicitly specify ``current_app``.
 - Implemented optional autoselection of the last visited folder by
   explicitly specifying ``?folder__id__exact=last``.
+- Made ``CabinetForeignKey`` automatically open the last folder for new
+  files.
 
 
 `0.8`_ (2018-12-14)
