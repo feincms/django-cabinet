@@ -129,15 +129,7 @@ class SelectFolderForm(forms.Form):
             initial=[f.id for f in files],
             widget=forms.CheckboxSelectMultiple,
         )
-        # Django<3 uses an OrderedDict, Django>=3 is only compatible with
-        # Python 3.6 and better where the default dict preserves insertion
-        # ordering.
-        self.fields = self.fields.__class__(
-            sorted(
-                (item for item in self.fields.items()),
-                key=lambda item: -1 if item[0] == "files" else 1,
-            )
-        )
+        self.order_fields(["files", "folder"])
 
 
 def cabinet_querystring(request, **kwargs):
