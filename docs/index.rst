@@ -56,12 +56,11 @@ Using cabinet files in your models
 ==================================
 
 The recommended way to use cabinet files in your models is by using
-``cabinet.fields.CabinetForeignKey``. When using a Django version with
-template-based widget rendering (all supported versions except Django
-1.8) and using ``raw_id_fields`` for the file foreign key you
-automatically get an improved widget which 1. allows directly uploading
-files inline without having to open the ``raw_id_fields`` popup and 2.
-also displays small thumbnails for image files.
+``cabinet.fields.CabinetForeignKey``. When using ``raw_id_fields`` for
+the file foreign key you automatically get an improved widget which 1.
+allows directly uploading files inline without having to open the
+``raw_id_fields`` popup and 2.  also displays small thumbnails for image
+files.
 
 
 Using django-cabinet as a CKEditor filebrowser

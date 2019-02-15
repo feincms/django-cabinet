@@ -4,7 +4,6 @@ Change log
 `Next version`_
 ~~~~~~~~~~~~~~~
 
-- Made ``cabinet.fields`` compatible with Django 1.8.
 - Changed ``CabinetForeignKey`` to reference the configured file model
   by default.
 - Limited the maximum width of the inline folder select widget.
@@ -18,6 +17,7 @@ Change log
   explicitly specifying ``?folder__id__exact=last``.
 - Made ``CabinetForeignKey`` automatically open the last folder for new
   files.
+- Dropped compatibility with Django 1.8 again.
 
 
 `0.8`_ (2018-12-14)

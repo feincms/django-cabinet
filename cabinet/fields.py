@@ -3,16 +3,12 @@ from django.conf import settings
 from django.contrib.admin.widgets import ForeignKeyRawIdWidget
 from django.core.exceptions import ValidationError
 from django.db import models
+from django.urls import NoReverseMatch, reverse
 from django.utils.text import Truncator
 from django.utils.translation import ugettext_lazy as _
 
 from cabinet.base_admin import folder_choices
 from cabinet.models import Folder
-
-try:
-    from django.urls import NoReverseMatch, reverse
-except ImportError:  # pragma: no cover
-    from django.core.urlresolvers import NoReverseMatch, reverse
 
 
 class UploadForm(forms.Form):
