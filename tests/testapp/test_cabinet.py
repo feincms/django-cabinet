@@ -203,7 +203,11 @@ class CabinetTestCase(TestCase):
         f = File.objects.get()
 
         response = c.get("/admin/cabinet/file/folder/select/?files={}".format(f.pk))
-        # TODO self.assertContains
+        self.assertContains(response, 'id="id_files_0"')
+        self.assertContains(response, 'id="id_folder_0"')
+        self.assertListEqual(
+            list(response.context["adminform"].form.fields.keys()), ["files", "folder"]
+        )
 
         response = c.post(
             "/admin/cabinet/file/folder/select/",
