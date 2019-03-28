@@ -18,6 +18,7 @@ Change log
 - Made ``CabinetForeignKey`` automatically open the last folder for new
   files.
 - Dropped compatibility with Django 1.8 again.
+- Made our JS files' dependency on ``django.jQuery`` explicit.
 
 
 `0.8`_ (2018-12-14)

@@ -414,7 +414,7 @@ class FileAdminBase(FolderAdminMixin):
 
     class Media:
         css = {"all": ("cabinet/cabinet.css",)}
-        js = ("cabinet/cabinet.js",)
+        js = ["admin/js/jquery.init.js", "cabinet/cabinet.js"]
 
     def get_urls(self):
         from django.conf.urls import url
