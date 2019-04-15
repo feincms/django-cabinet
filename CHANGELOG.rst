@@ -4,6 +4,10 @@ Change log
 `Next version`_
 ~~~~~~~~~~~~~~~
 
+
+`0.9`_ (2019-04-15)
+~~~~~~~~~~~~~~~~~~~
+
 - Changed ``CabinetForeignKey`` to reference the configured file model
   by default.
 - Limited the maximum width of the inline folder select widget.
@@ -149,4 +153,5 @@ Change log
 .. _0.6: https://github.com/matthiask/django-cabinet/compare/0.5...0.6
 .. _0.7: https://github.com/matthiask/django-cabinet/compare/0.6...0.7
 .. _0.8: https://github.com/matthiask/django-cabinet/compare/0.7...0.8
-.. _Next version: https://github.com/matthiask/django-cabinet/compare/0.8...master
+.. _0.9: https://github.com/matthiask/django-cabinet/compare/0.8...0.9
+.. _Next version: https://github.com/matthiask/django-cabinet/compare/0.9...master
