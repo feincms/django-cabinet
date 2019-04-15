@@ -50,6 +50,7 @@ class ImageMixin(models.Model):
         height_field="image_height",
         ppoi_field="image_ppoi",
         blank=True,
+        max_length=1000,
     )
     image_width = models.PositiveIntegerField(
         _("image width"), blank=True, null=True, editable=False
@@ -120,7 +121,9 @@ class DownloadMixin(models.Model):
         ("other", _("Binary"), lambda f: True),  # Must be last
     ]
 
-    download_file = models.FileField(_("download"), upload_to=UPLOAD_TO, blank=True)
+    download_file = models.FileField(
+        _("download"), upload_to=UPLOAD_TO, blank=True, max_length=1000
+    )
     download_type = models.CharField(_("download type"), max_length=20, editable=False)
 
     class Meta:

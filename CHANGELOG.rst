@@ -19,6 +19,7 @@ Change log
   files.
 - Dropped compatibility with Django 1.8 again.
 - Made our JS files' dependency on ``django.jQuery`` explicit.
+- Raised the length of file fields from ``100`` to ``1000``.
 
 
 `0.8`_ (2018-12-14)
