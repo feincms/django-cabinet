@@ -500,3 +500,38 @@ class CabinetTestCase(TestCase):
         response = c.get("/admin/cabinet/file/")
         self.assertEqual(response.status_code, 200)
         self.assertEqual(c.cookies["cabinet_folder"].value, "")
+
+    def test_change_type(self):
+        folder = Folder.objects.create(name="Test")
+        c = self.login()
+
+        with io.open(self.image1_path, "rb") as image:
+            response = c.post(
+                "/admin/cabinet/file/add/",
+                {"folder": folder.id, "image_file": image, "image_ppoi": "0.5x0.5"},
+            )
+
+        self.assertRedirects(
+            response, "/admin/cabinet/file/?folder__id__exact={}".format(folder.id)
+        )
+
+        f1 = File.objects.get()
+        self.assertEqual(f1.download_file, "")
+
+        with io.open(self.image1_path, "rb") as image:
+            response = c.post(
+                reverse("admin:cabinet_file_change", args=(f1.id,)),
+                {
+                    "folder": folder.id,
+                    "image_file-clear": True,
+                    "image_ppoi": "0.5x0.5",
+                    "download_file": image,
+                },
+            )
+
+        self.assertRedirects(
+            response, "/admin/cabinet/file/?folder__id__exact={}".format(folder.id)
+        )
+
+        f1 = File.objects.get()
+        self.assertEqual(f1.image_file, "")
