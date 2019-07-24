@@ -25,7 +25,7 @@ class CabinetFileRawIdWidget(ForeignKeyRawIdWidget):
 
     class Media:
         css = {"all": ["cabinet/inline-upload.css"]}
-        js = ["cabinet/inline-upload.js"]
+        js = ["admin/js/jquery.init.js", "cabinet/inline-upload.js"]
 
     def get_context(self, name, value, attrs):
         context = super().get_context(name, value, attrs)
