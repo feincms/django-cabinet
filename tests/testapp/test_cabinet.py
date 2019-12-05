@@ -270,7 +270,7 @@ class CabinetTestCase(TestCase):
             '<span class="download download-image">',
             1,
         )
-        self.assertContains(response, '<img src="__processed__/', 1)
+        self.assertContains(response, '<img src="/media/__processed__/', 1)
 
         self.assertNoMediaFiles()
 
