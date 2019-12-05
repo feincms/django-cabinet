@@ -88,6 +88,10 @@ class CabinetTestCase(TestCase):
         self.assertEqual(Folder.objects.count(), 1)  # not deleted
 
         file.delete()
+
+        # Create a subfolder, but deleting should succeed anyway
+        Folder.objects.create(parent=folder, name="Anything")
+
         response = c.post(
             "/admin/cabinet/file/folder/%s/" % folder.id,
             {"name": folder.name, "_delete_folder": True},

@@ -123,7 +123,7 @@ class Migration(migrations.Migration):
             model_name="file",
             name="folder",
             field=models.ForeignKey(
-                on_delete=django.db.models.deletion.CASCADE,
+                on_delete=django.db.models.deletion.PROTECT,
                 related_name="files",
                 to="cabinet.Folder",
                 verbose_name="folder",

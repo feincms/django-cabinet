@@ -215,7 +215,7 @@ class AbstractFile(TimestampsMixin):
 
     folder = TreeNodeForeignKey(
         "cabinet.Folder",
-        on_delete=models.CASCADE,
+        on_delete=models.PROTECT,
         verbose_name=_("folder"),
         related_name="files",
     )

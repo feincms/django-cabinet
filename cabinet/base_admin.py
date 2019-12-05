@@ -254,19 +254,6 @@ class FolderAdminMixin(admin.ModelAdmin):
                 messages.ERROR,
             )
 
-        elif len(deleted_objects) > 1:
-            self.message_user(
-                request,
-                _("Cannot delete %(name)s because of related objects (%(related)s)")
-                % {  # noqa
-                    "name": obj._meta.verbose_name,
-                    "related": ", ".join(
-                        "%s %s" % (count, name) for name, count in model_count.items()
-                    ),
-                },
-                messages.ERROR,
-            )
-
         else:
             obj.delete()
             self.message_user(
