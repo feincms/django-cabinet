@@ -1,4 +1,3 @@
-from collections import defaultdict
 from urllib.parse import urlencode
 
 import django
@@ -19,6 +18,7 @@ from django.utils.text import capfirst
 from django.utils.translation import ugettext_lazy as _
 
 from cabinet.models import Folder
+from tree_queries.forms import TreeNodeChoiceField
 
 
 class FolderListFilter(admin.RelatedFieldListFilter):
@@ -69,30 +69,6 @@ class FileTypeFilter(admin.SimpleListFilter):
         return queryset
 
 
-def folder_choices(include_blank=True):
-    """
-    Generate folder choices, concatenating all folders with their ancestors'
-    names.
-    """
-    children = defaultdict(list)
-    for folder in Folder.objects.all():
-        children[folder.parent_id].append(folder)
-
-    if include_blank:
-        yield (None, "-" * 10)
-
-    if not children:
-        return
-
-    def iterate(parent_id, ancestors):
-        for node in children[parent_id]:
-            anc = ancestors + [node.name]
-            yield node.id, " / ".join(anc)
-            yield from iterate(node.id, anc)
-
-    yield from iterate(None, [])
-
-
 class FolderForm(forms.ModelForm):
     class Meta:
         model = Folder
@@ -100,7 +76,6 @@ class FolderForm(forms.ModelForm):
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        self.fields["parent"].choices = folder_choices()
         if self.instance.pk:
             self.fields["_delete_folder"] = forms.BooleanField(
                 required=False, label=_("Delete this folder")
@@ -108,16 +83,16 @@ class FolderForm(forms.ModelForm):
 
 
 class SelectFolderForm(forms.Form):
-    folder = forms.ModelChoiceField(
+    folder = TreeNodeChoiceField(
         queryset=Folder.objects.all(),
         label=capfirst(_("folder")),
         widget=forms.RadioSelect,
+        empty_label=None,
     )
 
     def __init__(self, *args, **kwargs):
         files = kwargs.pop("files")
         super().__init__(*args, **kwargs)
-        self.fields["folder"].choices = folder_choices(include_blank=False)
 
         self.fields["files"] = forms.ModelMultipleChoiceField(
             queryset=files,
@@ -513,12 +488,6 @@ class FileAdminBase(FolderAdminMixin):
         )
         response.set_cookie("cabinet_folder", folder.pk if folder else "")
         return response
-
-    def formfield_for_foreignkey(self, db_field, request, **kwargs):
-        field = super().formfield_for_foreignkey(db_field, request, **kwargs)
-        if db_field.name == "folder":
-            field.choices = list(folder_choices())
-        return field
 
     def add_view(self, request, form_url="", extra_context=None):
         extra_context = extra_context or {}

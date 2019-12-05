@@ -4,6 +4,8 @@ Change log
 `Next version`_
 ~~~~~~~~~~~~~~~
 
+- Changed files and folders to reuse more of django-tree-queries.
+
 
 `0.9`_ (2019-04-15)
 ~~~~~~~~~~~~~~~~~~~

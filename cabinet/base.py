@@ -14,6 +14,7 @@ from django.db.models import signals
 from django.utils.translation import ugettext_lazy as _
 
 from imagefield.fields import ImageField, PPOIField
+from tree_queries.fields import TreeNodeForeignKey
 
 
 UPLOAD_TO = "cabinet/%Y/%m"
@@ -212,7 +213,7 @@ class TimestampsMixin(models.Model):
 class AbstractFile(TimestampsMixin):
     FILE_FIELDS = []
 
-    folder = models.ForeignKey(
+    folder = TreeNodeForeignKey(
         "cabinet.Folder",
         on_delete=models.CASCADE,
         verbose_name=_("folder"),

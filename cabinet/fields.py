@@ -7,17 +7,13 @@ from django.urls import NoReverseMatch, reverse
 from django.utils.text import Truncator
 from django.utils.translation import ugettext_lazy as _
 
-from cabinet.base_admin import folder_choices
 from cabinet.models import Folder
+from tree_queries.forms import TreeNodeChoiceField
 
 
 class UploadForm(forms.Form):
-    folder = forms.ModelChoiceField(label=_("folder"), queryset=Folder.objects.all())
+    folder = TreeNodeChoiceField(label=_("folder"), queryset=Folder.objects.all())
     file = forms.FileField(label=_("file"))
-
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
-        self.fields["folder"].choices = list(folder_choices())
 
 
 class CabinetFileRawIdWidget(ForeignKeyRawIdWidget):
