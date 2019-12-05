@@ -5,6 +5,9 @@ Change log
 ~~~~~~~~~~~~~~~
 
 - Changed files and folders to reuse more of django-tree-queries.
+- Made our inline upload JavaScript specify its dependency on
+  ``django.jQuery``.
+- Verified compatibility with Django 3.0.
 
 
 `0.9`_ (2019-04-15)
