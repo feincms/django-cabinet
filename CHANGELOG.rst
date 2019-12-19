@@ -4,6 +4,10 @@ Change log
 `Next version`_
 ~~~~~~~~~~~~~~~
 
+
+`0.10`_ (2019-12-19)
+~~~~~~~~~~~~~~~~~~~~
+
 - Changed files and folders to reuse more of django-tree-queries.
 - Made our inline upload JavaScript specify its dependency on
   ``django.jQuery``.
@@ -161,4 +165,5 @@ Change log
 .. _0.7: https://github.com/matthiask/django-cabinet/compare/0.6...0.7
 .. _0.8: https://github.com/matthiask/django-cabinet/compare/0.7...0.8
 .. _0.9: https://github.com/matthiask/django-cabinet/compare/0.8...0.9
-.. _Next version: https://github.com/matthiask/django-cabinet/compare/0.9...master
+.. _0.10: https://github.com/matthiask/django-cabinet/compare/0.9...0.10
+.. _Next version: https://github.com/matthiask/django-cabinet/compare/0.10...master
