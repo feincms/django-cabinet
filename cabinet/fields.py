@@ -5,7 +5,7 @@ from django.core.exceptions import ValidationError
 from django.db import models
 from django.urls import NoReverseMatch, reverse
 from django.utils.text import Truncator
-from django.utils.translation import ugettext_lazy as _
+from django.utils.translation import gettext_lazy as _
 
 from cabinet.models import Folder
 from tree_queries.forms import TreeNodeChoiceField

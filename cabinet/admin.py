@@ -2,7 +2,7 @@ from django.contrib import admin
 from django.template.defaultfilters import filesizeformat
 from django.utils.formats import date_format
 from django.utils.html import format_html, format_html_join, mark_safe
-from django.utils.translation import ugettext_lazy as _
+from django.utils.translation import gettext_lazy as _
 
 from cabinet.base_admin import FileAdminBase
 from cabinet.ckeditor import CKEditorFilebrowserMixin
