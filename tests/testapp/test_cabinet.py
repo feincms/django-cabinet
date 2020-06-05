@@ -454,7 +454,9 @@ class CabinetTestCase(TestCase):
         with io.open(self.image1_path, "rb") as image:
             image1_bytes = image.read()
 
-        file.image_file.save("image.png", ContentFile(image1_bytes[:500]))
+        file.image_file.save("image.png", ContentFile(image1_bytes))
+        with io.open(file.image_file.path, "wb") as f:
+            f.write(image1_bytes[:500])
 
         File(folder=folder, file_size=0).save_base()  # No file at all
 
