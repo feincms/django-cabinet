@@ -4,6 +4,14 @@ Change log
 `Next version`_
 ~~~~~~~~~~~~~~~
 
+- Verified compatibility with Django 3.1 and Python 3.8 (no changes
+  necessary).
+- Removed ``skipIf`` statements from the testsuite still referencing
+  Django < 1.11.
+- Switched the testsuite to using sqlite3 instead of PostgreSQL.
+  django-tree-queries supports different databases
+- Dropped Python 3.4 from the testsuite.
+
 
 `0.10`_ (2019-12-19)
 ~~~~~~~~~~~~~~~~~~~~
