@@ -13,6 +13,7 @@ Change log
 - Dropped Python 3.4 from the testsuite.
 - Updated ESLint and prettier used to format and check the
   CSS/JavaScript code.
+- Added isort.
 
 
 `0.10`_ (2019-12-19)

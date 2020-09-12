@@ -16,9 +16,10 @@ from django.urls import reverse
 from django.utils.functional import cached_property
 from django.utils.text import capfirst
 from django.utils.translation import gettext_lazy as _
+from tree_queries.forms import TreeNodeChoiceField
 
 from cabinet.models import Folder
-from tree_queries.forms import TreeNodeChoiceField
+
 
 try:
     from django.urls import re_path

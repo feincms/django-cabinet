@@ -6,9 +6,9 @@ from django.db import models
 from django.urls import NoReverseMatch, reverse
 from django.utils.text import Truncator
 from django.utils.translation import gettext_lazy as _
+from tree_queries.forms import TreeNodeChoiceField
 
 from cabinet.models import Folder
-from tree_queries.forms import TreeNodeChoiceField
 
 
 class UploadForm(forms.Form):

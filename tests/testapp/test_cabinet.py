@@ -9,13 +9,12 @@ from django.conf import settings
 from django.contrib.auth.models import User
 from django.core.exceptions import ImproperlyConfigured, ValidationError
 from django.core.files.base import ContentFile
-from django.urls import reverse
 from django.test import Client, TestCase
 from django.test.utils import override_settings
+from django.urls import reverse
+from testapp.models import Stuff
 
 from cabinet.models import File, Folder, get_file_model
-
-from testapp.models import Stuff
 
 
 class CabinetTestCase(TestCase):

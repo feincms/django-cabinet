@@ -2,7 +2,6 @@ import inspect
 import io
 import os
 import re
-from PIL import Image
 
 from django.core.exceptions import (
     FieldDoesNotExist,
@@ -12,8 +11,8 @@ from django.core.exceptions import (
 from django.db import models
 from django.db.models import signals
 from django.utils.translation import gettext_lazy as _
-
 from imagefield.fields import ImageField, PPOIField
+from PIL import Image
 from tree_queries.fields import TreeNodeForeignKey
 
 

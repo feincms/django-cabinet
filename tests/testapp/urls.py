@@ -1,5 +1,6 @@
 from django.contrib import admin
 
+
 try:
     from django.urls import re_path
 except ImportError:

@@ -5,6 +5,7 @@ from django.db import models
 from django.db.models import Q, signals
 from django.dispatch import receiver
 from django.utils.translation import gettext_lazy as _
+from tree_queries.models import TreeNode
 
 from cabinet.base import (
     AbstractFile,
@@ -13,7 +14,6 @@ from cabinet.base import (
     OverwriteMixin,
     TimestampsMixin,
 )
-from tree_queries.models import TreeNode
 
 
 if not hasattr(settings, "CABINET_FILE_MODEL"):  # pragma: no branch
