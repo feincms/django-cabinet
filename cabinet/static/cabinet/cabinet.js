@@ -1,5 +1,5 @@
 /* global django */
-django.jQuery(function($) {
+django.jQuery(function ($) {
   if (!document.body.classList.contains("change-list")) return;
 
   // Remove filtered class so that module uses horizontal space better
@@ -27,24 +27,24 @@ django.jQuery(function($) {
   }
 
   results
-    .on("drag dragstart dragend dragover dragenter dragleave drop", function(
+    .on("drag dragstart dragend dragover dragenter dragleave drop", function (
       e
     ) {
       e.preventDefault();
       e.stopPropagation();
     })
-    .on("dragover dragenter", function() {
+    .on("dragover dragenter", function () {
       ++dragCounter;
       results.addClass("dragover");
     })
-    .on("dragleave dragend", function() {
+    .on("dragleave dragend", function () {
       if (--dragCounter <= 0) results.removeClass("dragover");
     })
-    .on("mouseleave mouseout drop", function() {
+    .on("mouseleave mouseout drop", function () {
       dragCounter = 0;
       results.removeClass("dragover");
     })
-    .on("drop", function(e) {
+    .on("drop", function (e) {
       dragCounter = 0;
       results.removeClass("dragover");
       uploadFiles(e.originalEvent.dataTransfer.files);
@@ -52,11 +52,11 @@ django.jQuery(function($) {
 
   var cabinetUpload = $("#cabinet-upload"),
     cabinetUploadInput = cabinetUpload.find("input");
-  cabinetUpload.on("click", "a", function(e) {
+  cabinetUpload.on("click", "a", function (e) {
     e.preventDefault();
     cabinetUploadInput.trigger("click");
   });
-  cabinetUploadInput.on("change", function(e) {
+  cabinetUploadInput.on("change", function (e) {
     uploadFiles(e.target.files);
   });
 
@@ -81,17 +81,17 @@ django.jQuery(function($) {
         data: d,
         contentType: false,
         processData: false,
-        success: function() {
+        success: function () {
           progress.html("" + ++success + " / " + files.length);
           if (success >= files.length) {
             window.location.reload();
           }
         },
-        xhr: function() {
+        xhr: function () {
           var xhr = new XMLHttpRequest();
           xhr.upload.addEventListener(
             "progress",
-            function(e) {
+            function (e) {
               if (e.lengthComputable) {
                 progress.html(
                   Math.round((e.loaded / e.total) * 100) +
@@ -105,7 +105,7 @@ django.jQuery(function($) {
             false
           );
           return xhr;
-        }
+        },
       });
     }
   }

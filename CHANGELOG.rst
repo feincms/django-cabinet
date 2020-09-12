@@ -11,6 +11,8 @@ Change log
 - Switched the testsuite to using sqlite3 instead of PostgreSQL.
   django-tree-queries supports different databases
 - Dropped Python 3.4 from the testsuite.
+- Updated ESLint and prettier used to format and check the
+  CSS/JavaScript code.
 
 
 `0.10`_ (2019-12-19)
