@@ -20,6 +20,11 @@ from django.utils.translation import gettext_lazy as _
 from cabinet.models import Folder
 from tree_queries.forms import TreeNodeChoiceField
 
+try:
+    from django.urls import re_path
+except ImportError:
+    from django.conf.urls import url as re_path
+
 
 class FolderListFilter(admin.RelatedFieldListFilter):
     """
@@ -115,20 +120,18 @@ def cabinet_querystring(request, **kwargs):
 
 class FolderAdminMixin(admin.ModelAdmin):
     def get_urls(self):
-        from django.conf.urls import url
-
         return [
-            url(
+            re_path(
                 r"^folder/add/$",
                 self.admin_site.admin_view(self.folder_add),
                 name="cabinet_folder_add",
             ),
-            url(
+            re_path(
                 r"^folder/select/$",
                 self.admin_site.admin_view(self.folder_select),
                 name="cabinet_folder_select",
             ),
-            url(
+            re_path(
                 r"^folder/(.+)/$",
                 self.admin_site.admin_view(self.folder_change),
                 name="cabinet_folder_change",
@@ -379,10 +382,8 @@ class FileAdminBase(FolderAdminMixin):
         js = ["admin/js/jquery.init.js", "cabinet/cabinet.js"]
 
     def get_urls(self):
-        from django.conf.urls import url
-
         return [
-            url(
+            re_path(
                 r"^upload/$",
                 self.admin_site.admin_view(self.upload),
                 name="cabinet_upload",
