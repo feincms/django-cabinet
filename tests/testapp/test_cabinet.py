@@ -15,6 +15,7 @@ from django.urls import reverse
 from testapp.models import Stuff
 
 from cabinet.models import File, Folder, get_file_model
+from cabinet.base import AbstractFile, ImageMixin, determine_accept_file_functions
 
 
 class CabinetTestCase(TestCase):
@@ -535,3 +536,12 @@ class CabinetTestCase(TestCase):
 
         f1 = File.objects.get()
         self.assertEqual(f1.image_file, "")
+
+    def test_custom_file(self):
+        class NonModelMixin:
+            pass
+
+        class CustomFile(AbstractFile, NonModelMixin, ImageMixin):
+            FILE_FIELDS = ['image_file']
+
+        determine_accept_file_functions(CustomFile)
