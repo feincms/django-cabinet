@@ -14,8 +14,8 @@ from django.test.utils import override_settings
 from django.urls import reverse
 from testapp.models import Stuff
 
+from cabinet.base import AbstractFile, DownloadMixin, determine_accept_file_functions
 from cabinet.models import File, Folder, get_file_model
-from cabinet.base import AbstractFile, ImageMixin, determine_accept_file_functions
 
 
 class CabinetTestCase(TestCase):
@@ -541,7 +541,24 @@ class CabinetTestCase(TestCase):
         class NonModelMixin:
             pass
 
-        class CustomFile(AbstractFile, NonModelMixin, ImageMixin):
-            FILE_FIELDS = ['image_file']
+        class CustomFile(AbstractFile, NonModelMixin, DownloadMixin):
+            FILE_FIELDS = ["download_file"]
 
+        # Shouldn't crash (did choke on the mixin before #9)
         determine_accept_file_functions(CustomFile)
+
+        self.assertEqual(
+            CustomFile._accept_file_functions,
+            [DownloadMixin.accept_file],
+        )
+
+        self.assertEqual(
+            CustomFile._file_mixin_fieldsets,
+            [
+                {
+                    "verbose_name": "download",
+                    "fields": ["download_file"],
+                    "file_field": "download_file",
+                }
+            ],
+        )

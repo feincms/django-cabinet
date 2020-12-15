@@ -4,6 +4,9 @@ Change log
 `Next version`_
 ~~~~~~~~~~~~~~~
 
+- Fixed a bug where mixins couldn't be used as base classes of a custom
+  file model.
+
 
 `0.11`_ (2020-09-12)
 ~~~~~~~~~~~~~~~~~~~~
