@@ -280,6 +280,8 @@ def determine_accept_file_functions(sender, **kwargs):
         fieldsets = []
 
         for cls in list(inspect.getmro(sender))[1:]:
+            if not issubclass(cls, models.Model):
+                continue
             for f in fields:
                 try:
                     cls._meta.get_field(f)
