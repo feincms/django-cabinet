@@ -552,7 +552,5 @@ class FileAdminBase(FolderAdminMixin):
 
         advanced = [field for field in self.advanced_fields if exists(field)]
         if advanced:
-            fieldsets.append(
-                (_("Advanced"), {"fields": advanced, "classes": ["collapse"]})
-            )
+            fieldsets.append((_("Advanced"), {"fields": advanced}))
         return fieldsets

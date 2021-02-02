@@ -6,6 +6,8 @@ Change log
 
 - Fixed a bug where mixins couldn't be used as base classes of a custom
   file model.
+- Changed the file admin to never collapse the advanced fieldset by
+  default.
 
 
 `0.11`_ (2020-09-12)
