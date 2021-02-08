@@ -187,4 +187,4 @@ Change log
 .. _0.9: https://github.com/matthiask/django-cabinet/compare/0.8...0.9
 .. _0.10: https://github.com/matthiask/django-cabinet/compare/0.9...0.10
 .. _0.11: https://github.com/matthiask/django-cabinet/compare/0.10...0.11
-.. _Next version: https://github.com/matthiask/django-cabinet/compare/0.11...master
+.. _Next version: https://github.com/matthiask/django-cabinet/compare/0.11...main

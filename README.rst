@@ -2,7 +2,7 @@
 django-cabinet - Media library for Django
 =========================================
 
-.. image:: https://travis-ci.org/matthiask/django-cabinet.svg?branch=master
+.. image:: https://travis-ci.org/matthiask/django-cabinet.svg?branch=main
    :target: https://travis-ci.org/matthiask/django-cabinet
 
 .. image:: https://readthedocs.org/projects/django-cabinet/badge/?version=latest
@@ -13,7 +13,7 @@ django-cabinet - Media library for Django
 django-cabinet is a media library for Django implemented while trying to
 write as little code as possible to keep maintenance at a minimum.
 
-.. image:: https://raw.githubusercontent.com/matthiask/django-cabinet/master/docs/_static/files-and-folders.png
+.. image:: https://raw.githubusercontent.com/matthiask/django-cabinet/main/docs/_static/files-and-folders.png
     :alt: Files and Folders
 
 - `Documentation <https://django-cabinet.readthedocs.io>`_
