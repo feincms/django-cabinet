@@ -8,6 +8,7 @@ Change log
   file model.
 - Changed the file admin to never collapse the advanced fieldset by
   default.
+- Switched from Travis CI to GitHub actions.
 
 
 `0.11`_ (2020-09-12)

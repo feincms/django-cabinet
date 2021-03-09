@@ -2,8 +2,9 @@
 django-cabinet - Media library for Django
 =========================================
 
-.. image:: https://travis-ci.org/matthiask/django-cabinet.svg?branch=main
-   :target: https://travis-ci.org/matthiask/django-cabinet
+.. image:: https://github.com/matthiask/django-cabinet/workflows/Tests/badge.svg
+    :target: https://github.com/matthiask/django-cabinet/
+    :alt: CI Status
 
 .. image:: https://readthedocs.org/projects/django-cabinet/badge/?version=latest
     :target: https://django-cabinet.readthedocs.io/en/latest/?badge=latest
