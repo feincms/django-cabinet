@@ -9,6 +9,8 @@ Change log
 - Changed the file admin to never collapse the advanced fieldset by
   default.
 - Switched from Travis CI to GitHub actions.
+- Fixed a regression where the CKEditor plugin's ``forms.Media`` declaration
+  was missing the jQuery dependency.
 
 
 `0.11`_ (2020-09-12)

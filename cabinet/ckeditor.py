@@ -12,7 +12,9 @@ class CKEditorFilebrowserMixin(admin.ModelAdmin):
 
     @property
     def media(self):
-        return super().media + forms.Media(js=["cabinet/ckeditor.js"])
+        return super().media + forms.Media(
+            js=["admin/js/jquery.init.js", "cabinet/ckeditor.js"]
+        )
 
 
 class CKFileBrowserChangeList(ChangeList):
