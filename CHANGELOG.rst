@@ -11,6 +11,7 @@ Change log
 - Switched from Travis CI to GitHub actions.
 - Fixed a regression where the CKEditor plugin's ``forms.Media`` declaration
   was missing the jQuery dependency.
+- Specified the default ``AutoField`` for django-cabinet to avoid migrations.
 
 
 `0.11`_ (2020-09-12)
