@@ -279,7 +279,7 @@ class FolderAdminMixin(admin.ModelAdmin):
         if folder_id:
             querydict.append(("folder__id__exact", folder_id))
         return HttpResponseRedirect(
-            "%s%s%s" % (url, "?" if querydict else "", urlencode(sorted(querydict)))
+            "{}{}{}".format(url, "?" if querydict else "", urlencode(sorted(querydict)))
         )
 
     def move_to_folder(self, request, queryset):
@@ -428,9 +428,7 @@ class FileAdminBase(FolderAdminMixin):
             kw = {}
             if request.COOKIES.get("cabinet_folder"):
                 kw["folder__id__exact"] = request.COOKIES["cabinet_folder"]
-            return HttpResponseRedirect(
-                "?{}".format(cabinet_querystring(request, **kw))
-            )
+            return HttpResponseRedirect(f"?{cabinet_querystring(request, **kw)}")
 
         cabinet_context = {
             # Keep query params except those in the set below when changing

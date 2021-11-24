@@ -307,7 +307,7 @@ def determine_accept_file_functions(sender, **kwargs):
 
         if fields:  # pragma: no cover
             raise ImproperlyConfigured(
-                'No "accept_file" method found for %s' % (", ".join(sorted(fields)),)
+                'No "accept_file" method found for {}'.format(", ".join(sorted(fields)))
             )
 
         sender._accept_file_functions = [fns[f] for f in sender.FILE_FIELDS]

@@ -36,7 +36,7 @@ class CKFileBrowserChangeList(ChangeList):
         return params
 
 
-class Link(object):
+class Link:
     def __init__(self, cl, name):
         self.cl = cl
         self.name = name

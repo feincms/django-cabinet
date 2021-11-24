@@ -110,14 +110,14 @@ class CabinetTestCase(TestCase):
         response = c.post("/admin/cabinet/file/upload/", {})
         self.assertEqual(response.status_code, 400)
 
-        with io.open(self.image1_path, "rb") as image:
+        with open(self.image1_path, "rb") as image:
             response = c.post(
                 "/admin/cabinet/file/add/",
                 {"folder": folder.id, "image_file": image, "image_ppoi": "0.5x0.5"},
             )
 
         self.assertRedirects(
-            response, "/admin/cabinet/file/?folder__id__exact={}".format(folder.id)
+            response, f"/admin/cabinet/file/?folder__id__exact={folder.id}"
         )
 
         response = c.get("/admin/cabinet/file/?folder__id__exact=%s" % folder.id)
@@ -141,14 +141,14 @@ class CabinetTestCase(TestCase):
         )
         self.assertEqual(f1.download_type, "")
 
-        with io.open(self.image1_path, "rb") as image:
+        with open(self.image1_path, "rb") as image:
             response = c.post(
                 reverse("admin:cabinet_file_change", args=(f1.id,)),
                 {"folder": folder.id, "image_file": image, "image_ppoi": "0.5x0.5"},
             )
 
         self.assertRedirects(
-            response, "/admin/cabinet/file/?folder__id__exact={}".format(folder.id)
+            response, f"/admin/cabinet/file/?folder__id__exact={folder.id}"
         )
 
         f2 = File.objects.get()
@@ -158,7 +158,7 @@ class CabinetTestCase(TestCase):
         self.assertNotEqual(f1_name, f2_name)
         self.assertEqual(f1_bytes, f2_bytes)
 
-        with io.open(self.image2_path, "rb") as image:
+        with open(self.image2_path, "rb") as image:
             response = c.post(
                 reverse("admin:cabinet_file_change", args=(f1.id,)),
                 {
@@ -170,7 +170,7 @@ class CabinetTestCase(TestCase):
             )
 
         self.assertRedirects(
-            response, "/admin/cabinet/file/?folder__id__exact={}".format(folder.id)
+            response, f"/admin/cabinet/file/?folder__id__exact={folder.id}"
         )
 
         f3 = File.objects.get()
@@ -185,22 +185,18 @@ class CabinetTestCase(TestCase):
         self.assertContains(response, '<p class="paginator"> 1 file </p>', html=True)
 
         # Folder with file inside
-        response = c.get(
-            "/admin/cabinet/file/?folder__id__exact={}&q=image".format(folder.pk)
-        )
+        response = c.get(f"/admin/cabinet/file/?folder__id__exact={folder.pk}&q=image")
         self.assertContains(response, '<p class="paginator"> 1 file </p>', html=True)
 
         # Other folder
         f2 = Folder.objects.create(name="Second")
-        response = c.get(
-            "/admin/cabinet/file/?folder__id__exact={}&q=image".format(f2.pk)
-        )
+        response = c.get(f"/admin/cabinet/file/?folder__id__exact={f2.pk}&q=image")
         self.assertContains(response, '<p class="paginator"> 0 files </p>', html=True)
 
         subfolder = Folder.objects.create(parent=folder, name="sub")
         f = File.objects.get()
 
-        response = c.get("/admin/cabinet/file/folder/select/?files={}".format(f.pk))
+        response = c.get(f"/admin/cabinet/file/folder/select/?files={f.pk}")
         self.assertContains(response, 'id="id_files_0"')
         self.assertContains(response, 'id="id_folder_0"')
         self.assertListEqual(
@@ -212,20 +208,18 @@ class CabinetTestCase(TestCase):
             {"files": f.pk, "folder": subfolder.pk},
         )
         self.assertRedirects(
-            response, "/admin/cabinet/file/?folder__id__exact={}".format(subfolder.pk)
+            response, f"/admin/cabinet/file/?folder__id__exact={subfolder.pk}"
         )
 
         # f.folder = subfolder
         # f.save()
 
         # File is in a subfolder now
-        response = c.get("/admin/cabinet/file/?folder__id__exact={}".format(folder.pk))
+        response = c.get(f"/admin/cabinet/file/?folder__id__exact={folder.pk}")
         self.assertContains(response, '<p class="paginator"> 0 files </p>', html=True)
 
         # But can be found by searching
-        response = c.get(
-            "/admin/cabinet/file/?folder__id__exact={}&q=image".format(folder.pk)
-        )
+        response = c.get(f"/admin/cabinet/file/?folder__id__exact={folder.pk}&q=image")
         self.assertContains(response, '<p class="paginator"> 1 file </p>', html=True)
 
         response = c.get(
@@ -252,7 +246,7 @@ class CabinetTestCase(TestCase):
         self.assertEqual(response.status_code, 200)
         self.assertEqual(json.loads(response.content.decode("utf-8"))["success"], True)
 
-        with io.open(self.image1_path, "rb") as image:
+        with open(self.image1_path, "rb") as image:
             response = c.post(
                 "/admin/cabinet/file/upload/", {"folder": f.id, "file": image}
             )
@@ -343,7 +337,7 @@ class CabinetTestCase(TestCase):
             },
         )
         self.assertRedirects(
-            response, "/admin/cabinet/file/?folder__id__exact={}".format(folder.id)
+            response, f"/admin/cabinet/file/?folder__id__exact={folder.id}"
         )
 
     def test_overwrite_without_new(self):
@@ -365,7 +359,7 @@ class CabinetTestCase(TestCase):
             },
         )
         self.assertRedirects(
-            response, "/admin/cabinet/file/?folder__id__exact={}".format(folder.id)
+            response, f"/admin/cabinet/file/?folder__id__exact={folder.id}"
         )
 
         file.refresh_from_db()
@@ -414,7 +408,7 @@ class CabinetTestCase(TestCase):
     def test_two_files(self):
         folder = Folder.objects.create(name="Root")
         file = File(folder=folder)
-        with io.open(self.image1_path, "rb") as image:
+        with open(self.image1_path, "rb") as image:
             file.image_file.save("hello.jpg", ContentFile(image.read()))
 
         file.full_clean()  # Everything well
@@ -431,9 +425,9 @@ class CabinetTestCase(TestCase):
         response = c.get("/admin/cabinet/file/add/")
         self.assertContains(response, '<option value="" selected>------')
 
-        response = c.get("/admin/cabinet/file/add/?folder={}".format(folder.id))
+        response = c.get(f"/admin/cabinet/file/add/?folder={folder.id}")
         self.assertContains(
-            response, '<option value="{}" selected>Root</option>'.format(folder.id)
+            response, f'<option value="{folder.id}" selected>Root</option>'
         )
 
     def test_folder_duplicate(self):
@@ -446,17 +440,17 @@ class CabinetTestCase(TestCase):
         folder = Folder.objects.create(name="Root")
         file = File(folder=folder)
 
-        with io.open(self.image1_path, "rb") as image:
+        with open(self.image1_path, "rb") as image:
             image1_bytes = image.read()
 
         file.image_file.save("image.png", ContentFile(image1_bytes))
-        with io.open(file.image_file.path, "wb") as f:
+        with open(file.image_file.path, "wb") as f:
             f.write(image1_bytes[:500])
 
         File(folder=folder, file_size=0).save_base()  # No file at all
 
         c = self.login()
-        response = c.get("/admin/cabinet/file/?folder__id__exact={}".format(folder.id))
+        response = c.get(f"/admin/cabinet/file/?folder__id__exact={folder.id}")
         self.assertContains(response, '<span class="broken-image"></span>', 1)
 
     def test_large_upload(self):
@@ -477,11 +471,11 @@ class CabinetTestCase(TestCase):
 
         c = self.login()
         response = c.post(
-            "/admin/cabinet/file/folder/{}/".format(folder.id),
+            f"/admin/cabinet/file/folder/{folder.id}/",
             {"name": folder.name, "parent": parent.id},
         )
         self.assertRedirects(
-            response, "/admin/cabinet/file/?folder__id__exact={}".format(parent.id)
+            response, f"/admin/cabinet/file/?folder__id__exact={parent.id}"
         )
 
     def test_last_folder(self):
@@ -491,10 +485,10 @@ class CabinetTestCase(TestCase):
         response = c.get("/admin/cabinet/file/?_popup=1&folder__id__exact=last")
         self.assertRedirects(response, "/admin/cabinet/file/?_popup=1")
 
-        c.get("/admin/cabinet/file/?folder__id__exact={}".format(folder.id))
+        c.get(f"/admin/cabinet/file/?folder__id__exact={folder.id}")
         response = c.get("/admin/cabinet/file/?folder__id__exact=last")
         self.assertRedirects(
-            response, "/admin/cabinet/file/?folder__id__exact={}".format(folder.id)
+            response, f"/admin/cabinet/file/?folder__id__exact={folder.id}"
         )
         self.assertEqual(c.cookies["cabinet_folder"].value, str(folder.id))
 
@@ -506,20 +500,20 @@ class CabinetTestCase(TestCase):
         folder = Folder.objects.create(name="Test")
         c = self.login()
 
-        with io.open(self.image1_path, "rb") as image:
+        with open(self.image1_path, "rb") as image:
             response = c.post(
                 "/admin/cabinet/file/add/",
                 {"folder": folder.id, "image_file": image, "image_ppoi": "0.5x0.5"},
             )
 
         self.assertRedirects(
-            response, "/admin/cabinet/file/?folder__id__exact={}".format(folder.id)
+            response, f"/admin/cabinet/file/?folder__id__exact={folder.id}"
         )
 
         f1 = File.objects.get()
         self.assertEqual(f1.download_file, "")
 
-        with io.open(self.image1_path, "rb") as image:
+        with open(self.image1_path, "rb") as image:
             response = c.post(
                 reverse("admin:cabinet_file_change", args=(f1.id,)),
                 {
@@ -531,7 +525,7 @@ class CabinetTestCase(TestCase):
             )
 
         self.assertRedirects(
-            response, "/admin/cabinet/file/?folder__id__exact={}".format(folder.id)
+            response, f"/admin/cabinet/file/?folder__id__exact={folder.id}"
         )
 
         f1 = File.objects.get()

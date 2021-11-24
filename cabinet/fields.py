@@ -28,7 +28,7 @@ class CabinetFileRawIdWidget(ForeignKeyRawIdWidget):
         instance = getattr(self, "instance", None)
         context["cabinet"] = {
             "upload_form": UploadForm(
-                prefix="cu-{}".format(id(self)),
+                prefix=f"cu-{id(self)}",
                 initial={"folder": instance and instance.folder_id},
             ),
             "instance": instance,
