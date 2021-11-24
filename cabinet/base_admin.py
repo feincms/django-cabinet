@@ -12,19 +12,13 @@ from django.db import router, transaction
 from django.db.models import Count
 from django.http import HttpResponseRedirect, JsonResponse
 from django.shortcuts import get_object_or_404
-from django.urls import reverse
+from django.urls import re_path, reverse
 from django.utils.functional import cached_property
 from django.utils.text import capfirst
 from django.utils.translation import gettext_lazy as _
 from tree_queries.forms import TreeNodeChoiceField
 
 from cabinet.models import Folder
-
-
-try:
-    from django.urls import re_path
-except ImportError:
-    from django.conf.urls import url as re_path
 
 
 class FolderListFilter(admin.RelatedFieldListFilter):
