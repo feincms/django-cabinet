@@ -12,6 +12,7 @@ Change log
 - Fixed a regression where the CKEditor plugin's ``forms.Media`` declaration
   was missing the jQuery dependency.
 - Specified the default ``AutoField`` for django-cabinet to avoid migrations.
+- Added an additional safeguard against unhandleable images.
 
 
 `0.11`_ (2020-09-12)
