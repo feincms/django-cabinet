@@ -1,4 +1,7 @@
+import django
+
 VERSION = (0, 11, 5)
 __version__ = ".".join(map(str, VERSION))
 
-default_app_config = "cabinet.apps.CabinetConfig"
+if django.VERSION < (3, 2):
+    default_app_config = "cabinet.apps.CabinetConfig"
