@@ -13,6 +13,7 @@ Change log
   was missing the jQuery dependency.
 - Specified the default ``AutoField`` for django-cabinet to avoid migrations.
 - Added an additional safeguard against unhandleable images.
+- Fixed the ``default_app_config`` deprecation warning.
 
 
 `0.11`_ (2020-09-12)
