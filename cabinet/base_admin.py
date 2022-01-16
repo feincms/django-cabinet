@@ -1,11 +1,9 @@
 from urllib.parse import urlencode
 
-import django
 from django import forms
 from django.contrib import admin, messages
 from django.contrib.admin import helpers
 from django.contrib.admin.options import IncorrectLookupParameters
-from django.contrib.admin.utils import get_deleted_objects
 from django.contrib.admin.views.main import SEARCH_VAR
 from django.core.exceptions import FieldDoesNotExist, PermissionDenied, ValidationError
 from django.db import router, transaction
@@ -222,28 +220,14 @@ class FolderAdminMixin(admin.ModelAdmin):
         if not self.has_delete_permission(request, obj):
             raise PermissionDenied
 
-        using = router.db_for_write(obj.__class__)
-
         # Populate deleted_objects, a data structure of all related objects
         # that will also be deleted.
-        if django.VERSION < (2, 1):
-            (
-                deleted_objects,
-                model_count,
-                perms_needed,
-                protected,
-            ) = get_deleted_objects(  # noqa
-                [obj], obj._meta, request.user, self.admin_site, using
-            )
-        else:
-            (
-                deleted_objects,
-                model_count,
-                perms_needed,
-                protected,
-            ) = self.get_deleted_objects(
-                [obj], request
-            )  # noqa
+        (
+            deleted_objects,
+            model_count,
+            perms_needed,
+            protected,
+        ) = self.get_deleted_objects([obj], request)
 
         if protected or perms_needed:
             self.message_user(

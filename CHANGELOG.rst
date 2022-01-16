@@ -14,6 +14,7 @@ Change log
 - Specified the default ``AutoField`` for django-cabinet to avoid migrations.
 - Added an additional safeguard against unhandleable images.
 - Fixed the ``default_app_config`` deprecation warning.
+- Raised the minimum versions of Python to 3.2 and Django to 3.8.
 
 
 `0.11`_ (2020-09-12)
