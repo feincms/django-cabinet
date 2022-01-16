@@ -1,20 +1,42 @@
 module.exports = {
+  parser: "@babel/eslint-parser",
   env: {
     browser: true,
     es6: true,
+    node: true,
   },
-  extends: "eslint:recommended",
+  extends: ["eslint:recommended", "prettier", "plugin:react/recommended"],
+  globals: {
+    Atomics: "readonly",
+    SharedArrayBuffer: "readonly",
+    __API_HOST: "readonly",
+  },
   parserOptions: {
-    ecmaVersion: 2018,
+    ecmaFeatures: {
+      experimentalObjectRestSpread: true,
+      jsx: true,
+    },
+    ecmaVersion: 2021,
+    requireConfigFile: false,
+    sourceType: "module",
   },
-  plugins: ["prettier"],
+  plugins: ["react", "react-hooks"],
   rules: {
-    indent: ["error", 2],
-    "linebreak-style": ["error", "unix"],
-    quotes: ["error", "double"],
-    semi: ["error", "always"],
-    "no-unused-vars": ["error", { argsIgnorePattern: "^_" }],
-    "prettier/prettier": "error",
-    quotes: 0,
+    "no-unused-vars": [
+      "error",
+      {
+        argsIgnorePattern: "^_",
+        varsIgnorePattern: "React|Fragment|h|^_",
+      },
+    ],
+    "react/prop-types": "off",
+    "react/display-name": "off",
+    "react-hooks/rules-of-hooks": "warn", // Checks rules of Hooks
+    "react-hooks/exhaustive-deps": "warn", // Checks effect dependencies
   },
-};
+  settings: {
+    react: {
+      version: "detect",
+    },
+  },
+}

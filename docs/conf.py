@@ -3,6 +3,7 @@ import re
 import subprocess
 import sys
 
+
 sys.path.append(os.path.abspath(".."))
 
 project = "django-cabinet"
