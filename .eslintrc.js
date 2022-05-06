@@ -5,7 +5,7 @@ module.exports = {
     es6: true,
     node: true,
   },
-  extends: ["eslint:recommended", "prettier", "plugin:react/recommended"],
+  extends: ["eslint:recommended", "prettier"],
   globals: {
     Atomics: "readonly",
     SharedArrayBuffer: "readonly",
@@ -20,23 +20,13 @@ module.exports = {
     requireConfigFile: false,
     sourceType: "module",
   },
-  plugins: ["react", "react-hooks"],
   rules: {
     "no-unused-vars": [
       "error",
       {
         argsIgnorePattern: "^_",
-        varsIgnorePattern: "React|Fragment|h|^_",
+        varsIgnorePattern: "^_",
       },
     ],
-    "react/prop-types": "off",
-    "react/display-name": "off",
-    "react-hooks/rules-of-hooks": "warn", // Checks rules of Hooks
-    "react-hooks/exhaustive-deps": "warn", // Checks effect dependencies
-  },
-  settings: {
-    react: {
-      version: "detect",
-    },
   },
 }

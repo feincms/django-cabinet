@@ -13,7 +13,7 @@ version = __import__("cabinet").__version__
 release = subprocess.check_output(
     "git fetch --tags; git describe --always --tags",
     shell=True,
-    universal_newlines=True,
+    text=True,
 ).strip()
 language = "en"
 
