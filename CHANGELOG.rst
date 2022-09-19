@@ -4,6 +4,14 @@ Change log
 `Next version`_
 ~~~~~~~~~~~~~~~
 
+.. _Next version: https://github.com/matthiask/django-cabinet/compare/0.12...main
+
+
+`0.12`_ (2022-09-19)
+~~~~~~~~~~~~~~~~~~~~
+
+.. _0.12: https://github.com/matthiask/django-cabinet/compare/0.11...0.12
+
 - Fixed a bug where mixins couldn't be used as base classes of a custom
   file model.
 - Changed the file admin to never collapse the advanced fieldset by
@@ -194,4 +202,3 @@ Change log
 .. _0.9: https://github.com/matthiask/django-cabinet/compare/0.8...0.9
 .. _0.10: https://github.com/matthiask/django-cabinet/compare/0.9...0.10
 .. _0.11: https://github.com/matthiask/django-cabinet/compare/0.10...0.11
-.. _Next version: https://github.com/matthiask/django-cabinet/compare/0.11...main
