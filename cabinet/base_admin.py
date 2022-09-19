@@ -475,14 +475,14 @@ class FileAdminBase(FolderAdminMixin):
             )
         return response
 
-    def response_add(self, request, obj, **kwargs):
+    def response_add(self, request, obj, *args, **kwargs):
         return self._add_folder_if_redirect(
-            super().response_add(request, obj, **kwargs), obj.folder_id
+            super().response_add(request, obj, *args, **kwargs), obj.folder_id
         )
 
-    def response_change(self, request, obj, **kwargs):
+    def response_change(self, request, obj, *args, **kwargs):
         return self._add_folder_if_redirect(
-            super().response_change(request, obj, **kwargs), obj.folder_id
+            super().response_change(request, obj, *args, **kwargs), obj.folder_id
         )
 
     def upload(self, request):
