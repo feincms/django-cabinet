@@ -10,7 +10,7 @@ from django.db import router, transaction
 from django.db.models import Count
 from django.http import HttpResponseRedirect, JsonResponse
 from django.shortcuts import get_object_or_404
-from django.urls import re_path, reverse
+from django.urls import path, re_path, reverse
 from django.utils.functional import cached_property
 from django.utils.text import capfirst
 from django.utils.translation import gettext_lazy as _
@@ -114,13 +114,13 @@ def cabinet_querystring(request, **kwargs):
 class FolderAdminMixin(admin.ModelAdmin):
     def get_urls(self):
         return [
-            re_path(
-                r"^folder/add/$",
+            path(
+                "folder/add/",
                 self.admin_site.admin_view(self.folder_add),
                 name="cabinet_folder_add",
             ),
-            re_path(
-                r"^folder/select/$",
+            path(
+                "folder/select/",
                 self.admin_site.admin_view(self.folder_select),
                 name="cabinet_folder_select",
             ),
@@ -362,8 +362,8 @@ class FileAdminBase(FolderAdminMixin):
 
     def get_urls(self):
         return [
-            re_path(
-                r"^upload/$",
+            path(
+                "upload/",
                 self.admin_site.admin_view(self.upload),
                 name="cabinet_upload",
             )
