@@ -260,6 +260,7 @@ class FolderAdminMixin(admin.ModelAdmin):
             "{}{}{}".format(url, "?" if querydict else "", urlencode(sorted(querydict)))
         )
 
+    @admin.action(description=_("Move files to folder"))
     def move_to_folder(self, request, queryset):
         return HttpResponseRedirect(
             "%s?%s"
@@ -270,8 +271,6 @@ class FolderAdminMixin(admin.ModelAdmin):
                 urlencode(sorted(("files", item.id) for item in queryset)),
             )
         )
-
-    move_to_folder.short_description = _("Move files to folder")
 
     def folder_select(self, request):
         files = self.model.objects.filter(

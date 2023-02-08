@@ -14,6 +14,7 @@ class FileAdmin(CKEditorFilebrowserMixin, FileAdminBase):
     list_display = ["admin_thumbnail", "admin_file_name", "admin_details"]
     list_display_links = ["admin_thumbnail", "admin_file_name"]
 
+    @admin.display(description="")
     def admin_thumbnail(self, instance):
         if instance.image_file.name:
             try:
@@ -31,8 +32,7 @@ class FileAdmin(CKEditorFilebrowserMixin, FileAdminBase):
             )
         return ""
 
-    admin_thumbnail.short_description = ""
-
+    @admin.display(description=_("file name"))
     def admin_file_name(self, instance):
         return format_html(
             "{} <small>({})</small>",
@@ -40,8 +40,7 @@ class FileAdmin(CKEditorFilebrowserMixin, FileAdminBase):
             filesizeformat(instance.file_size),
         )
 
-    admin_file_name.short_description = _("file name")
-
+    @admin.display(description=_("details"))
     def admin_details(self, instance):
         details = [
             instance.caption,
@@ -56,5 +55,3 @@ class FileAdmin(CKEditorFilebrowserMixin, FileAdminBase):
             "<small>{}</small>",
             format_html_join(mark_safe("<br>"), "{}", ((d,) for d in details if d)),
         )
-
-    admin_details.short_description = _("details")
