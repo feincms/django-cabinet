@@ -1,0 +1,281 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: \n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2018-12-13 20:17+0100\n"
+"PO-Revision-Date: 2023-07-20 22:39+0330\n"
+"Language: fa\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"Last-Translator: Mahdi Namaki <mavenium@gmail.com>\n"
+"Language-Team: \n"
+"X-Generator: Poedit 2.3\n"
+
+#: admin.py:43 base.py:225
+msgid "file name"
+msgstr "نام پرونده"
+
+#: admin.py:49 templates/admin/cabinet/file/change_list.html:106
+#, python-format
+msgid "Created %(created_at)s, last modified %(updated_at)s"
+msgstr "ایجاد شده در %(created_at)s و به روز شده در %(updated_at)s"
+
+#: admin.py:60
+msgid "details"
+msgstr "جزئیات"
+
+#: apps.py:7
+msgid "Cabinet media library"
+msgstr "کتابخانه ی رسانه"
+
+#: base.py:50 base.py:70
+msgid "image"
+msgstr "تصویر"
+
+#: base.py:58
+msgid "image width"
+msgstr "عرض تصویر"
+
+#: base.py:61
+msgid "image height"
+msgstr "ارتفاع تصویر"
+
+#: base.py:63
+msgid "primary point of interest"
+msgstr "نقطه اصلی مورد علاقه"
+
+#: base.py:65
+msgid "alternative text"
+msgstr "متن جایگزین"
+
+#: base.py:71
+msgid "images"
+msgstr "تصاویر"
+
+#: base.py:84
+msgid "Image"
+msgstr "تصویر"
+
+#: base.py:91
+msgid "Video"
+msgstr "ویدئو"
+
+#: base.py:98
+msgid "Audio"
+msgstr "صدا"
+
+#: base.py:103
+msgid "PDF document"
+msgstr "سند PDF"
+
+#: base.py:104
+msgid "Flash"
+msgstr "Flash"
+
+#: base.py:105
+msgid "Text"
+msgstr "متن"
+
+#: base.py:106
+msgid "Rich Text"
+msgstr "متن طولانی"
+
+#: base.py:107
+msgid "Zip archive"
+msgstr "فایل فشرده Zip"
+
+#: base.py:110
+msgid "Microsoft Word"
+msgstr "Microsoft Word"
+
+#: base.py:115
+msgid "Microsoft Excel"
+msgstr "Microsoft Excel"
+
+#: base.py:120
+msgid "Microsoft PowerPoint"
+msgstr "Microsoft PowerPoint"
+
+#: base.py:123
+msgid "Binary"
+msgstr "باینری"
+
+#: base.py:126 base.py:131
+msgid "download"
+msgstr "دانلود"
+
+#: base.py:127
+msgid "download type"
+msgstr "نوع دانلود"
+
+#: base.py:132
+msgid "downloads"
+msgstr "دانلودها"
+
+#: base.py:155
+msgid "Keep filename this time when uploading new file?"
+msgstr "نام پرونده این بار هنگام آپلود فایل جدید حفظ شود؟"
+
+#: base.py:158
+msgid ""
+"By default, a new and unique filename is generated for each file, which also "
+"helps with caching."
+msgstr ""
+"به طور پیش فرض، یک نام فایل جدید و منحصر به فرد برای هر فایل ایجاد می شود که "
+"به ذخیره سازی نیز کمک می کند."
+
+#: base.py:208
+msgid "created at"
+msgstr "ایجاد شده در"
+
+#: base.py:209
+msgid "updated at"
+msgstr "بارگذاری شده در"
+
+#: base.py:221 base_admin.py:117 fields.py:14 models.py:46
+#: templates/admin/cabinet/file/change_list.html:24
+#: templates/admin/cabinet/folder/change_form.html:15
+msgid "folder"
+msgstr "پوشه"
+
+#: base.py:226
+msgid "file size"
+msgstr "اندازه پرونده"
+
+#: base.py:231 fields.py:15
+msgid "file"
+msgstr "پرونده"
+
+#: base.py:232 base_admin.py:128
+msgid "files"
+msgstr "پرونده ها"
+
+#: base.py:253
+msgid "Please fill in exactly one file field!"
+msgstr "لطفا دقیقاً یک فیلد فایل را پر کنید!"
+
+#: base_admin.py:62
+msgid "file type"
+msgstr "نوع پرونده"
+
+#: base_admin.py:110
+msgid "Delete this folder"
+msgstr "این پوشه را حذف کنید"
+
+#: base_admin.py:200
+#, python-format
+msgid "The folder \"%s\" was changed successfully."
+msgstr "پوشه \"%s\" با موفقیت تغییر کرد."
+
+#: base_admin.py:208
+#, python-format
+msgid "The folder \"%s\" was added successfully."
+msgstr "پوشه \"%s\" با موفقیت اضافه شد."
+
+#: base_admin.py:228
+#, python-format
+msgid "Add %s"
+msgstr "افزودن %s"
+
+#: base_admin.py:228
+#, python-format
+msgid "Change %s"
+msgstr "تغییر %s"
+
+#: base_admin.py:281
+#, python-format
+msgid "Cannot delete %(name)s"
+msgstr "نمی توان %(name)s را حذف کرد"
+
+#: base_admin.py:288
+#, python-format
+msgid "Cannot delete %(name)s because of related objects (%(related)s)"
+msgstr "نمی توان %(name)s را به دلیل اشیاء مرتبط حذف کرد (%(related)s)"
+
+#: base_admin.py:302
+#, python-format
+msgid "The folder \"%s\" was deleted successfully."
+msgstr "پوشه \"%s\" با موفقیت حذف شد."
+
+#: base_admin.py:331 base_admin.py:360
+msgid "Move files to folder"
+msgstr "انتقال پرونده ها به پوشه"
+
+#: base_admin.py:345
+msgid "The files have been successfully moved."
+msgstr "پرونده ها با موفقیت منتقل شدند."
+
+#: base_admin.py:498 templates/admin/cabinet/file/change_form.html:9
+#: templates/admin/cabinet/file/change_list.html:13
+#: templates/admin/cabinet/folder/change_form.html:9
+msgid "Root folder"
+msgstr "پوشه ریشه"
+
+#: base_admin.py:565
+msgid "Advanced"
+msgstr "پیشرفته"
+
+#: models.py:41
+msgid "name"
+msgstr "نام"
+
+#: models.py:47
+msgid "folders"
+msgstr "پوشه ها"
+
+#: models.py:57
+msgid "Root folder with same name exists already."
+msgstr "پوشه ریشه با همین نام از قبل وجود دارد."
+
+#: models.py:67
+msgid "caption"
+msgstr "کپشن"
+
+#: models.py:68
+msgid "copyright"
+msgstr "حق تألیف"
+
+#: templates/admin/cabinet/file/change_form.html:7
+#: templates/admin/cabinet/file/change_list.html:11
+#: templates/admin/cabinet/folder/change_form.html:7
+msgid "Home"
+msgstr "خانه"
+
+#: templates/admin/cabinet/file/change_form.html:21
+#: templates/admin/cabinet/file/change_list.html:24
+#: templates/admin/cabinet/file/change_list.html:32
+#: templates/admin/cabinet/folder/change_form.html:15
+#, python-format
+msgid "Add %(name)s"
+msgstr "افزودن %(name)s"
+
+#: templates/admin/cabinet/file/change_list.html:36
+msgid "Upload multiple files"
+msgstr "چندین فایل را آپلود کنید"
+
+#: templates/admin/cabinet/file/change_list.html:100
+#, python-format
+msgid "%(num_subfolders)s subfolders, %(num_files)s files"
+msgstr "%(num_subfolders)s زیر پوشه و %(num_files)s پرونده"
+
+#: templates/admin/cabinet/file/change_list.html:104
+msgid "Change folder"
+msgstr "تغییر پوشه"
+
+#: templates/admin/cabinet/file/change_list.html:115
+msgid "Upload files by dropping them into the list above."
+msgstr "پرونده ها را با انداختن آنها در لیست بالا آپلود کنید."
+
+#: templates/admin/cabinet/folder/change_form.html:23
+msgid "Save"
+msgstr "ذخیره"
+
+#~ msgid "Download"
+#~ msgstr "Download"
