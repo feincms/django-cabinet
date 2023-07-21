@@ -4,7 +4,7 @@ django.jQuery(function ($) {
     e.preventDefault()
     opener.CKEDITOR.tools.callFunction(
       parseInt(this.getAttribute("data-ckeditor-function"), 10),
-      this.getAttribute("href")
+      this.getAttribute("href"),
     )
     window.close()
   })

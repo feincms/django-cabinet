@@ -50,8 +50,7 @@ class CabinetFileRawIdWidget(ForeignKeyRawIdWidget):
 
         try:
             url = reverse(
-                "admin:%s_%s_change"
-                % (obj._meta.app_label, obj._meta.object_name.lower()),
+                f"admin:{obj._meta.app_label}_{obj._meta.object_name.lower()}_change",
                 args=(obj.pk,),
                 current_app=self.admin_site.name,
             )

@@ -12,10 +12,10 @@ from django.core.files.base import ContentFile
 from django.test import Client, TestCase
 from django.test.utils import override_settings
 from django.urls import reverse
-from testapp.models import Stuff
 
 from cabinet.base import AbstractFile, DownloadMixin, determine_accept_file_functions
 from cabinet.models import File, Folder, get_file_model
+from testapp.models import Stuff
 
 
 class CabinetTestCase(TestCase):
@@ -33,7 +33,7 @@ class CabinetTestCase(TestCase):
         client.login(username="test", password="test")
         return client
 
-    def assertNoMediaFiles(self):
+    def assertNoMediaFiles(self):  # noqa: N802
         File.objects.all().delete()
         files = list(
             itertools.chain.from_iterable(i[2] for i in os.walk(settings.MEDIA_ROOT))
@@ -223,9 +223,7 @@ class CabinetTestCase(TestCase):
         self.assertContains(response, '<p class="paginator"> 1 file </p>', html=True)
 
         response = c.get(
-            "/admin/cabinet/file/?folder__id__exact={}&file_type=image_file".format(
-                folder.pk
-            )
+            f"/admin/cabinet/file/?folder__id__exact={folder.pk}&file_type=image_file"
         )
         self.assertContains(response, '<p class="paginator"> 0 files </p>', html=True)
 
@@ -286,13 +284,13 @@ class CabinetTestCase(TestCase):
         f = Folder.objects.get()
         files_url = (
             "/admin/cabinet/file/?_popup=1&_to_field=id&folder__id__exact=%s" % f.id
-        )  # noqa
+        )
         self.assertRedirects(response, files_url)
 
         response = c.get(files_url)
         self.assertContains(
             response,
-            '<a href="?_popup=1&amp;_to_field=id"><span class="folder"></span></a>',  # noqa
+            '<a href="?_popup=1&amp;_to_field=id"><span class="folder"></span></a>',
         )
         # We do not need to test adding files -- that's covered by Django.
 

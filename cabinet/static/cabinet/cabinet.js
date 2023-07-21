@@ -14,7 +14,7 @@ django.jQuery(function ($) {
 
   // Prepend folders to result list
   $("#result_list>tbody").prepend(
-    document.getElementById("cabinet-folder-list").innerHTML
+    document.getElementById("cabinet-folder-list").innerHTML,
   )
 
   var dragCounter = 0,
@@ -32,7 +32,7 @@ django.jQuery(function ($) {
       function (e) {
         e.preventDefault()
         e.stopPropagation()
-      }
+      },
     )
     .on("dragover dragenter", function () {
       ++dragCounter
@@ -71,7 +71,7 @@ django.jQuery(function ($) {
       var d = new FormData()
       d.append(
         "csrfmiddlewaretoken",
-        $("input[name=csrfmiddlewaretoken]").val()
+        $("input[name=csrfmiddlewaretoken]").val(),
       )
       d.append("folder", folder[1])
       d.append("file", files[i])
@@ -99,11 +99,11 @@ django.jQuery(function ($) {
                     "% of " +
                     (success + 1) +
                     " / " +
-                    files.length
+                    files.length,
                 )
               }
             },
-            false
+            false,
           )
           return xhr
         },

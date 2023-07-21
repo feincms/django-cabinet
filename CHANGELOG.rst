@@ -1,12 +1,12 @@
 Change log
 ==========
 
-`Next version`_
-~~~~~~~~~~~~~~~
+Next version
+~~~~~~~~~~~~
 
-.. _Next version: https://github.com/matthiask/django-cabinet/compare/0.12...main
-
-- Added Django 4.1 and 4.2a1 to the CI matrix.
+- Added Django 4.1 and 4.2 to the CI matrix.
+- Added Python 3.11.
+- Switched to ruff and hatchling.
 - Documented that you should add a ``post_delete`` handler yourself when
   replacing the default file model.
 

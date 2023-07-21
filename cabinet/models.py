@@ -26,15 +26,15 @@ def get_file_model():
     """
     try:
         return apps.get_model(settings.CABINET_FILE_MODEL, require_ready=False)
-    except ValueError:
+    except ValueError as exc:
         raise ImproperlyConfigured(
             "CABINET_FILE_MODEL must be of the form 'app_label.model_name'"
-        )
-    except LookupError:
+        ) from exc
+    except LookupError as exc:
         raise ImproperlyConfigured(
             "CABINET_FILE_MODEL refers to model '%s'"
             " that has not been installed" % settings.CABINET_FILE_MODEL
-        )
+        ) from exc
 
 
 class Folder(TimestampsMixin, TreeNode):
