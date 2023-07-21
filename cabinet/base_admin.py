@@ -1,5 +1,6 @@
 from urllib.parse import urlencode
 
+import django
 from django import forms
 from django.contrib import admin, messages
 from django.contrib.admin import helpers
@@ -30,21 +31,24 @@ class FolderListFilter(admin.RelatedFieldListFilter):
 
     def queryset(self, request, queryset):
         if "q" in request.GET:
-            folder = self.used_parameters.get("folder__id__exact")
-            if folder:
+            if folder_id := self.used_parameters.get("folder__id__exact"):
+                if django.VERSION > (5,):
+                    folder_id = folder_id[0]
                 return queryset.filter(
                     # Avoid problems because of table aliasses (Django 1.11)
                     folder__in=list(
                         Folder.objects.descendants(
-                            folder, include_self=True
+                            folder_id, include_self=True
                         ).values_list("id", flat=True)
                     )
                 )
             return queryset
 
-        if self.used_parameters:
+        if folder_id := self.used_parameters.get("folder__id__exact"):
+            if django.VERSION > (5,):
+                folder_id = folder_id[0]
             try:
-                return queryset.filter(**self.used_parameters)
+                return queryset.filter(folder=folder_id)
             except ValidationError as e:
                 raise IncorrectLookupParameters(e) from e
         else:
