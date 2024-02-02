@@ -4,6 +4,11 @@ Change log
 Next version
 ~~~~~~~~~~~~
 
+- Added Django 5.0, Python 3.12.
+- Updated the pre-commit hooks and added ESLint again (it was inadvertently
+  dropped).
+
+
 0.13 (2023-07-21)
 ~~~~~~~~~~~~~~~~~
 

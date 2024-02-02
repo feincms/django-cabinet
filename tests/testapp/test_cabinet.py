@@ -312,8 +312,7 @@ class CabinetTestCase(TestCase):
 
         client = self.login()
         response = client.get(
-            "/admin/cabinet/file/?_popup=1&CKEditor=editor&CKEditorFuncNum=1"
-            "&langCode=en&folder__id__exact={}".format(folder.pk)
+            f"/admin/cabinet/file/?_popup=1&CKEditor=editor&CKEditorFuncNum=1&langCode=en&folder__id__exact={folder.pk}"
         )
         self.assertContains(response, "data-ckeditor-function", 2)  # Icon and name
 
