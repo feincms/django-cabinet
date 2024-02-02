@@ -28,7 +28,8 @@ repos:
     hooks:
       - id: prettier
         entry: env PRETTIER_LEGACY_CLI=1 prettier
-        types_or: [javascript, css, json]
+        types_or: [javascript, css, json, yaml]
+        exclude: "\\.html$"
         args: [--write, --no-semi]
   - repo: https://github.com/tox-dev/pyproject-fmt
     rev: 1.7.0
@@ -44,4 +45,4 @@ repos:
       - id: eslint
         types_or: [javascript]
         args:
-        - --fix
+          - --fix
