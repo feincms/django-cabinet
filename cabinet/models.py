@@ -42,7 +42,6 @@ class Folder(TimestampsMixin, TreeNode):
 
     class Meta:
         ordering = ["name"]
-        unique_together = [("parent", "name")]
         verbose_name = _("folder")
         verbose_name_plural = _("folders")
 
