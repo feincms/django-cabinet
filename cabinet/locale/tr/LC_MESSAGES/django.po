@@ -1,0 +1,280 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: PACKAGE VERSION\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2018-12-13 20:17+0100\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: Cihad GÜNDOĞDU <cihadgundogdu@gmail.com>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"Language: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n != 1)\n"
+
+#: admin.py:43 base.py:225
+msgid "file name"
+msgstr "dosya adı"
+
+#: admin.py:49 templates/admin/cabinet/file/change_list.html:106
+#, python-format
+msgid "Created %(created_at)s, last modified %(updated_at)s"
+msgstr "Oluşturma %(created_at)s, so düzenleme %(updated_at)s"
+
+#: admin.py:60
+msgid "details"
+msgstr "Detaylar"
+
+#: apps.py:7
+msgid "Cabinet media library"
+msgstr "Kabinet medya kütüphanesi"
+
+#: base.py:50 base.py:70
+msgid "image"
+msgstr "Resim"
+
+#: base.py:58
+msgid "image width"
+msgstr "Resim genişliği"
+
+#: base.py:61
+msgid "image height"
+msgstr "Resim yüksekliği"
+
+#: base.py:63
+msgid "primary point of interest"
+msgstr "Ana ilgi noktası"
+
+#: base.py:65
+msgid "alternative text"
+msgstr "Alternatif metin"
+
+#: base.py:71
+msgid "images"
+msgstr "Resimler"
+
+#: base.py:84
+msgid "Image"
+msgstr "Resim"
+
+#: base.py:91
+msgid "Video"
+msgstr "Video"
+
+#: base.py:98
+msgid "Audio"
+msgstr "Ses"
+
+#: base.py:103
+msgid "PDF document"
+msgstr "PDF belgesi"
+
+#: base.py:104
+msgid "Flash"
+msgstr "Flash"
+
+#: base.py:105
+msgid "Text"
+msgstr "Metin"
+
+#: base.py:106
+msgid "Rich Text"
+msgstr "Zengin Metin"
+
+#: base.py:107
+msgid "Zip archive"
+msgstr "Zip arşivi"
+
+#: base.py:110
+msgid "Microsoft Word"
+msgstr "Microsoft Word"
+
+#: base.py:115
+msgid "Microsoft Excel"
+msgstr "Microsoft Excel"
+
+#: base.py:120
+msgid "Microsoft PowerPoint"
+msgstr "Microsoft PowerPoint"
+
+#: base.py:123
+msgid "Binary"
+msgstr "İkili(Binary)"
+
+#: base.py:126 base.py:131
+msgid "download"
+msgstr "İndir"
+
+#: base.py:127
+msgid "download type"
+msgstr "İndirme türü"
+
+#: base.py:132
+msgid "downloads"
+msgstr "İndirmeler"
+
+#: base.py:155
+msgid "Keep filename this time when uploading new file?"
+msgstr "Yeni dosya yüklerken bu sefer dosya adını sakla?"
+
+#: base.py:158
+msgid ""
+"By default, a new and unique filename is generated for each file, which also "
+"helps with caching."
+msgstr ""
+"Varsayılan olarak, her dosya için yeni ve benzersiz bir dosya adı oluşturulur, "
+
+#: base.py:208
+msgid "created at"
+msgstr "oluşturulma tarihi"
+
+#: base.py:209
+msgid "updated at"
+msgstr "güncellenme tarihi"
+
+#: base.py:221 base_admin.py:117 fields.py:14 models.py:46
+#: templates/admin/cabinet/file/change_list.html:24
+#: templates/admin/cabinet/folder/change_form.html:15
+msgid "folder"
+msgstr "Klasör"
+
+#: base.py:226
+msgid "file size"
+msgstr "Dosya boyutu"
+
+#: base.py:231 fields.py:15
+msgid "file"
+msgstr "Dosya"
+
+#: base.py:232 base_admin.py:128
+msgid "files"
+msgstr "Dosyalar"
+
+#: base.py:253
+msgid "Please fill in exactly one file field!"
+msgstr "Lütfen tam olarak bir dosya alanı doldurun!"
+
+#: base_admin.py:62
+msgid "file type"
+msgstr "Dosya türü"
+
+#: base_admin.py:110
+msgid "Delete this folder"
+msgstr "Bu klasörü sil"
+
+#: base_admin.py:200
+#, python-format
+msgid "The folder \"%s\" was changed successfully."
+msgstr "Klasör \"%s\" başarıyla değiştirildi."
+
+#: base_admin.py:208
+#, python-format
+msgid "The folder \"%s\" was added successfully."
+msgstr "Klasör \"%s\" başarıyla eklendi."
+
+#: base_admin.py:228
+#, python-format
+msgid "Add %s"
+msgstr "%s ekle"
+
+#: base_admin.py:228
+#, python-format
+msgid "Change %s"
+msgstr "%s değiştir"
+
+#: base_admin.py:281
+#, python-format
+msgid "Cannot delete %(name)s"
+msgstr "%(name)s silinemez"
+
+#: base_admin.py:288
+#, python-format
+msgid "Cannot delete %(name)s because of related objects (%(related)s)"
+msgstr ""
+"%(name)s, ilgili nesneler (%(related)s) nedeniyle silinemiyor"
+
+#: base_admin.py:302
+#, python-format
+msgid "The folder \"%s\" was deleted successfully."
+msgstr "Klasör \"%s\" başarıyla silindi."
+
+#: base_admin.py:331 base_admin.py:360
+msgid "Move files to folder"
+msgstr "Dosyaları klasöre taşı"
+
+#: base_admin.py:345
+msgid "The files have been successfully moved."
+msgstr "Dosyalar başarıyla taşındı."
+
+#: base_admin.py:498 templates/admin/cabinet/file/change_form.html:9
+#: templates/admin/cabinet/file/change_list.html:13
+#: templates/admin/cabinet/folder/change_form.html:9
+msgid "Root folder"
+msgstr "Kök klasör"
+
+#: base_admin.py:565
+msgid "Advanced"
+msgstr "Gelişmiş"
+
+#: models.py:41
+msgid "name"
+msgstr "Ad"
+
+#: models.py:47
+msgid "folders"
+msgstr "Klasörler"
+
+#: models.py:57
+msgid "Root folder with same name exists already."
+msgstr "Aynı adla kök klasör zaten mevcut."
+
+#: models.py:67
+msgid "caption"
+msgstr "Başlık"
+
+#: models.py:68
+msgid "copyright"
+msgstr "Telif hakkı"
+
+#: templates/admin/cabinet/file/change_form.html:7
+#: templates/admin/cabinet/file/change_list.html:11
+#: templates/admin/cabinet/folder/change_form.html:7
+msgid "Home"
+msgstr "Anasayfa"
+
+#: templates/admin/cabinet/file/change_form.html:21
+#: templates/admin/cabinet/file/change_list.html:24
+#: templates/admin/cabinet/file/change_list.html:32
+#: templates/admin/cabinet/folder/change_form.html:15
+#, python-format
+msgid "Add %(name)s"
+msgstr "%(name)s ekle"
+
+#: templates/admin/cabinet/file/change_list.html:36
+msgid "Upload multiple files"
+msgstr "Birden fazla dosya yükle"
+
+#: templates/admin/cabinet/file/change_list.html:100
+#, python-format
+msgid "%(num_subfolders)s subfolders, %(num_files)s files"
+msgstr "%(num_subfolders)s alt klasör, %(num_files)s dosya"
+
+#: templates/admin/cabinet/file/change_list.html:104
+msgid "Change folder"
+msgstr "Klasörü değiştir"
+
+#: templates/admin/cabinet/file/change_list.html:115
+msgid "Upload files by dropping them into the list above."
+msgstr "Dosyaları yukarıdaki listeye sürükleyerek yükleyin."
+
+#: templates/admin/cabinet/folder/change_form.html:23
+msgid "Save"
+msgstr "Kaydet"
+
+#~ msgid "Download"
+#~ msgstr "Download"
