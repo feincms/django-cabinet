@@ -4,6 +4,8 @@ Change log
 Next version
 ~~~~~~~~~~~~
 
+- Added a Turkish translation. Thanks @mcihad!
+
 0.14 (2024-02-02)
 ~~~~~~~~~~~~~~~~~
 
