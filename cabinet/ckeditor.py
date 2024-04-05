@@ -1,3 +1,4 @@
+import django
 from django import forms
 from django.contrib import admin
 from django.contrib.admin.views.main import ChangeList
@@ -17,6 +18,10 @@ class CKEditorFilebrowserMixin(admin.ModelAdmin):
         )
 
 
+def _extract(value):
+    return value[0] if value and django.VERSION > (5,) else value
+
+
 class CKFileBrowserChangeList(ChangeList):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -29,9 +34,9 @@ class CKFileBrowserChangeList(ChangeList):
     def get_filters_params(self, params=None):
         params = super().get_filters_params(params)
         self.ck_context = {
-            "CKEditor": params.pop("CKEditor"),
-            "CKEditorFuncNum": params.pop("CKEditorFuncNum"),
-            "langCode": params.pop("langCode"),
+            "CKEditor": _extract(params.pop("CKEditor")),
+            "CKEditorFuncNum": _extract(params.pop("CKEditorFuncNum")),
+            "langCode": _extract(params.pop("langCode")),
         }
         return params
 
