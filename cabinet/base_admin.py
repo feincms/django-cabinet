@@ -404,7 +404,7 @@ class FileAdminBase(FolderAdminMixin):
 
         return folders
 
-    def changelist_view(self, request):
+    def changelist_view(self, request, extra_context=None):
         folder__id__exact = request.GET.get("folder__id__exact")
         if folder__id__exact == "last":
             kw = {}
@@ -447,13 +447,15 @@ class FileAdminBase(FolderAdminMixin):
                         ),
                     }
                 )
-
-        response = super().changelist_view(
-            request,
-            extra_context={
+        extra_context_cabinet = {
                 "cabinet": cabinet_context,
                 "title": folder or _("Root folder"),
-            },
+            }
+        if extra_context:
+            extra_context_cabinet.update(extra_context)
+        response = super().changelist_view(
+            request,
+            extra_context=extra_context_cabinet,
         )
         response.set_cookie("cabinet_folder", folder.pk if folder else "")
         return response
