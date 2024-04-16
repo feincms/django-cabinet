@@ -5,6 +5,9 @@ Next version
 ~~~~~~~~~~~~
 
 - Added a Turkish translation. Thanks @mcihad!
+- Added the ``extra_context`` argument to our ``changelist_view``. Thanks
+  @underdoeg!
+
 
 0.14 (2024-02-02)
 ~~~~~~~~~~~~~~~~~
