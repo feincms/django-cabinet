@@ -390,9 +390,7 @@ class CabinetTestCase(TestCase):
         self.assertContains(response, 'type="file"')
         self.assertContains(
             response,
-            'href="/admin/cabinet/file/?_to_field=id&amp;folder__id__exact={}"'.format(
-                folder.id
-            ),
+            f'href="/admin/cabinet/file/?_to_field=id&amp;folder__id__exact={folder.id}"',
         )
 
         filefield = Stuff._meta.get_field("file")

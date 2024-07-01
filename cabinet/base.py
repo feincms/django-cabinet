@@ -233,6 +233,25 @@ class AbstractFile(TimestampsMixin):
     def __str__(self):
         return self.file_name
 
+    def save(self, *args, **kwargs):
+        f_obj = self.file
+        self.file_name = os.path.basename(f_obj.name)
+        self.file_size = f_obj.size
+        super().save(*args, **kwargs)
+
+    save.alters_data = True
+
+    def delete_files(self):
+        for field in self.FILE_FIELDS:
+            f_obj = getattr(self, field)
+            if not f_obj.name:
+                continue
+
+            # f_obj.storage.delete(f_obj.name)
+            f_obj.delete(save=False)
+
+    delete_files.alters_data = True
+
     def __files(self):
         for field in self.FILE_FIELDS:
             f = getattr(self, field)
@@ -254,25 +273,6 @@ class AbstractFile(TimestampsMixin):
     def clean(self):
         if len(list(self.__files())) != 1:
             raise ValidationError(_("Please fill in exactly one file field!"))
-
-    def save(self, *args, **kwargs):
-        f_obj = self.file
-        self.file_name = os.path.basename(f_obj.name)
-        self.file_size = f_obj.size
-        super().save(*args, **kwargs)
-
-    save.alters_data = True
-
-    def delete_files(self):
-        for field in self.FILE_FIELDS:
-            f_obj = getattr(self, field)
-            if not f_obj.name:
-                continue
-
-            # f_obj.storage.delete(f_obj.name)
-            f_obj.delete(save=False)
-
-    delete_files.alters_data = True
 
 
 def determine_accept_file_functions(sender, **kwargs):

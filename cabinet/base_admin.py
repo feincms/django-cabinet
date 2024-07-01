@@ -448,9 +448,9 @@ class FileAdminBase(FolderAdminMixin):
                     }
                 )
         extra_context_cabinet = {
-                "cabinet": cabinet_context,
-                "title": folder or _("Root folder"),
-            }
+            "cabinet": cabinet_context,
+            "title": folder or _("Root folder"),
+        }
         if extra_context:
             extra_context_cabinet.update(extra_context)
         response = super().changelist_view(

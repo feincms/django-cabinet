@@ -1,14 +1,14 @@
 /* global django */
-django.jQuery(function ($) {
+django.jQuery(($) => {
   $(".cabinet-inline-wrap").each(function () {
-    var wrap = $(this)
+    const wrap = $(this)
     wrap
       .find("input[type='file']")
       .attr("disabled", !wrap.find(".cabinet-inline-upload select").val())
   })
 
   $(document.body).on("change", ".cabinet-inline-upload select", function () {
-    var wrap = $(this).closest(".cabinet-inline-wrap")
+    const wrap = $(this).closest(".cabinet-inline-wrap")
     wrap.find("input[type='file']").attr("disabled", !this.value)
   })
 
@@ -17,7 +17,7 @@ django.jQuery(function ($) {
   })
 
   function doUpload(wrap, file) {
-    var d = new FormData()
+    const d = new FormData()
     d.append("csrfmiddlewaretoken", $("input[name=csrfmiddlewaretoken]").val())
     d.append("folder", wrap.find("select").val())
     d.append("file", file)
@@ -29,7 +29,7 @@ django.jQuery(function ($) {
       contentType: false, // request
       processData: false, // request
       dataType: "json", // response
-      success: function (data) {
+      success: (data) => {
         wrap.find(".cabinet-inline-field input").val(data.pk)
         wrap.find(".cabinet-inline-upload input").val("")
         wrap.find(".cabinet-inline-field strong>a").text(data.name)
