@@ -8,6 +8,8 @@ Next version
 - Added the ``extra_context`` argument to our ``changelist_view``. Thanks
   @underdoeg!
 - Switched from ESLint to biome.
+- Dropped the inline upload form in the cabinet foreign key widget. It was
+  extremely slow when having many folders and many cabinet foreign keys.
 
 
 0.14 (2024-02-02)

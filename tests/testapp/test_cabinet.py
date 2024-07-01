@@ -376,8 +376,6 @@ class CabinetTestCase(TestCase):
         c = self.login()
         response = c.get("/admin/testapp/stuff/add/")
 
-        self.assertContains(response, 'class="cabinet-inline-upload"')
-        self.assertContains(response, 'type="file"')
         self.assertContains(
             response,
             'href="/admin/cabinet/file/?_to_field=id&amp;folder__id__exact=last"',
@@ -386,8 +384,6 @@ class CabinetTestCase(TestCase):
         stuff = Stuff.objects.create(title="Test", file=file)
         response = c.get(reverse("admin:testapp_stuff_change", args=(stuff.id,)))
 
-        self.assertContains(response, 'class="cabinet-inline-upload"')
-        self.assertContains(response, 'type="file"')
         self.assertContains(
             response,
             f'href="/admin/cabinet/file/?_to_field=id&amp;folder__id__exact={folder.id}"',
