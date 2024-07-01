@@ -4,6 +4,9 @@ Change log
 Next version
 ~~~~~~~~~~~~
 
+0.15 (2024-07-01)
+~~~~~~~~~~~~~~~~~
+
 - Added a Turkish translation. Thanks @mcihad!
 - Added the ``extra_context`` argument to our ``changelist_view``. Thanks
   @underdoeg!
