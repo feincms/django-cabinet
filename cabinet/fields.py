@@ -5,6 +5,9 @@ from django.db import models
 from django.urls import NoReverseMatch, reverse
 from django.utils.text import Truncator
 
+# Import cabinet.models for the settings.CABINET_FILE_MODEL side-effect
+import cabinet.models  # noqa: F401
+
 
 class CabinetFileRawIdWidget(ForeignKeyRawIdWidget):
     template_name = "admin/cabinet/cabinet_file_raw_id_widget.html"
