@@ -428,25 +428,15 @@ class FileAdminBase(FolderAdminMixin):
                 except (Folder.DoesNotExist, ValueError):
                     return HttpResponseRedirect("?e=1")
 
-            if folder is None:
-                cabinet_context.update(
-                    {
-                        "folder": None,
-                        "folder_children": self.folders_annotate_counts(
-                            Folder.objects.filter(parent__isnull=True)
-                        ),
-                    }
-                )
+            cabinet_context.update(
+                {
+                    "folder": folder,
+                    "folder_children": self.folders_annotate_counts(
+                        Folder.objects.filter(parent=folder)
+                    ),
+                }
+            )
 
-            else:
-                cabinet_context.update(
-                    {
-                        "folder": folder,
-                        "folder_children": self.folders_annotate_counts(
-                            folder.children.all()
-                        ),
-                    }
-                )
         extra_context_cabinet = {
             "cabinet": cabinet_context,
             "title": folder or _("Root folder"),
