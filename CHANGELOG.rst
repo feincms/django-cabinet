@@ -4,6 +4,9 @@ Change log
 Next version
 ~~~~~~~~~~~~
 
+- Dropped support for Python 3.8.
+
+
 0.15 (2024-07-01)
 ~~~~~~~~~~~~~~~~~
 
