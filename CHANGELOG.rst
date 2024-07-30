@@ -4,7 +4,12 @@ Change log
 Next version
 ~~~~~~~~~~~~
 
+0.16 (2024-07-30)
+~~~~~~~~~~~~~~~~~
+
 - Dropped support for Python 3.8.
+- Added a management command which allows exporting a folder as a ZIP archive.
+  Thanks @fabiangermann!
 
 
 0.15 (2024-07-01)
