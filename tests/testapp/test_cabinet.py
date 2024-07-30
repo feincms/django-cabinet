@@ -1,3 +1,4 @@
+import tempfile
 import io
 import itertools
 import json
@@ -9,13 +10,17 @@ from django.conf import settings
 from django.contrib.auth.models import User
 from django.core.exceptions import ImproperlyConfigured, ValidationError
 from django.core.files.base import ContentFile
+from django.core.management import call_command
 from django.test import Client, TestCase
 from django.test.utils import override_settings
 from django.urls import reverse
 
 from cabinet.base import AbstractFile, DownloadMixin, determine_accept_file_functions
 from cabinet.models import File, Folder, get_file_model
+from pathlib import Path
 from testapp.models import Stuff
+from unittest.mock import patch
+from zipfile import ZipFile
 
 
 class CabinetTestCase(TestCase):
@@ -547,3 +552,28 @@ class CabinetTestCase(TestCase):
                 }
             ],
         )
+
+    @patch("cabinet.management.commands.archive_cabinet_folder._get_random_suffix", return_value="asdf")
+    def test_archive_management_command(self, patched__get_random_suffix):
+        output = "archive.zip"
+        folder = Folder.objects.create(name="Top")
+        subfolder = Folder.objects.create(parent=folder, name="Sub")
+
+        for _ in range(2):
+            file = File(folder=subfolder)
+            file.download_file.save("hello.txt", ContentFile("Hello"))
+
+        # enforce duplicate names
+        File.objects.all().update(file_name="hello.txt")
+
+        with tempfile.TemporaryDirectory() as tmp_dir:
+            output = Path(tmp_dir) / 'output.zip'
+            call_command('archive_cabinet_folder', folder_id=folder.id, output=output)
+            with ZipFile(output, "r") as zip_file:
+                self.assertEqual(
+                    zip_file.namelist(),
+                    [
+                        "Top/Sub/hello.txt",
+                        "Top/Sub/hello_asdf.txt",
+                    ]
+                )
