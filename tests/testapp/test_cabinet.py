@@ -1,9 +1,12 @@
-import tempfile
 import io
 import itertools
 import json
 import os
 import shutil
+import tempfile
+from pathlib import Path
+from unittest.mock import patch
+from zipfile import ZipFile
 
 from django import forms
 from django.conf import settings
@@ -17,10 +20,7 @@ from django.urls import reverse
 
 from cabinet.base import AbstractFile, DownloadMixin, determine_accept_file_functions
 from cabinet.models import File, Folder, get_file_model
-from pathlib import Path
 from testapp.models import Stuff
-from unittest.mock import patch
-from zipfile import ZipFile
 
 
 class CabinetTestCase(TestCase):
@@ -38,7 +38,7 @@ class CabinetTestCase(TestCase):
         client.login(username="test", password="test")
         return client
 
-    def assertNoMediaFiles(self):  # noqa: N802
+    def assertNoMediaFiles(self):
         File.objects.all().delete()
         files = list(
             itertools.chain.from_iterable(i[2] for i in os.walk(settings.MEDIA_ROOT))
@@ -553,7 +553,10 @@ class CabinetTestCase(TestCase):
             ],
         )
 
-    @patch("cabinet.management.commands.archive_cabinet_folder._get_random_suffix", return_value="asdf")
+    @patch(
+        "cabinet.management.commands.archive_cabinet_folder._get_random_suffix",
+        return_value="asdf",
+    )
     def test_archive_management_command(self, patched__get_random_suffix):
         output = "archive.zip"
         folder = Folder.objects.create(name="Top")
@@ -567,13 +570,13 @@ class CabinetTestCase(TestCase):
         File.objects.all().update(file_name="hello.txt")
 
         with tempfile.TemporaryDirectory() as tmp_dir:
-            output = Path(tmp_dir) / 'output.zip'
-            call_command('archive_cabinet_folder', folder_id=folder.id, output=output)
+            output = Path(tmp_dir) / "output.zip"
+            call_command("archive_cabinet_folder", folder_id=folder.id, output=output)
             with ZipFile(output, "r") as zip_file:
                 self.assertEqual(
                     zip_file.namelist(),
                     [
                         "Top/Sub/hello.txt",
                         "Top/Sub/hello_asdf.txt",
-                    ]
+                    ],
                 )

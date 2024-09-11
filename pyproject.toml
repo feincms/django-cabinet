@@ -12,7 +12,7 @@ license = { text = "BSD-3-Clause" }
 authors = [
   { name = "Matthias Kestenholz", email = "mk@feinheit.ch" },
 ]
-requires-python = ">=3.9"
+requires-python = ">=3.10"
 classifiers = [
   "Environment :: Web Environment",
   "Framework :: Django",
@@ -21,7 +21,6 @@ classifiers = [
   "Operating System :: OS Independent",
   "Programming Language :: Python",
   "Programming Language :: Python :: 3 :: Only",
-  "Programming Language :: Python :: 3.9",
   "Programming Language :: Python :: 3.10",
   "Programming Language :: Python :: 3.11",
   "Programming Language :: Python :: 3.12",
@@ -51,7 +50,7 @@ include = [
 path = "cabinet/__init__.py"
 
 [tool.ruff]
-target-version = "py39"
+target-version = "py310"
 
 fix = true
 show-fixes = true
@@ -73,8 +72,6 @@ lint.extend-select = [
   "I",
   # flake8-gettext
   "INT",
-  # pep8-naming
-  "N",
   # pygrep-hooks
   "PGH",
   # flake8-pie
@@ -84,8 +81,6 @@ lint.extend-select = [
   "PLW",
   # unused noqa
   "RUF100",
-  # flake8-simplify
-  "SIM",
   # flake8-tidy-imports
   "TID",
   # pyupgrade

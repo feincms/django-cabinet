@@ -4,6 +4,9 @@ Change log
 Next version
 ~~~~~~~~~~~~
 
+- Pruned the CI matrix.
+
+
 0.16 (2024-07-30)
 ~~~~~~~~~~~~~~~~~
 

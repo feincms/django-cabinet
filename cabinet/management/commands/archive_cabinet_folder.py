@@ -3,8 +3,9 @@ import string
 from pathlib import Path
 from zipfile import ZIP_DEFLATED, ZipFile
 
-from cabinet.models import Folder
 from django.core.management import BaseCommand
+
+from cabinet.models import Folder
 
 
 def _get_random_suffix():
@@ -29,12 +30,14 @@ class Command(BaseCommand):
 
                 if arc_path in arc_paths:
                     filename = Path(file.file_name)
-                    arc_path = Path(*path) / "".join([
-                        filename.stem,
-                        "_",
-                        *_get_random_suffix(),
-                        *filename.suffixes,
-                    ])
+                    arc_path = Path(*path) / "".join(
+                        [
+                            filename.stem,
+                            "_",
+                            *_get_random_suffix(),
+                            *filename.suffixes,
+                        ]
+                    )
 
                 zip_file.write(file.file.path, arc_path)
                 arc_paths.add(arc_path)
