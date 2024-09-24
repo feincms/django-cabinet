@@ -1,0 +1,282 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: PACKAGE VERSION\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2024-09-24 18:35+0500\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"Language: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=4; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && "
+"n%10<=4 && (n%100<12 || n%100>14) ? 1 : n%10==0 || (n%10>=5 && n%10<=9) || "
+"(n%100>=11 && n%100<=14)? 2 : 3);\n"
+#: applications/users/admin.py:29
+msgid "Permissions"
+msgstr ""
+
+#: applications/users/admin.py:40
+msgid "Important dates"
+msgstr "Важные даты"
+
+#: cabinet/admin.py:35 cabinet/base.py:224
+msgid "file name"
+msgstr "имя файла"
+
+#: cabinet/admin.py:43
+msgid "details"
+msgstr "детали"
+
+#: cabinet/admin.py:48
+#: cabinet/templates/admin/cabinet/file/change_list.html:106
+#, python-format
+msgid "Created %(created_at)s, last modified %(updated_at)s"
+msgstr "Создано %(created_at)s, последнее изменение %(updated_at)s"
+
+#: cabinet/apps.py:9
+msgid "Cabinet media library"
+msgstr "Медиатека Cabinet"
+
+#: cabinet/base.py:49 cabinet/base.py:70
+msgid "image"
+msgstr "изображение"
+
+#: cabinet/base.py:58
+msgid "image width"
+msgstr "ширина изображения"
+
+#: cabinet/base.py:61
+msgid "image height"
+msgstr "высота изображения"
+
+#: cabinet/base.py:63
+msgid "primary point of interest"
+msgstr "главная точка интереса"
+
+#: cabinet/base.py:65
+msgid "alternative text"
+msgstr "альтернативный текст"
+
+#: cabinet/base.py:71
+msgid "images"
+msgstr "изображения"
+
+#: cabinet/base.py:84
+msgid "Image"
+msgstr "Изображение"
+
+#: cabinet/base.py:91
+msgid "Video"
+msgstr "Видео"
+
+#: cabinet/base.py:98
+msgid "Audio"
+msgstr "Аудио"
+
+#: cabinet/base.py:103
+msgid "PDF document"
+msgstr "PDF документ"
+
+#: cabinet/base.py:104
+msgid "Flash"
+msgstr "Flash"
+
+#: cabinet/base.py:105
+msgid "Text"
+msgstr "Текст"
+
+#: cabinet/base.py:106
+msgid "Rich Text"
+msgstr "Форматированный текст"
+
+#: cabinet/base.py:107
+msgid "Zip archive"
+msgstr "Zip архив"
+
+#: cabinet/base.py:110
+msgid "Microsoft Word"
+msgstr "Microsoft Word"
+
+#: cabinet/base.py:115
+msgid "Microsoft Excel"
+msgstr "Microsoft Excel"
+
+#: cabinet/base.py:120
+msgid "Microsoft PowerPoint"
+msgstr "Microsoft PowerPoint"
+
+#: cabinet/base.py:123
+msgid "Binary"
+msgstr "Бинарный"
+
+#: cabinet/base.py:127 cabinet/base.py:133
+msgid "download"
+msgstr "скачать"
+
+#: cabinet/base.py:129
+msgid "download type"
+msgstr "тип загрузки"
+
+#: cabinet/base.py:134
+msgid "downloads"
+msgstr "загрузки"
+
+#: cabinet/base.py:157
+msgid "Keep filename this time when uploading new file?"
+msgstr "Оставить имя файла при загрузке нового файла?"
+
+#: cabinet/base.py:160
+msgid ""
+"By default, a new and unique filename is generated for each file, which also "
+"helps with caching."
+msgstr "По умолчанию генерируется новое и уникальное имя файла, что также помогает с кешированием."
+
+#: cabinet/base.py:207
+msgid "created at"
+msgstr "создано"
+
+#: cabinet/base.py:208
+msgid "updated at"
+msgstr "обновлено"
+
+#: cabinet/base.py:220 cabinet/base_admin.py:90 cabinet/models.py:45
+#: cabinet/templates/admin/cabinet/file/change_list.html:24
+#: cabinet/templates/admin/cabinet/folder/change_form.html:15
+msgid "folder"
+msgstr "папка"
+
+#: cabinet/base.py:225
+msgid "file size"
+msgstr "размер файла"
+
+#: cabinet/base.py:230
+msgid "file"
+msgstr "файл"
+
+#: cabinet/base.py:231 cabinet/base_admin.py:101
+msgid "files"
+msgstr "файлы"
+
+#: cabinet/base.py:275
+msgid "Please fill in exactly one file field!"
+msgstr "Пожалуйста, заполните только одно поле файла!"
+
+#: cabinet/base_admin.py:60
+msgid "file type"
+msgstr "тип файла"
+
+#: cabinet/base_admin.py:83
+msgid "Delete this folder"
+msgstr "Удалить эту папку"
+
+#: cabinet/base_admin.py:171
+#, python-format
+msgid "The folder \"%s\" was changed successfully."
+msgstr "Папка \"%s\" успешно изменена."
+
+#: cabinet/base_admin.py:179
+#, python-format
+msgid "The folder \"%s\" was added successfully."
+msgstr "Папка \"%s\" успешно добавлена."
+
+#: cabinet/base_admin.py:200
+#, python-format
+msgid "Add %s"
+msgstr "Добавить %s"
+
+#: cabinet/base_admin.py:200
+#, python-format
+msgid "Change %s"
+msgstr "Изменить %s"
+
+#: cabinet/base_admin.py:239
+#, python-format
+msgid "Cannot delete %(name)s"
+msgstr "Невозможно удалить %(name)s"
+
+#: cabinet/base_admin.py:247
+#, python-format
+msgid "The folder \"%s\" was deleted successfully."
+msgstr "Папка \"%s\" успешно удалена."
+
+#: cabinet/base_admin.py:269 cabinet/base_admin.py:307
+msgid "Move files to folder"
+msgstr "Переместить файлы в папку"
+
+#: cabinet/base_admin.py:292
+msgid "The files have been successfully moved."
+msgstr "Файлы успешно перемещены."
+
+#: cabinet/base_admin.py:442
+#: cabinet/templates/admin/cabinet/file/change_form.html:9
+#: cabinet/templates/admin/cabinet/file/change_list.html:13
+#: cabinet/templates/admin/cabinet/folder/change_form.html:9
+msgid "Root folder"
+msgstr "Корневая папка"
+
+#: cabinet/base_admin.py:527
+msgid "Advanced"
+msgstr "Дополнительно"
+
+#: cabinet/models.py:41
+msgid "name"
+msgstr "имя"
+
+#: cabinet/models.py:46
+msgid "folders"
+msgstr "папки"
+
+#: cabinet/models.py:58
+msgid "Root folder with same name exists already."
+msgstr "Корневая папка с таким именем уже существует."
+
+#: cabinet/models.py:68
+msgid "caption"
+msgstr "подпись"
+
+#: cabinet/models.py:69
+msgid "copyright"
+msgstr "авторские права"
+
+#: cabinet/templates/admin/cabinet/file/change_form.html:7
+#: cabinet/templates/admin/cabinet/file/change_list.html:11
+#: cabinet/templates/admin/cabinet/folder/change_form.html:7
+msgid "Home"
+msgstr "Главная"
+
+#: cabinet/templates/admin/cabinet/file/change_form.html:21
+#: cabinet/templates/admin/cabinet/file/change_list.html:24
+#: cabinet/templates/admin/cabinet/file/change_list.html:32
+#: cabinet/templates/admin/cabinet/folder/change_form.html:15
+#, python-format
+msgid "Add %(name)s"
+msgstr "Добавить %(name)s"
+
+#: cabinet/templates/admin/cabinet/file/change_list.html:36
+msgid "Upload multiple files"
+msgstr "Загрузить несколько файлов"
+
+#: cabinet/templates/admin/cabinet/file/change_list.html:100
+#, python-format
+msgid "%(num_subfolders)s subfolders, %(num_files)s files"
+msgstr "%(num_subfolders)s подпапок, %(num_files)s файлов"
+
+#: cabinet/templates/admin/cabinet/file/change_list.html:104
+msgid "Change folder"
+msgstr "Изменить папку"
+
+#: cabinet/templates/admin/cabinet/file/change_list.html:115
+msgid "Upload files by dropping them into the list above."
+msgstr "Загрузите файлы, перетащив их в список выше."
+
+#: cabinet/templates/admin/cabinet/folder/change_form.html:23
+msgid "Save"
+msgstr "Сохранить"
