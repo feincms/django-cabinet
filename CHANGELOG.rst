@@ -4,7 +4,12 @@ Change log
 Next version
 ~~~~~~~~~~~~
 
+0.17 (2024-09-24)
+~~~~~~~~~~~~~~~~~
+
 - Pruned the CI matrix.
+- Dropped compatibility with Python < 3.10.
+- Added russian translations. Thanks @1vank1n.
 
 
 0.16 (2024-07-30)
