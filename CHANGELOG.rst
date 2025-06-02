@@ -4,6 +4,10 @@ Change log
 Next version
 ~~~~~~~~~~~~
 
+- Updated pre-commit hooks.
+- Added Python 3.13, Django 5.2.
+
+
 0.17 (2024-09-24)
 ~~~~~~~~~~~~~~~~~
 
