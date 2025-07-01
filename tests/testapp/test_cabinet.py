@@ -8,6 +8,7 @@ from pathlib import Path
 from unittest.mock import patch
 from zipfile import ZipFile
 
+import django
 from django import forms
 from django.conf import settings
 from django.contrib.auth.models import User
@@ -21,6 +22,12 @@ from django.urls import reverse
 from cabinet.base import AbstractFile, DownloadMixin, determine_accept_file_functions
 from cabinet.models import File, Folder, get_file_model
 from testapp.models import Stuff
+
+
+def paginator(*, files):
+    if django.VERSION < (6,):
+        return f'<p class="paginator"> {files} file{"" if files == 1 else "s"} </p>'
+    return f'<nav class="paginator" aria-labelledby="pagination"> <h2 id="pagination" class="visually-hidden">Pagination files</h2> {files} file{"" if files == 1 else "s"} </nav>'
 
 
 class CabinetTestCase(TestCase):
@@ -129,13 +136,13 @@ class CabinetTestCase(TestCase):
 
         self.assertContains(response, ">image.png <small>(4.9 KB)</small><", 1)
         self.assertContains(response, """../</a>""")
-        self.assertContains(response, '<p class="paginator"> 1 file </p>', html=True)
+        self.assertContains(response, paginator(files=1), html=True)
 
         response = c.get("/admin/cabinet/file/")
         self.assertContains(
             response, '<a href="?&amp;folder__id__exact=%s">Test</a>' % folder.id
         )
-        self.assertContains(response, '<p class="paginator"> 0 files </p>', html=True)
+        self.assertContains(response, paginator(files=0), html=True)
 
         f1 = File.objects.get()
         f1_name = f1.file.name
@@ -187,16 +194,16 @@ class CabinetTestCase(TestCase):
 
         # Top level search
         response = c.get("/admin/cabinet/file/?q=image")
-        self.assertContains(response, '<p class="paginator"> 1 file </p>', html=True)
+        self.assertContains(response, paginator(files=1), html=True)
 
         # Folder with file inside
         response = c.get(f"/admin/cabinet/file/?folder__id__exact={folder.pk}&q=image")
-        self.assertContains(response, '<p class="paginator"> 1 file </p>', html=True)
+        self.assertContains(response, paginator(files=1), html=True)
 
         # Other folder
         f2 = Folder.objects.create(name="Second")
         response = c.get(f"/admin/cabinet/file/?folder__id__exact={f2.pk}&q=image")
-        self.assertContains(response, '<p class="paginator"> 0 files </p>', html=True)
+        self.assertContains(response, paginator(files=0), html=True)
 
         subfolder = Folder.objects.create(parent=folder, name="sub")
         f = File.objects.get()
@@ -221,16 +228,16 @@ class CabinetTestCase(TestCase):
 
         # File is in a subfolder now
         response = c.get(f"/admin/cabinet/file/?folder__id__exact={folder.pk}")
-        self.assertContains(response, '<p class="paginator"> 0 files </p>', html=True)
+        self.assertContains(response, paginator(files=0), html=True)
 
         # But can be found by searching
         response = c.get(f"/admin/cabinet/file/?folder__id__exact={folder.pk}&q=image")
-        self.assertContains(response, '<p class="paginator"> 1 file </p>', html=True)
+        self.assertContains(response, paginator(files=1), html=True)
 
         response = c.get(
             f"/admin/cabinet/file/?folder__id__exact={folder.pk}&file_type=image_file"
         )
-        self.assertContains(response, '<p class="paginator"> 0 files </p>', html=True)
+        self.assertContains(response, paginator(files=0), html=True)
 
         self.assertNoMediaFiles()
 
@@ -258,7 +265,7 @@ class CabinetTestCase(TestCase):
 
         response = c.get("/admin/cabinet/file/?folder__id__exact=%s" % f.id)
 
-        self.assertContains(response, '<p class="paginator"> 2 files </p>', html=True)
+        self.assertContains(response, paginator(files=2), html=True)
         self.assertContains(
             response,
             # One valid image and a file with an image-like extension
