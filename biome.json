@@ -1,5 +1,5 @@
 {
-  "$schema": "https://biomejs.dev/schemas/2.0.6/schema.json",
+  "$schema": "https://biomejs.dev/schemas/2.2.2/schema.json",
   "assist": { "actions": { "source": { "organizeImports": "off" } } },
   "formatter": {
     "enabled": true,
@@ -13,6 +13,9 @@
       "a11y": {
         "noSvgWithoutTitle": "off"
       },
+      "complexity": {
+        "noImportantStyles": "off"
+      },
       "correctness": {
         "noUndeclaredVariables": "error",
         "noUnusedImports": "error",
@@ -25,15 +28,6 @@
       "style": {
         "noParameterAssign": "off",
         "useForOf": "warn",
-        "useAsConstAssertion": "error",
-        "useDefaultParameterLast": "error",
-        "useEnumInitializers": "error",
-        "useSelfClosingElements": "error",
-        "useSingleVarDeclarator": "error",
-        "noUnusedTemplateLiteral": "error",
-        "useNumberNamespace": "error",
-        "noInferrableTypes": "error",
-        "noUselessElse": "error",
         "useArrayLiterals": "error"
       },
       "suspicious": {

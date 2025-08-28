@@ -64,14 +64,14 @@ django.jQuery(($) => {
 
     progress.appendTo(results)
 
-    for (let i = 0; i < files.length; ++i) {
+    for (const file of files) {
       const d = new FormData()
       d.append(
         "csrfmiddlewaretoken",
         $("input[name=csrfmiddlewaretoken]").val(),
       )
       d.append("folder", folder[1])
-      d.append("file", files[i])
+      d.append("file", file)
 
       $.ajax({
         url: "./upload/",
