@@ -4,6 +4,10 @@ Change log
 Next version
 ~~~~~~~~~~~~
 
+
+0.18 (2025-08-28)
+~~~~~~~~~~~~~~~~~
+
 - Updated pre-commit hooks.
 - Added Python 3.13, Django 5.2.
 - Improved the folder deletion error messages (differentiate between missing
