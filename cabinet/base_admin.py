@@ -13,6 +13,7 @@ from django.http import HttpResponseRedirect, JsonResponse
 from django.shortcuts import get_object_or_404
 from django.urls import path, re_path, reverse
 from django.utils.functional import cached_property
+from django.utils.html import escape, mark_safe
 from django.utils.text import capfirst
 from django.utils.translation import gettext_lazy as _
 from tree_queries.forms import TreeNodeChoiceField
@@ -80,7 +81,9 @@ class FolderForm(forms.ModelForm):
         super().__init__(*args, **kwargs)
         if self.instance.pk:
             self.fields["_delete_folder"] = forms.BooleanField(
-                required=False, label=_("Delete this folder")
+                required=False,
+                label=_("Delete this folder"),
+                help_text=_("The folder will not be deleted if it contains files."),
             )
 
 
@@ -233,10 +236,38 @@ class FolderAdminMixin(admin.ModelAdmin):
             protected,
         ) = self.get_deleted_objects([obj], request)
 
-        if protected or perms_needed:
+        if perms_needed:
             self.message_user(
                 request,
-                _("Cannot delete %(name)s") % {"name": obj._meta.verbose_name},
+                _(
+                    "You do not have the necessary permissions to delete the %(type)s '%(name)s'"
+                )
+                % {
+                    "type": obj._meta.verbose_name,
+                    "name": obj,
+                },
+                messages.ERROR,
+            )
+
+        elif protected:
+            related = ", ".join(protected[:10])
+            if len(protected) > 10:
+                related += ", ..."
+
+            self.message_user(
+                request,
+                mark_safe(
+                    escape(
+                        _(
+                            "Cannot delete the %(type)s '%(name)s' because it is protected by related objects: %(related)s"
+                        )
+                    )
+                    % {
+                        "type": escape(obj._meta.verbose_name),
+                        "name": escape(obj),
+                        "related": ", ".join(protected),
+                    }
+                ),
                 messages.ERROR,
             )
 

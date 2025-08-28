@@ -7,35 +7,35 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2018-12-13 20:17+0100\n"
+"POT-Creation-Date: 2025-08-28 15:24+0200\n"
 "PO-Revision-Date: 2023-07-20 22:39+0330\n"
+"Last-Translator: Mahdi Namaki <mavenium@gmail.com>\n"
+"Language-Team: \n"
 "Language: fa\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
-"Last-Translator: Mahdi Namaki <mavenium@gmail.com>\n"
-"Language-Team: \n"
 "X-Generator: Poedit 2.3\n"
 
-#: admin.py:43 base.py:225
+#: admin.py:35 base.py:224
 msgid "file name"
 msgstr "نام پرونده"
 
-#: admin.py:49 templates/admin/cabinet/file/change_list.html:106
+#: admin.py:43
+msgid "details"
+msgstr "جزئیات"
+
+#: admin.py:48 templates/admin/cabinet/file/change_list.html:107
 #, python-format
 msgid "Created %(created_at)s, last modified %(updated_at)s"
 msgstr "ایجاد شده در %(created_at)s و به روز شده در %(updated_at)s"
 
-#: admin.py:60
-msgid "details"
-msgstr "جزئیات"
-
-#: apps.py:7
+#: apps.py:9
 msgid "Cabinet media library"
 msgstr "کتابخانه ی رسانه"
 
-#: base.py:50 base.py:70
+#: base.py:49 base.py:70
 msgid "image"
 msgstr "تصویر"
 
@@ -107,23 +107,23 @@ msgstr "Microsoft PowerPoint"
 msgid "Binary"
 msgstr "باینری"
 
-#: base.py:126 base.py:131
+#: base.py:127 base.py:133
 msgid "download"
 msgstr "دانلود"
 
-#: base.py:127
+#: base.py:129
 msgid "download type"
 msgstr "نوع دانلود"
 
-#: base.py:132
+#: base.py:134
 msgid "downloads"
 msgstr "دانلودها"
 
-#: base.py:155
+#: base.py:157
 msgid "Keep filename this time when uploading new file?"
 msgstr "نام پرونده این بار هنگام آپلود فایل جدید حفظ شود؟"
 
-#: base.py:158
+#: base.py:160
 msgid ""
 "By default, a new and unique filename is generated for each file, which also "
 "helps with caching."
@@ -131,94 +131,102 @@ msgstr ""
 "به طور پیش فرض، یک نام فایل جدید و منحصر به فرد برای هر فایل ایجاد می شود که "
 "به ذخیره سازی نیز کمک می کند."
 
-#: base.py:208
+#: base.py:207
 msgid "created at"
 msgstr "ایجاد شده در"
 
-#: base.py:209
+#: base.py:208
 msgid "updated at"
 msgstr "بارگذاری شده در"
 
-#: base.py:221 base_admin.py:117 fields.py:14 models.py:46
+#: base.py:220 base_admin.py:93 models.py:45
 #: templates/admin/cabinet/file/change_list.html:24
 #: templates/admin/cabinet/folder/change_form.html:15
 msgid "folder"
 msgstr "پوشه"
 
-#: base.py:226
+#: base.py:225
 msgid "file size"
 msgstr "اندازه پرونده"
 
-#: base.py:231 fields.py:15
+#: base.py:230
 msgid "file"
 msgstr "پرونده"
 
-#: base.py:232 base_admin.py:128
+#: base.py:231 base_admin.py:104
 msgid "files"
 msgstr "پرونده ها"
 
-#: base.py:253
+#: base.py:275
 msgid "Please fill in exactly one file field!"
 msgstr "لطفا دقیقاً یک فیلد فایل را پر کنید!"
 
-#: base_admin.py:62
+#: base_admin.py:61
 msgid "file type"
 msgstr "نوع پرونده"
 
-#: base_admin.py:110
+#: base_admin.py:85
 msgid "Delete this folder"
 msgstr "این پوشه را حذف کنید"
 
-#: base_admin.py:200
+#: base_admin.py:86
+msgid "The folder will not be deleted if it contains files."
+msgstr ""
+
+#: base_admin.py:174
 #, python-format
 msgid "The folder \"%s\" was changed successfully."
 msgstr "پوشه \"%s\" با موفقیت تغییر کرد."
 
-#: base_admin.py:208
+#: base_admin.py:182
 #, python-format
 msgid "The folder \"%s\" was added successfully."
 msgstr "پوشه \"%s\" با موفقیت اضافه شد."
 
-#: base_admin.py:228
+#: base_admin.py:203
 #, python-format
 msgid "Add %s"
 msgstr "افزودن %s"
 
-#: base_admin.py:228
+#: base_admin.py:203
 #, python-format
 msgid "Change %s"
 msgstr "تغییر %s"
 
-#: base_admin.py:281
+#: base_admin.py:242
 #, python-format
-msgid "Cannot delete %(name)s"
-msgstr "نمی توان %(name)s را حذف کرد"
+msgid ""
+"You do not have the necessary permissions to delete the %(type)s '%(name)s'"
+msgstr ""
 
-#: base_admin.py:288
-#, python-format
-msgid "Cannot delete %(name)s because of related objects (%(related)s)"
+#: base_admin.py:256
+#, fuzzy, python-format
+#| msgid "Cannot delete %(name)s because of related objects (%(related)s)"
+msgid ""
+"Cannot delete the %(type)s '%(name)s' because it is protected by related "
+"objects: %(related)s"
 msgstr "نمی توان %(name)s را به دلیل اشیاء مرتبط حذف کرد (%(related)s)"
 
-#: base_admin.py:302
+#: base_admin.py:269
 #, python-format
 msgid "The folder \"%s\" was deleted successfully."
 msgstr "پوشه \"%s\" با موفقیت حذف شد."
 
-#: base_admin.py:331 base_admin.py:360
+#: base_admin.py:291 base_admin.py:329
 msgid "Move files to folder"
 msgstr "انتقال پرونده ها به پوشه"
 
-#: base_admin.py:345
+#: base_admin.py:314
 msgid "The files have been successfully moved."
 msgstr "پرونده ها با موفقیت منتقل شدند."
 
-#: base_admin.py:498 templates/admin/cabinet/file/change_form.html:9
+#: base_admin.py:464 templates/admin/cabinet/file/change_form.html:9
 #: templates/admin/cabinet/file/change_list.html:13
 #: templates/admin/cabinet/folder/change_form.html:9
 msgid "Root folder"
 msgstr "پوشه ریشه"
 
-#: base_admin.py:565
+#: base_admin.py:549
 msgid "Advanced"
 msgstr "پیشرفته"
 
@@ -226,19 +234,19 @@ msgstr "پیشرفته"
 msgid "name"
 msgstr "نام"
 
-#: models.py:47
+#: models.py:46
 msgid "folders"
 msgstr "پوشه ها"
 
-#: models.py:57
+#: models.py:58
 msgid "Root folder with same name exists already."
 msgstr "پوشه ریشه با همین نام از قبل وجود دارد."
 
-#: models.py:67
+#: models.py:68
 msgid "caption"
 msgstr "کپشن"
 
-#: models.py:68
+#: models.py:69
 msgid "copyright"
 msgstr "حق تألیف"
 
@@ -265,17 +273,21 @@ msgstr "چندین فایل را آپلود کنید"
 msgid "%(num_subfolders)s subfolders, %(num_files)s files"
 msgstr "%(num_subfolders)s زیر پوشه و %(num_files)s پرونده"
 
-#: templates/admin/cabinet/file/change_list.html:104
+#: templates/admin/cabinet/file/change_list.html:105
 msgid "Change folder"
 msgstr "تغییر پوشه"
 
-#: templates/admin/cabinet/file/change_list.html:115
+#: templates/admin/cabinet/file/change_list.html:116
 msgid "Upload files by dropping them into the list above."
 msgstr "پرونده ها را با انداختن آنها در لیست بالا آپلود کنید."
 
 #: templates/admin/cabinet/folder/change_form.html:23
 msgid "Save"
 msgstr "ذخیره"
+
+#, python-format
+#~ msgid "Cannot delete %(name)s"
+#~ msgstr "نمی توان %(name)s را حذف کرد"
 
 #~ msgid "Download"
 #~ msgstr "Download"

@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2018-12-13 20:17+0100\n"
+"POT-Creation-Date: 2025-08-28 15:24+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -17,24 +17,24 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1)\n"
 
-#: admin.py:43 base.py:225
+#: admin.py:35 base.py:224
 msgid "file name"
 msgstr "Dateiname"
 
-#: admin.py:49 templates/admin/cabinet/file/change_list.html:106
+#: admin.py:43
+msgid "details"
+msgstr "Details"
+
+#: admin.py:48 templates/admin/cabinet/file/change_list.html:107
 #, python-format
 msgid "Created %(created_at)s, last modified %(updated_at)s"
 msgstr "Erstellt %(created_at)s, letzte Änderung %(updated_at)s"
 
-#: admin.py:60
-msgid "details"
-msgstr "Details"
-
-#: apps.py:7
+#: apps.py:9
 msgid "Cabinet media library"
 msgstr "Cabinet Medienbibliothek"
 
-#: base.py:50 base.py:70
+#: base.py:49 base.py:70
 msgid "image"
 msgstr "Bild"
 
@@ -106,23 +106,23 @@ msgstr "Microsoft PowerPoint"
 msgid "Binary"
 msgstr "Binär"
 
-#: base.py:126 base.py:131
+#: base.py:127 base.py:133
 msgid "download"
 msgstr "Download"
 
-#: base.py:127
+#: base.py:129
 msgid "download type"
 msgstr "Downloadtyp"
 
-#: base.py:132
+#: base.py:134
 msgid "downloads"
 msgstr "Downloads"
 
-#: base.py:155
+#: base.py:157
 msgid "Keep filename this time when uploading new file?"
 msgstr "Dateiname beim Hochladen einer neuen Datei dieses Mal beibehalten?"
 
-#: base.py:158
+#: base.py:160
 msgid ""
 "By default, a new and unique filename is generated for each file, which also "
 "helps with caching."
@@ -130,95 +130,104 @@ msgstr ""
 "Standardmässig wird jeweils ein neuer Dateiname generiert, was auch beim "
 "Caching hilft."
 
-#: base.py:208
+#: base.py:207
 msgid "created at"
 msgstr "erstellt um"
 
-#: base.py:209
+#: base.py:208
 msgid "updated at"
 msgstr "aktualisiert um"
 
-#: base.py:221 base_admin.py:117 fields.py:14 models.py:46
+#: base.py:220 base_admin.py:93 models.py:45
 #: templates/admin/cabinet/file/change_list.html:24
 #: templates/admin/cabinet/folder/change_form.html:15
 msgid "folder"
 msgstr "Ordner"
 
-#: base.py:226
+#: base.py:225
 msgid "file size"
 msgstr "Dateigrösse"
 
-#: base.py:231 fields.py:15
+#: base.py:230
 msgid "file"
 msgstr "Datei"
 
-#: base.py:232 base_admin.py:128
+#: base.py:231 base_admin.py:104
 msgid "files"
 msgstr "Dateien"
 
-#: base.py:253
+#: base.py:275
 msgid "Please fill in exactly one file field!"
 msgstr "Bitte genau ein Dateifeld ausfüllen!"
 
-#: base_admin.py:62
+#: base_admin.py:61
 msgid "file type"
 msgstr "Dateityp"
 
-#: base_admin.py:110
+#: base_admin.py:85
 msgid "Delete this folder"
 msgstr "Diesen Ordner löschen"
 
-#: base_admin.py:200
+#: base_admin.py:86
+msgid "The folder will not be deleted if it contains files."
+msgstr "Der Ordner wird nicht gelöscht wenn er noch Dateien enthält."
+
+#: base_admin.py:174
 #, python-format
 msgid "The folder \"%s\" was changed successfully."
 msgstr "Der Ordner \"%s\" wurde erfolgreich aktualisiert."
 
-#: base_admin.py:208
+#: base_admin.py:182
 #, python-format
 msgid "The folder \"%s\" was added successfully."
 msgstr "Der Ordner \"%s\" wurde erfolgreich hinzugefügt."
 
-#: base_admin.py:228
+#: base_admin.py:203
 #, python-format
 msgid "Add %s"
 msgstr "%s hinzufügen"
 
-#: base_admin.py:228
+#: base_admin.py:203
 #, python-format
 msgid "Change %s"
 msgstr "%s ändern"
 
-#: base_admin.py:281
+#: base_admin.py:242
 #, python-format
-msgid "Cannot delete %(name)s"
-msgstr "%(name)s kann nicht gelöscht werden"
-
-#: base_admin.py:288
-#, python-format
-msgid "Cannot delete %(name)s because of related objects (%(related)s)"
+msgid ""
+"You do not have the necessary permissions to delete the %(type)s '%(name)s'"
 msgstr ""
-"%(name)s kann wegen abhängigen Objekten nicht gelöscht werden (%(related)s)"
+"Die notwendigen Berechtigungen für das Löschen des %(type)s '%(name)s' fehlen"
 
-#: base_admin.py:302
+#: base_admin.py:256
+#, python-format
+msgid ""
+"Cannot delete the %(type)s '%(name)s' because it is protected by related "
+"objects: %(related)s"
+msgstr ""
+"%(type)s '%(name)s' kann wegen abhängigen Objekten (%(related)s) nicht "
+"gelöscht werden"
+
+#: base_admin.py:269
 #, python-format
 msgid "The folder \"%s\" was deleted successfully."
 msgstr "Der Ordner \"%s\" wurde erfolgreich gelöscht."
 
-#: base_admin.py:331 base_admin.py:360
+#: base_admin.py:291 base_admin.py:329
 msgid "Move files to folder"
 msgstr "Dateien in Ordner verschieben"
 
-#: base_admin.py:345
+#: base_admin.py:314
 msgid "The files have been successfully moved."
 msgstr "Die Dateien wurden erfolgreich verschoben."
 
-#: base_admin.py:498 templates/admin/cabinet/file/change_form.html:9
+#: base_admin.py:464 templates/admin/cabinet/file/change_form.html:9
 #: templates/admin/cabinet/file/change_list.html:13
 #: templates/admin/cabinet/folder/change_form.html:9
 msgid "Root folder"
 msgstr "Oberster Ordner"
 
-#: base_admin.py:565
+#: base_admin.py:549
 msgid "Advanced"
 msgstr "Fortgeschritten"
 
@@ -226,19 +235,19 @@ msgstr "Fortgeschritten"
 msgid "name"
 msgstr "Name"
 
-#: models.py:47
+#: models.py:46
 msgid "folders"
 msgstr "Ordner"
 
-#: models.py:57
+#: models.py:58
 msgid "Root folder with same name exists already."
 msgstr "Ordner mit gleichem Namen existiert schon auf oberster Ebene."
 
-#: models.py:67
+#: models.py:68
 msgid "caption"
 msgstr "Legende"
 
-#: models.py:68
+#: models.py:69
 msgid "copyright"
 msgstr "Copyright"
 
@@ -265,17 +274,21 @@ msgstr "Mehrere Dateien hochladen"
 msgid "%(num_subfolders)s subfolders, %(num_files)s files"
 msgstr "%(num_subfolders)s Unterordner, %(num_files)s Dateien"
 
-#: templates/admin/cabinet/file/change_list.html:104
+#: templates/admin/cabinet/file/change_list.html:105
 msgid "Change folder"
 msgstr "Ordner ändern"
 
-#: templates/admin/cabinet/file/change_list.html:115
+#: templates/admin/cabinet/file/change_list.html:116
 msgid "Upload files by dropping them into the list above."
 msgstr "Dateien oben hinziehen um sie hochzuladen."
 
 #: templates/admin/cabinet/folder/change_form.html:23
 msgid "Save"
 msgstr "Sichern"
+
+#, python-format
+#~ msgid "Cannot delete %(name)s"
+#~ msgstr "%(name)s kann nicht gelöscht werden"
 
 #~ msgid "Download"
 #~ msgstr "Download"

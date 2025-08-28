@@ -100,6 +100,7 @@
           {% blocktrans with num_subfolders=f.num_subfolders num_files=f.num_files trimmed %}
             {{ num_subfolders }} subfolders, {{ num_files }} files
           {% endblocktrans %}
+          &nbsp;
           <a href="{% url 'admin:cabinet_folder_change' f.id %}?{{ cabinet.querystring }}"
              title="{% trans 'Change folder' %}" class="changelink"></a>
           <br>

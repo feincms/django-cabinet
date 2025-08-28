@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2018-12-13 20:17+0100\n"
+"POT-Creation-Date: 2025-08-28 15:24+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: Cihad GÜNDOĞDU <cihadgundogdu@gmail.com>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -17,24 +17,24 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1)\n"
 
-#: admin.py:43 base.py:225
+#: admin.py:35 base.py:224
 msgid "file name"
 msgstr "dosya adı"
 
-#: admin.py:49 templates/admin/cabinet/file/change_list.html:106
+#: admin.py:43
+msgid "details"
+msgstr "Detaylar"
+
+#: admin.py:48 templates/admin/cabinet/file/change_list.html:107
 #, python-format
 msgid "Created %(created_at)s, last modified %(updated_at)s"
 msgstr "Oluşturma %(created_at)s, so düzenleme %(updated_at)s"
 
-#: admin.py:60
-msgid "details"
-msgstr "Detaylar"
-
-#: apps.py:7
+#: apps.py:9
 msgid "Cabinet media library"
 msgstr "Kabinet medya kütüphanesi"
 
-#: base.py:50 base.py:70
+#: base.py:49 base.py:70
 msgid "image"
 msgstr "Resim"
 
@@ -106,118 +106,126 @@ msgstr "Microsoft PowerPoint"
 msgid "Binary"
 msgstr "İkili(Binary)"
 
-#: base.py:126 base.py:131
+#: base.py:127 base.py:133
 msgid "download"
 msgstr "İndir"
 
-#: base.py:127
+#: base.py:129
 msgid "download type"
 msgstr "İndirme türü"
 
-#: base.py:132
+#: base.py:134
 msgid "downloads"
 msgstr "İndirmeler"
 
-#: base.py:155
+#: base.py:157
 msgid "Keep filename this time when uploading new file?"
 msgstr "Yeni dosya yüklerken bu sefer dosya adını sakla?"
 
-#: base.py:158
+#: base.py:160
 msgid ""
 "By default, a new and unique filename is generated for each file, which also "
 "helps with caching."
 msgstr ""
-"Varsayılan olarak, her dosya için yeni ve benzersiz bir dosya adı oluşturulur, "
+"Varsayılan olarak, her dosya için yeni ve benzersiz bir dosya adı "
+"oluşturulur, "
 
-#: base.py:208
+#: base.py:207
 msgid "created at"
 msgstr "oluşturulma tarihi"
 
-#: base.py:209
+#: base.py:208
 msgid "updated at"
 msgstr "güncellenme tarihi"
 
-#: base.py:221 base_admin.py:117 fields.py:14 models.py:46
+#: base.py:220 base_admin.py:93 models.py:45
 #: templates/admin/cabinet/file/change_list.html:24
 #: templates/admin/cabinet/folder/change_form.html:15
 msgid "folder"
 msgstr "Klasör"
 
-#: base.py:226
+#: base.py:225
 msgid "file size"
 msgstr "Dosya boyutu"
 
-#: base.py:231 fields.py:15
+#: base.py:230
 msgid "file"
 msgstr "Dosya"
 
-#: base.py:232 base_admin.py:128
+#: base.py:231 base_admin.py:104
 msgid "files"
 msgstr "Dosyalar"
 
-#: base.py:253
+#: base.py:275
 msgid "Please fill in exactly one file field!"
 msgstr "Lütfen tam olarak bir dosya alanı doldurun!"
 
-#: base_admin.py:62
+#: base_admin.py:61
 msgid "file type"
 msgstr "Dosya türü"
 
-#: base_admin.py:110
+#: base_admin.py:85
 msgid "Delete this folder"
 msgstr "Bu klasörü sil"
 
-#: base_admin.py:200
+#: base_admin.py:86
+msgid "The folder will not be deleted if it contains files."
+msgstr ""
+
+#: base_admin.py:174
 #, python-format
 msgid "The folder \"%s\" was changed successfully."
 msgstr "Klasör \"%s\" başarıyla değiştirildi."
 
-#: base_admin.py:208
+#: base_admin.py:182
 #, python-format
 msgid "The folder \"%s\" was added successfully."
 msgstr "Klasör \"%s\" başarıyla eklendi."
 
-#: base_admin.py:228
+#: base_admin.py:203
 #, python-format
 msgid "Add %s"
 msgstr "%s ekle"
 
-#: base_admin.py:228
+#: base_admin.py:203
 #, python-format
 msgid "Change %s"
 msgstr "%s değiştir"
 
-#: base_admin.py:281
+#: base_admin.py:242
 #, python-format
-msgid "Cannot delete %(name)s"
-msgstr "%(name)s silinemez"
-
-#: base_admin.py:288
-#, python-format
-msgid "Cannot delete %(name)s because of related objects (%(related)s)"
+msgid ""
+"You do not have the necessary permissions to delete the %(type)s '%(name)s'"
 msgstr ""
-"%(name)s, ilgili nesneler (%(related)s) nedeniyle silinemiyor"
 
-#: base_admin.py:302
+#: base_admin.py:256
+#, fuzzy, python-format
+#| msgid "Cannot delete %(name)s because of related objects (%(related)s)"
+msgid ""
+"Cannot delete the %(type)s '%(name)s' because it is protected by related "
+"objects: %(related)s"
+msgstr "%(name)s, ilgili nesneler (%(related)s) nedeniyle silinemiyor"
+
+#: base_admin.py:269
 #, python-format
 msgid "The folder \"%s\" was deleted successfully."
 msgstr "Klasör \"%s\" başarıyla silindi."
 
-#: base_admin.py:331 base_admin.py:360
+#: base_admin.py:291 base_admin.py:329
 msgid "Move files to folder"
 msgstr "Dosyaları klasöre taşı"
 
-#: base_admin.py:345
+#: base_admin.py:314
 msgid "The files have been successfully moved."
 msgstr "Dosyalar başarıyla taşındı."
 
-#: base_admin.py:498 templates/admin/cabinet/file/change_form.html:9
+#: base_admin.py:464 templates/admin/cabinet/file/change_form.html:9
 #: templates/admin/cabinet/file/change_list.html:13
 #: templates/admin/cabinet/folder/change_form.html:9
 msgid "Root folder"
 msgstr "Kök klasör"
 
-#: base_admin.py:565
+#: base_admin.py:549
 msgid "Advanced"
 msgstr "Gelişmiş"
 
@@ -225,19 +233,19 @@ msgstr "Gelişmiş"
 msgid "name"
 msgstr "Ad"
 
-#: models.py:47
+#: models.py:46
 msgid "folders"
 msgstr "Klasörler"
 
-#: models.py:57
+#: models.py:58
 msgid "Root folder with same name exists already."
 msgstr "Aynı adla kök klasör zaten mevcut."
 
-#: models.py:67
+#: models.py:68
 msgid "caption"
 msgstr "Başlık"
 
-#: models.py:68
+#: models.py:69
 msgid "copyright"
 msgstr "Telif hakkı"
 
@@ -264,17 +272,21 @@ msgstr "Birden fazla dosya yükle"
 msgid "%(num_subfolders)s subfolders, %(num_files)s files"
 msgstr "%(num_subfolders)s alt klasör, %(num_files)s dosya"
 
-#: templates/admin/cabinet/file/change_list.html:104
+#: templates/admin/cabinet/file/change_list.html:105
 msgid "Change folder"
 msgstr "Klasörü değiştir"
 
-#: templates/admin/cabinet/file/change_list.html:115
+#: templates/admin/cabinet/file/change_list.html:116
 msgid "Upload files by dropping them into the list above."
 msgstr "Dosyaları yukarıdaki listeye sürükleyerek yükleyin."
 
 #: templates/admin/cabinet/folder/change_form.html:23
 msgid "Save"
 msgstr "Kaydet"
+
+#, python-format
+#~ msgid "Cannot delete %(name)s"
+#~ msgstr "%(name)s silinemez"
 
 #~ msgid "Download"
 #~ msgstr "Download"

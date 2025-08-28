@@ -6,6 +6,10 @@ Next version
 
 - Updated pre-commit hooks.
 - Added Python 3.13, Django 5.2.
+- Improved the folder deletion error messages (differentiate between missing
+  permissions and protection errors).
+- Clarified the "delete folder" checkbox a bit: Folders containing files will
+  not be deleted.
 
 
 0.17 (2024-09-24)

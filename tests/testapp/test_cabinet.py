@@ -95,6 +95,14 @@ class CabinetTestCase(TestCase):
             {"name": folder.name, "_delete_folder": True},
         )
         self.assertRedirects(response, "/admin/cabinet/file/")
+        messages = [str(m) for m in response.wsgi_request._messages]
+        self.assertEqual(len(messages), 1)
+        self.assertTrue(
+            messages[0].startswith(
+                "Cannot delete the folder &#x27;Test 1&#x27; because it is protected by related objects:"
+            )
+        )
+
         self.assertEqual(Folder.objects.count(), 1)  # not deleted
 
         file.delete()
