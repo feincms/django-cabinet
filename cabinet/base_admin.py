@@ -31,10 +31,17 @@ class FolderListFilter(admin.RelatedFieldListFilter):
         return True
 
     def queryset(self, request, queryset):
+        folder_id = self.used_parameters.get("folder__id__exact")
+        if folder_id:
+            if django.VERSION > (5,):
+                folder_id = folder_id[-1]
+            try:
+                folder_id = Folder._meta.pk.to_python(folder_id)
+            except ValidationError as e:
+                raise IncorrectLookupParameters(e) from e
+
         if "q" in request.GET:
-            if folder_id := self.used_parameters.get("folder__id__exact"):
-                if django.VERSION > (5,):
-                    folder_id = folder_id[0]
+            if folder_id:
                 return queryset.filter(
                     # Avoid problems because of table aliasses (Django 1.11)
                     folder__in=list(
@@ -45,13 +52,8 @@ class FolderListFilter(admin.RelatedFieldListFilter):
                 )
             return queryset
 
-        if folder_id := self.used_parameters.get("folder__id__exact"):
-            if django.VERSION > (5,):
-                folder_id = folder_id[0]
-            try:
-                return queryset.filter(folder=folder_id)
-            except ValidationError as e:
-                raise IncorrectLookupParameters(e) from e
+        if folder_id:
+            return queryset.filter(folder=folder_id)
         else:
             return queryset.none()  # No files in root folder, never.
 
