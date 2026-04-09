@@ -7,6 +7,8 @@ Next version
 - Fixed a bug where passing ``folder__id__exact`` twice in the URL would
   mistakenly use the first instead of the second value. Also, tightened folder
   ID validation a bit.
+- Improved the folder selection when moving files a bit: The hierarchy is now
+  collapsed except for the path to the current folder.
 
 
 0.18 (2025-08-28)

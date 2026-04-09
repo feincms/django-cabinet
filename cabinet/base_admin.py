@@ -13,10 +13,9 @@ from django.http import HttpResponseRedirect, JsonResponse
 from django.shortcuts import get_object_or_404
 from django.urls import path, re_path, reverse
 from django.utils.functional import cached_property
-from django.utils.html import escape, mark_safe
+from django.utils.html import escape, format_html, mark_safe
 from django.utils.text import capfirst
 from django.utils.translation import gettext_lazy as _
-from tree_queries.forms import TreeNodeChoiceField
 
 from cabinet.models import Folder
 
@@ -89,17 +88,96 @@ class FolderForm(forms.ModelForm):
             )
 
 
-class SelectFolderForm(forms.Form):
-    folder = TreeNodeChoiceField(
-        queryset=Folder.objects.all(),
-        label=capfirst(_("folder")),
-        widget=forms.RadioSelect,
-        empty_label=None,
-    )
+class FolderTreeWidget(forms.Widget):
+    """
+    Widget that renders a folder tree as a collapsible structure using
+    HTML <details>/<summary> elements with radio buttons.
 
+    The folders in ``open_ids`` (and their ancestors) will be expanded
+    initially; the folder matching the initial value will be pre-selected.
+    """
+
+    def __init__(self, queryset, open_ids=None, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self._queryset = queryset
+        self.open_ids = set(open_ids or [])
+
+    def value_from_datadict(self, data, files, name):
+        return data.get(name)
+
+    def render(self, name, value, attrs=None, renderer=None):
+        queryset = self._queryset.with_tree_fields()
+
+        nodes_by_id = {}
+        roots = []
+        for folder in queryset:
+            node = {
+                "folder": folder,
+                "children": [],
+                "open": folder.pk in self.open_ids,
+            }
+            nodes_by_id[folder.pk] = node
+            if folder.parent_id and folder.parent_id in nodes_by_id:
+                nodes_by_id[folder.parent_id]["children"].append(node)
+            else:
+                roots.append(node)
+
+        def render_node(node):
+            folder = node["folder"]
+            is_selected = value is not None and str(folder.pk) == str(value)
+            checked = mark_safe(" checked") if is_selected else ""
+            label = format_html(
+                '<label><input type="radio" name="{}" value="{}"{}/> {}</label>',
+                name,
+                folder.pk,
+                checked,
+                folder.name,
+            )
+            if node["children"]:
+                open_attr = mark_safe(" open") if node["open"] else ""
+                children_html = mark_safe(
+                    "".join(render_node(c) for c in node["children"])
+                )
+                return format_html(
+                    "<li><details{}><summary>{}</summary><ul>{}</ul></details></li>",
+                    open_attr,
+                    label,
+                    children_html,
+                )
+            return format_html('<li class="leaf">{}</li>', label)
+
+        tree_html = mark_safe("".join(render_node(node) for node in roots))
+        return format_html('<ul class="cabinet-folder-tree">{}</ul>', tree_html)
+
+
+class SelectFolderForm(forms.Form):
     def __init__(self, *args, **kwargs):
         files = kwargs.pop("files")
+        current_folder_id = kwargs.pop("current_folder_id", None)
         super().__init__(*args, **kwargs)
+
+        open_ids = set()
+        if current_folder_id:
+            try:
+                current = Folder.objects.get(pk=current_folder_id)
+                open_ids = set(
+                    current.ancestors(include_self=True).values_list("pk", flat=True)
+                )
+            except Folder.DoesNotExist:
+                pass
+
+        self.fields["folder"] = forms.ModelChoiceField(
+            queryset=Folder.objects.all(),
+            label=capfirst(_("folder")),
+            widget=FolderTreeWidget(
+                queryset=Folder.objects.all(),
+                open_ids=open_ids,
+            ),
+            empty_label=None,
+        )
+
+        if current_folder_id and not self.is_bound:
+            self.initial["folder"] = current_folder_id
 
         self.fields["files"] = forms.ModelMultipleChoiceField(
             queryset=files,
@@ -301,12 +379,16 @@ class FolderAdminMixin(admin.ModelAdmin):
 
     @admin.action(description=_("Move files to folder"))
     def move_to_folder(self, request, queryset):
+        params = sorted(("files", item.id) for item in queryset)
+        folder_id = request.GET.get("folder__id__exact")
+        if folder_id:
+            params = [*params, ("current_folder", folder_id)]
         return HttpResponseRedirect(
             "{}?{}".format(
                 reverse(
                     "admin:cabinet_folder_select", current_app=self.admin_site.name
                 ),
-                urlencode(sorted(("files", item.id) for item in queryset)),
+                urlencode(sorted(params)),
             )
         )
 
@@ -315,8 +397,12 @@ class FolderAdminMixin(admin.ModelAdmin):
             pk__in=(request.POST.getlist("files") or request.GET.getlist("files"))
         )
 
+        current_folder_id = request.GET.get("current_folder")
+
         form = SelectFolderForm(
-            request.POST if request.method == "POST" else None, files=files
+            request.POST if request.method == "POST" else None,
+            files=files,
+            current_folder_id=current_folder_id,
         )
 
         if form.is_valid():

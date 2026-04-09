@@ -1,4 +1,18 @@
 /* global django */
+django.jQuery((_$) => {
+  // Folder tree: clicking the label/radio inside a <summary> would normally
+  // toggle the <details> closed — prevent that and always open instead.
+  document
+    .querySelectorAll(".cabinet-folder-tree details > summary")
+    .forEach((summary) => {
+      summary.addEventListener("click", (e) => {
+        if (e.target.closest("label")) {
+          summary.closest("details").open = true
+        }
+      })
+    })
+})
+
 django.jQuery(($) => {
   if (!document.body.classList.contains("change-list")) return
 

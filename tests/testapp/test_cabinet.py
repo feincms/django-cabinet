@@ -218,7 +218,7 @@ class CabinetTestCase(TestCase):
 
         response = c.get(f"/admin/cabinet/file/folder/select/?files={f.pk}")
         self.assertContains(response, 'id="id_files_0"')
-        self.assertContains(response, 'id="id_folder_0"')
+        self.assertContains(response, 'class="cabinet-folder-tree"')
         self.assertListEqual(
             list(response.context["adminform"].form.fields.keys()), ["files", "folder"]
         )

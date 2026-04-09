@@ -64,3 +64,52 @@
   text-align: center;
   margin: 0.3rem 0;
 }
+
+/* Override Django admin's "form .aligned ul { margin-left: 160px; padding-left: 10px }" */
+form .aligned .cabinet-folder-tree {
+  margin-left: 0 !important;
+  padding-left: 0 !important;
+}
+form .aligned .cabinet-folder-tree ul {
+  margin-left: 0 !important;
+  padding-left: 2em !important;
+}
+
+.cabinet-folder-tree,
+.cabinet-folder-tree ul {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+.cabinet-folder-tree ul {
+  padding-left: 2em;
+}
+.cabinet-folder-tree li {
+  margin: 0.15em 0;
+}
+
+/* Remove browser's default disclosure triangle, add custom chevron */
+.cabinet-folder-tree details > summary {
+  cursor: pointer;
+  display: block;
+  list-style: none;
+}
+.cabinet-folder-tree details > summary::-webkit-details-marker {
+  display: none;
+}
+.cabinet-folder-tree details > summary::before {
+  content: "▶";
+  display: inline-block;
+  width: 1.3em;
+  text-align: center;
+  font-size: 0.85em;
+  vertical-align: baseline;
+}
+.cabinet-folder-tree details[open] > summary::before {
+  content: "▼";
+}
+
+/* Align leaf items with the text that follows the chevron in summary items */
+.cabinet-folder-tree li.leaf {
+  padding-left: 1.3em;
+}
