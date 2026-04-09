@@ -34,9 +34,9 @@ class CKFileBrowserChangeList(ChangeList):
     def get_filters_params(self, params=None):
         params = super().get_filters_params(params)
         self.ck_context = {
-            "CKEditor": _extract(params.pop("CKEditor")),
             "CKEditorFuncNum": _extract(params.pop("CKEditorFuncNum")),
-            "langCode": _extract(params.pop("langCode")),
+            "CKEditor": _extract(params.pop("CKEditor", None)),
+            "langCode": _extract(params.pop("langCode", None)),
         }
         return params
 
