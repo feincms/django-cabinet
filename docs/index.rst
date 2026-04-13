@@ -52,6 +52,35 @@ django-imagefield_ and one for downloads, a standard Django
 added to folders; files can never exist in the root folder.
 
 
+Generating thumbnails with django-imagefield
+============================================
+
+django-cabinet uses django-imagefield_ for the image file field. To
+generate thumbnails, configure ``IMAGEFIELD_FORMATS`` in your settings
+using ``cabinet.file.image_file`` as the key (or
+``yourapp.file.image_file`` if you have replaced the file model):
+
+.. code-block:: python
+
+    IMAGEFIELD_FORMATS = {
+        "cabinet.file.image_file": {
+            "thumbnail": ["default", ("thumbnail", (400, 300))],
+            "big": ["default", ("crop", (800, 600))],
+        },
+    }
+    IMAGEFIELD_BIN_DEPTH = 2
+
+The generated thumbnail URLs are then available on the image field
+object in templates:
+
+.. code-block:: html+django
+
+    <img
+      src="{{ your_file.file.thumbnail }}"
+      alt="{{ your_file.caption }}{% if your_file.copyright %} - {{ your_file.copyright }}{% endif %}"
+    />
+
+
 Using cabinet files in your models
 ==================================
 
