@@ -5,6 +5,7 @@ django.jQuery(($) => {
     opener.CKEDITOR.tools.callFunction(
       Number.parseInt(this.getAttribute("data-ckeditor-function"), 10),
       this.getAttribute("href"),
+      JSON.parse(this.getAttribute("data-ckeditor-data")),
     )
     window.close()
   })

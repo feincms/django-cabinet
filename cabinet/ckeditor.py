@@ -1,3 +1,5 @@
+import json
+
 import django
 from django import forms
 from django.contrib import admin
@@ -52,10 +54,22 @@ class Link:
         # and admin_file_name)
         fn = getattr(self.cl.model_admin, self.name)
         result = fn(obj)
+
+        # We can pass additional data as a third argument. When it is neither a
+        # function nor a string it will be ignored by CKEditor 4's filebrowser
+        # plugin:
+        # https://github.com/ckeditor/ckeditor4/blob/c7e59ec199298b6b23f4aa7a7668f18572385bac/plugins/filebrowser/plugin.js#L413
         return format_html(
-            '<a href="{url}" data-ckeditor-function="{num}">{result}</a>',
+            '<a href="{url}" data-ckeditor-function="{num}" data-ckeditor-data="{data}">{result}</a>',
             url=obj.file.url,
             num=self.cl.ck_context["CKEditorFuncNum"],
+            data=json.dumps(
+                {
+                    "alternative_text": getattr(obj, "image_alt_text", ""),
+                    "caption": getattr(obj, "caption", ""),
+                    "copyright": getattr(obj, "copyright", ""),
+                }
+            ),
             result=result,
         )
 

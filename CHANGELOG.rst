@@ -9,6 +9,9 @@ Next version
   ID validation a bit.
 - Improved the folder selection when moving files a bit: The hierarchy is now
   collapsed except for the path to the current folder.
+- EXPERIMENTAL: Added additional data (caption, alt text etc.) to the CKEditor
+  4 filebrowser callback protocol. CKEditor 4 doesn't do anything with it, but
+  `django-prose-editor <https://django-prose-editor.readthedocs.io/>`__ will.
 
 
 0.18 (2025-08-28)
