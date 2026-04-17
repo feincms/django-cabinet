@@ -65,16 +65,6 @@
   margin: 0.3rem 0;
 }
 
-/* Override Django admin's "form .aligned ul { margin-left: 160px; padding-left: 10px }" */
-form .aligned .cabinet-folder-tree {
-  margin-left: 0 !important;
-  padding-left: 0 !important;
-}
-form .aligned .cabinet-folder-tree ul {
-  margin-left: 0 !important;
-  padding-left: 2em !important;
-}
-
 .cabinet-folder-tree,
 .cabinet-folder-tree ul {
   list-style: none;
@@ -83,6 +73,16 @@ form .aligned .cabinet-folder-tree ul {
 }
 .cabinet-folder-tree ul {
   padding-left: 2em;
+}
+
+/* Override Django admin's "form .aligned ul { margin-left: 160px; padding-left: 10px }" */
+form .aligned .cabinet-folder-tree {
+  margin-left: 0 !important;
+  padding-left: 0 !important;
+}
+form .aligned .cabinet-folder-tree ul {
+  margin-left: 0 !important;
+  padding-left: 2em !important;
 }
 .cabinet-folder-tree li {
   margin: 0.15em 0;
