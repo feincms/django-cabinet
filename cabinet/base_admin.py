@@ -153,19 +153,18 @@ class FolderTreeWidget(forms.Widget):
 class SelectFolderForm(forms.Form):
     def __init__(self, *args, **kwargs):
         files = kwargs.pop("files")
-        current_folder_id = kwargs.pop("current_folder_id", None)
         super().__init__(*args, **kwargs)
 
-        open_ids = set()
-        if current_folder_id:
-            try:
-                current = Folder.objects.get(pk=current_folder_id)
-                open_ids = set(
-                    current.ancestors(include_self=True).values_list("pk", flat=True)
-                )
-            except Folder.DoesNotExist:
-                pass
+        self.fields["files"] = forms.ModelMultipleChoiceField(
+            queryset=files,
+            label=capfirst(_("files")),
+            initial=[f.id for f in files],
+            widget=forms.CheckboxSelectMultiple,
+        )
 
+        open_ids = set(
+            files[0].folder.ancestors(include_self=True).values_list("pk", flat=True)
+        )
         self.fields["folder"] = forms.ModelChoiceField(
             queryset=Folder.objects.all(),
             label=capfirst(_("folder")),
@@ -174,18 +173,8 @@ class SelectFolderForm(forms.Form):
                 open_ids=open_ids,
             ),
             empty_label=None,
+            initial=files[0].folder.pk,
         )
-
-        if current_folder_id and not self.is_bound:
-            self.initial["folder"] = current_folder_id
-
-        self.fields["files"] = forms.ModelMultipleChoiceField(
-            queryset=files,
-            label=capfirst(_("files")),
-            initial=[f.id for f in files],
-            widget=forms.CheckboxSelectMultiple,
-        )
-        self.order_fields(["files", "folder"])
 
 
 def cabinet_querystring(request, **kwargs):
@@ -380,9 +369,6 @@ class FolderAdminMixin(admin.ModelAdmin):
     @admin.action(description=_("Move files to folder"))
     def move_to_folder(self, request, queryset):
         params = sorted(("files", item.id) for item in queryset)
-        folder_id = request.GET.get("folder__id__exact")
-        if folder_id:
-            params = [*params, ("current_folder", folder_id)]
         return HttpResponseRedirect(
             "{}?{}".format(
                 reverse(
@@ -397,12 +383,9 @@ class FolderAdminMixin(admin.ModelAdmin):
             pk__in=(request.POST.getlist("files") or request.GET.getlist("files"))
         )
 
-        current_folder_id = request.GET.get("current_folder")
-
         form = SelectFolderForm(
             request.POST if request.method == "POST" else None,
             files=files,
-            current_folder_id=current_folder_id,
         )
 
         if form.is_valid():
