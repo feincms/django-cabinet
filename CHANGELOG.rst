@@ -12,6 +12,7 @@ Next version
 - EXPERIMENTAL: Added additional data (caption, alt text etc.) to the CKEditor
   4 filebrowser callback protocol. CKEditor 4 doesn't do anything with it, but
   `django-prose-editor <https://django-prose-editor.readthedocs.io/>`__ will.
+- Added Python 3.14, Django 6.0.
 
 
 0.18 (2025-08-28)
