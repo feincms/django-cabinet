@@ -434,7 +434,7 @@ class CabinetTestCase(TestCase):
         c = self.login()
 
         response = c.get("/admin/cabinet/file/add/")
-        self.assertContains(response, '<option value="" selected>------')
+        self.assertContains(response, '<option value="" selected>-')
 
         response = c.get(f"/admin/cabinet/file/add/?folder={folder.id}")
         self.assertContains(
