@@ -44,10 +44,10 @@ optional-dependencies.tests = [
 urls.Homepage = "http://github.com/matthiask/django-cabinet/"
 
 [tool.hatch]
+version.path = "cabinet/__init__.py"
 build.include = [
   "cabinet/",
 ]
-version.path = "cabinet/__init__.py"
 
 [tool.ruff]
 target-version = "py310"
