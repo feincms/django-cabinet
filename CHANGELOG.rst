@@ -4,6 +4,10 @@ Change log
 Next version
 ~~~~~~~~~~~~
 
+
+0.19 (2026-06-09)
+~~~~~~~~~~~~~~~~~
+
 - Fixed a bug where passing ``folder__id__exact`` twice in the URL would
   mistakenly use the first instead of the second value. Also, tightened folder
   ID validation a bit.
