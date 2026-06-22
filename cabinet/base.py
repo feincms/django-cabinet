@@ -100,6 +100,7 @@ class DownloadMixin(models.Model):
                 r"\.(au|mp3|m4a|wma|oga|ram|wav)$", re.IGNORECASE
             ).search(f),
         ),
+        ("svg", _("SVG"), lambda f: f.lower().endswith(".svg")),
         ("pdf", _("PDF document"), lambda f: f.lower().endswith(".pdf")),
         ("swf", _("Flash"), lambda f: f.lower().endswith(".swf")),
         ("txt", _("Text"), lambda f: f.lower().endswith(".txt")),

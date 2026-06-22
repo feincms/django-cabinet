@@ -174,6 +174,7 @@ class CabinetTestCase(TestCase):
         f2 = File.objects.get()
         f2_name = f2.file.name
         f2_bytes = f2.file.read()
+        self.assertEqual(f2.download_type, "")
 
         self.assertNotEqual(f1_name, f2_name)
         self.assertEqual(f1_bytes, f2_bytes)
