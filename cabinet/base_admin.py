@@ -299,8 +299,8 @@ class FolderAdminMixin(admin.ModelAdmin):
         # Populate deleted_objects, a data structure of all related objects
         # that will also be deleted.
         (
-            deleted_objects,
-            model_count,
+            _deleted_objects,
+            _model_count,
             perms_needed,
             protected,
         ) = self.get_deleted_objects([obj], request)
