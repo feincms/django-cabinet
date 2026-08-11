@@ -414,7 +414,7 @@ class CabinetTestCase(TestCase):
         formfield = filefield.formfield()
         self.assertTrue(isinstance(formfield.widget, forms.Select))
 
-        name, path, args, kwargs = filefield.deconstruct()
+        _name, path, _args, _kwargs = filefield.deconstruct()
         self.assertEqual(path, "django.db.models.ForeignKey")
 
     def test_two_files(self):

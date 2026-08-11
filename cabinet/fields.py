@@ -51,7 +51,7 @@ class CabinetForeignKey(models.ForeignKey):
         super().__init__(to or settings.CABINET_FILE_MODEL, **kwargs)
 
     def deconstruct(self):
-        name, path, args, kwargs = super().deconstruct()
+        name, _path, args, kwargs = super().deconstruct()
         return (name, "django.db.models.ForeignKey", args, kwargs)
 
     def formfield(self, **kwargs):
