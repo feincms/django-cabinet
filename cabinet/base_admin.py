@@ -13,7 +13,7 @@ from django.http import Http404, HttpResponseRedirect, JsonResponse
 from django.shortcuts import get_object_or_404
 from django.urls import path, re_path, reverse
 from django.utils.functional import cached_property
-from django.utils.html import escape, format_html, mark_safe
+from django.utils.html import escape, format_html, format_html_join, mark_safe
 from django.utils.text import capfirst
 from django.utils.translation import gettext_lazy as _
 
@@ -321,7 +321,7 @@ class FolderAdminMixin(admin.ModelAdmin):
             )
 
         elif protected:
-            related = ", ".join(protected[:10])
+            related = format_html_join(", ", "{}", ((p,) for p in protected[:10]))
             if len(protected) > 10:
                 related += ", ..."
 
@@ -336,7 +336,7 @@ class FolderAdminMixin(admin.ModelAdmin):
                     % {
                         "type": escape(obj._meta.verbose_name),
                         "name": escape(obj),
-                        "related": ", ".join(protected),
+                        "related": related,
                     }
                 ),
                 messages.ERROR,

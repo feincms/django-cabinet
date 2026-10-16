@@ -659,3 +659,21 @@ class CabinetTestCase(TestCase):
         c = self.login()
         response = c.get(f"/admin/cabinet/file/?folder__id__exact={folder.pk}&q=")
         self.assertContains(response, paginator(files=0), html=True)
+
+    def test_protected_folder_delete_message_escaped(self):
+        folder = Folder.objects.create(name="Root")
+        for _i in range(12):
+            file = File(folder=folder)
+            file.download_file.save("hello.txt", ContentFile("Hello"))
+        File.objects.update(file_name="<b>bold</b>.txt")
+
+        c = self.login()
+        with patch("django.contrib.admin.sites.AdminSite.is_registered") as reg:
+            reg.return_value = False
+            response = c.post(
+                f"/admin/cabinet/file/folder/{folder.pk}/",
+                {"name": "Root", "_delete_folder": True},
+                follow=True,
+            )
+        self.assertNotContains(response, "<b>bold</b>")
+        self.assertContains(response, "&lt;b&gt;bold&lt;/b&gt;.txt", 10)
