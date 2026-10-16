@@ -602,3 +602,23 @@ class CabinetTestCase(TestCase):
         parent = Folder.objects.create(name="Root")
         Folder.objects.create(name="Images", parent=parent)
         Folder(name="Images").full_clean()  # Doesn't raise
+
+    def test_invalid_query_parameters(self):
+        c = self.login()
+        response = c.get("/admin/cabinet/file/add/?folder=abc")
+        self.assertEqual(response.status_code, 200)
+
+        response = c.get("/admin/cabinet/file/folder/abc/")
+        self.assertEqual(response.status_code, 404)
+
+        response = c.get("/admin/cabinet/file/folder/select/")
+        self.assertRedirects(response, "/admin/cabinet/file/")
+
+        response = c.get("/admin/cabinet/file/folder/select/?files=abc")
+        self.assertRedirects(response, "/admin/cabinet/file/")
+
+        folder = Folder.objects.create(name="Root")
+        response = c.get(
+            f"/admin/cabinet/file/?folder__id__exact={folder.pk}&file_type=folder"
+        )
+        self.assertEqual(response.status_code, 200)

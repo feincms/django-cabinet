@@ -9,7 +9,7 @@ from django.contrib.admin.views.main import SEARCH_VAR
 from django.core.exceptions import FieldDoesNotExist, PermissionDenied, ValidationError
 from django.db import router, transaction
 from django.db.models import Count
-from django.http import HttpResponseRedirect, JsonResponse
+from django.http import Http404, HttpResponseRedirect, JsonResponse
 from django.shortcuts import get_object_or_404
 from django.urls import path, re_path, reverse
 from django.utils.functional import cached_property
@@ -68,7 +68,7 @@ class FileTypeFilter(admin.SimpleListFilter):
         ]
 
     def queryset(self, request, queryset):
-        if self.value():
+        if self.value() in {value for value, _label in self.lookup_choices}:
             return queryset.exclude(**{self.value(): ""})
         return queryset
 
@@ -214,10 +214,12 @@ class FolderAdminMixin(admin.ModelAdmin):
             )
 
     def folder_change(self, request, object_id):
+        try:
+            folder = get_object_or_404(Folder, pk=object_id)
+        except (ValueError, ValidationError) as exc:
+            raise Http404 from exc
         with transaction.atomic(using=router.db_for_write(self.model)):
-            return self._folder_form(
-                request, {"instance": get_object_or_404(Folder, pk=object_id)}
-            )
+            return self._folder_form(request, {"instance": folder})
 
     def _folder_form(self, request, kw):
         original = kw.get("instance")
@@ -379,9 +381,15 @@ class FolderAdminMixin(admin.ModelAdmin):
         )
 
     def folder_select(self, request):
-        files = self.model.objects.filter(
-            pk__in=(request.POST.getlist("files") or request.GET.getlist("files"))
-        )
+        try:
+            files = self.model._default_manager.filter(
+                pk__in=(request.POST.getlist("files") or request.GET.getlist("files"))
+            )
+            has_files = files.exists()
+        except (ValueError, ValidationError):
+            has_files = False
+        if not has_files:
+            return self.redirect_to_folder(request, None)
 
         form = SelectFolderForm(
             request.POST if request.method == "POST" else None,
@@ -555,9 +563,11 @@ class FileAdminBase(FolderAdminMixin):
     def add_view(self, request, form_url="", extra_context=None):
         extra_context = extra_context or {}
         if request.GET.get("folder"):
-            extra_context["cabinet"] = {
-                "folder": Folder.objects.filter(pk=request.GET["folder"]).first()
-            }
+            try:
+                folder = Folder.objects.filter(pk=request.GET["folder"]).first()
+            except (ValueError, ValidationError):
+                folder = None
+            extra_context["cabinet"] = {"folder": folder}
 
         return self.changeform_view(
             request, None, request.get_full_path(), extra_context
