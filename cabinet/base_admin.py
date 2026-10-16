@@ -381,6 +381,9 @@ class FolderAdminMixin(admin.ModelAdmin):
         )
 
     def folder_select(self, request):
+        if not self.has_change_permission(request):
+            raise PermissionDenied
+
         try:
             files = self.model._default_manager.filter(
                 pk__in=(request.POST.getlist("files") or request.GET.getlist("files"))
@@ -596,6 +599,8 @@ class FileAdminBase(FolderAdminMixin):
     def upload(self, request):
         if request.method != "POST":
             return self.redirect_to_folder(request, None)
+        if not self.has_add_permission(request):
+            raise PermissionDenied
         form = UploadForm(request.POST, request.FILES)
         if not form.is_valid():
             return JsonResponse({"success": False}, status=400)

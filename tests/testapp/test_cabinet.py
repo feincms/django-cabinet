@@ -622,3 +622,30 @@ class CabinetTestCase(TestCase):
             f"/admin/cabinet/file/?folder__id__exact={folder.pk}&file_type=folder"
         )
         self.assertEqual(response.status_code, 200)
+
+    def test_staff_without_permissions(self):
+        folder = Folder.objects.create(name="Root")
+        file = File(folder=folder)
+        file.download_file.save("hello.txt", ContentFile("Hello"))
+        other = Folder.objects.create(name="Other")
+
+        user = User(username="staff", is_staff=True)
+        user.set_password("staff")
+        user.save()
+        c = Client()
+        c.login(username="staff", password="staff")
+
+        response = c.post(
+            "/admin/cabinet/file/upload/",
+            {"folder": folder.pk, "file": ContentFile(b"Hi", name="hi.txt")},
+        )
+        self.assertEqual(response.status_code, 403)
+        self.assertEqual(File.objects.count(), 1)
+
+        response = c.post(
+            "/admin/cabinet/file/folder/select/",
+            {"files": file.pk, "folder": other.pk},
+        )
+        self.assertEqual(response.status_code, 403)
+        file.refresh_from_db()
+        self.assertEqual(file.folder, folder)
