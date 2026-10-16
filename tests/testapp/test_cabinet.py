@@ -677,3 +677,13 @@ class CabinetTestCase(TestCase):
             )
         self.assertNotContains(response, "<b>bold</b>")
         self.assertContains(response, "&lt;b&gt;bold&lt;/b&gt;.txt", 10)
+
+    def test_raw_id_widget_without_registered_file_admin(self):
+        from django.contrib import admin
+
+        from cabinet.fields import CabinetFileRawIdWidget
+
+        widget = CabinetFileRawIdWidget(
+            Stuff._meta.get_field("file").remote_field, admin.AdminSite()
+        )
+        widget.render("file", None)  # Doesn't crash

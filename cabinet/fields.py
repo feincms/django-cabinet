@@ -18,9 +18,10 @@ class CabinetFileRawIdWidget(ForeignKeyRawIdWidget):
         context["cabinet"] = {
             "instance": instance,
         }
-        context["related_url"] += "&folder__id__exact={}".format(
-            instance.folder_id if instance else "last"
-        )
+        if context["related_url"]:
+            context["related_url"] += "&folder__id__exact={}".format(
+                instance.folder_id if instance else "last"
+            )
         return context
 
     def label_and_url_for_value(self, value):
@@ -30,7 +31,7 @@ class CabinetFileRawIdWidget(ForeignKeyRawIdWidget):
         try:
             obj = self.rel.model._default_manager.using(self.db).get(**{key: value})
         except (ValueError, self.rel.model.DoesNotExist, ValidationError):
-            obj = None
+            self.instance = None
             return "", ""
 
         try:
