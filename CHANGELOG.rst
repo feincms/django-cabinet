@@ -4,6 +4,8 @@ Change log
 Next version
 ~~~~~~~~~~~~
 
+- Added Django 6.1.
+
 
 0.19 (2026-06-09)
 ~~~~~~~~~~~~~~~~~
