@@ -489,6 +489,15 @@ class FileAdminBase(FolderAdminMixin):
             )
         ] + super().get_urls()
 
+    def get_search_results(self, request, queryset, search_term):
+        results, may_have_duplicates = super().get_search_results(
+            request, queryset, search_term
+        )
+        search_term = search_term.strip()
+        if search_term.isdecimal():
+            results |= queryset.filter(pk=int(search_term))
+        return results, may_have_duplicates
+
     def folders_annotate_counts(self, folders):
         """
         Add direct subfolders and files counts to an iterable of folders

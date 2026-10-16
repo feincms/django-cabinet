@@ -746,3 +746,21 @@ class CabinetTestCase(TestCase):
         )
         self.assertEqual(response.status_code, 403)
         self.assertTrue(Folder.objects.filter(pk=folder.pk).exists())
+
+    def test_search_by_id(self):
+        folder = Folder.objects.create(name="Root")
+        other = Folder.objects.create(name="Other")
+        file = File(folder=folder)
+        file.download_file.save("hello.txt", ContentFile("Hello"))
+        file2 = File(folder=other)
+        file2.download_file.save(f"file-{file.pk}.txt", ContentFile("Hello"))
+
+        c = self.login()
+        response = c.get(f"/admin/cabinet/file/?q={file.pk}")
+        self.assertContains(response, paginator(files=2), html=True)
+
+        response = c.get(
+            f"/admin/cabinet/file/?folder__id__exact={other.pk}&q={file.pk}"
+        )
+        self.assertContains(response, paginator(files=1), html=True)
+        self.assertContains(response, f"file-{file.pk}.txt")
