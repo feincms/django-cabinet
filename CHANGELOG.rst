@@ -4,6 +4,9 @@ Change log
 Next version
 ~~~~~~~~~~~~
 
+0.20 (2026-10-16)
+~~~~~~~~~~~~~~~~~
+
 - Added Django 6.1.
 - Allowed searching files by ID.
 - Allowed sorting files by name, creation and modification date. The dates
