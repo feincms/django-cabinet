@@ -33,9 +33,11 @@ django.jQuery(($) => {
 
   let dragCounter = 0
   const results = $(".results")
-  const folder = window.location.href.match(/folder__id__exact=(\d+)/)
+  const folder = new URLSearchParams(window.location.search)
+    .getAll("folder__id__exact")
+    .at(-1)
 
-  if (!folder) {
+  if (!folder || !/^\d+$/.test(folder)) {
     $(".cabinet-upload-hint").remove()
     return
   }
@@ -74,6 +76,7 @@ django.jQuery(($) => {
 
   function uploadFiles(files) {
     let success = 0
+    let done = 0
     const progress = $(`<div class="progress">0 / ${files.length}</div>`)
 
     progress.appendTo(results)
@@ -84,7 +87,7 @@ django.jQuery(($) => {
         "csrfmiddlewaretoken",
         $("input[name=csrfmiddlewaretoken]").val(),
       )
-      d.append("folder", folder[1])
+      d.append("folder", folder)
       d.append("file", file)
 
       $.ajax({
@@ -95,7 +98,12 @@ django.jQuery(($) => {
         processData: false,
         success: () => {
           progress.html(`${++success} / ${files.length}`)
-          if (success >= files.length) {
+        },
+        error: () => {
+          window.alert(`Upload of ${file.name} failed.`)
+        },
+        complete: () => {
+          if (++done >= files.length) {
             window.location.reload()
           }
         },
