@@ -5,6 +5,20 @@ Next version
 ~~~~~~~~~~~~
 
 - Added Django 6.1.
+- Added permission checks to the upload and the move files to folder views.
+- Root folder names are only required to be unique among root folders.
+- Fixed crashes caused by invalid query parameters in several admin views.
+- Fixed the folder listing showing files of subfolders when the search term
+  is empty.
+- Escaped and truncated the list of protected objects when deleting a folder
+  fails.
+- Fixed a crash of the raw ID widget when the file model isn't registered with
+  the admin site.
+- Fixed archive names of duplicate files with multiple dots.
+- Failed drag and drop uploads do not stall the upload progress anymore.
+- Images are closed after checking uploads.
+- The name returned by the storage is used when overwriting files.
+- Removed a workaround for Django 1.11.
 
 
 0.19 (2026-06-09)
