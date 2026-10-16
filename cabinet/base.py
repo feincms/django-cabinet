@@ -178,14 +178,15 @@ class OverwriteMixin(models.Model):
             original_file.delete(save=False)
 
             new_file = self.file
-            new_file.storage.save(
+            # The storage may return a different name than the one we asked for
+            name = new_file.storage.save(
                 original_file_name, new_file.file, max_length=new_file.field.max_length
             )
             new_file._committed = True
-            setattr(self, new_file.field.name, original_file_name)
+            setattr(self, new_file.field.name, name)
 
             # Better be safe than sorry:
-            new_file.name = original_file_name
+            new_file.name = name
             self.file_name = os.path.basename(new_file.name)
 
             self._overwrite = False  # Only overwrite once.
