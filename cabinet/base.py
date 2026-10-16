@@ -35,10 +35,10 @@ def upload_is_image(data):
         file = io.BytesIO(data.read())
 
     try:
-        image = Image.open(file)
-        image.resize([20, 20], Image.LANCZOS)  # Verify image some more
-        with io.BytesIO() as buf:
-            image.save(buf, image.format)
+        with Image.open(file) as image:
+            image.resize([20, 20], Image.LANCZOS)  # Verify image some more
+            with io.BytesIO() as buf:
+                image.save(buf, image.format)
         return True
     except Exception:  # OSError, errors while resizing
         return False
