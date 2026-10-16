@@ -35,7 +35,7 @@ class Command(BaseCommand):
                             filename.stem,
                             "_",
                             *_get_random_suffix(),
-                            *filename.suffixes,
+                            filename.suffix,
                         ]
                     )
 

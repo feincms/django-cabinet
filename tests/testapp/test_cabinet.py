@@ -687,3 +687,24 @@ class CabinetTestCase(TestCase):
             Stuff._meta.get_field("file").remote_field, admin.AdminSite()
         )
         widget.render("file", None)  # Doesn't crash
+
+    def test_archive_multiple_dots(self):
+        folder = Folder.objects.create(name="Top")
+        for _ in range(2):
+            file = File(folder=folder)
+            file.download_file.save("a.b.txt", ContentFile("Hello"))
+        File.objects.update(file_name="a.b.txt")
+
+        with (
+            patch(
+                "cabinet.management.commands.archive_cabinet_folder._get_random_suffix",
+                return_value="asdf",
+            ),
+            tempfile.TemporaryDirectory() as tmp_dir,
+        ):
+            output = Path(tmp_dir) / "output.zip"
+            call_command("archive_cabinet_folder", folder_id=folder.id, output=output)
+            with ZipFile(output, "r") as zip_file:
+                self.assertEqual(
+                    zip_file.namelist(), ["Top/a.b.txt", "Top/a.b_asdf.txt"]
+                )
