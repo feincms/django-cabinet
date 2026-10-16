@@ -597,3 +597,8 @@ class CabinetTestCase(TestCase):
                         "Top/Sub/hello_asdf.txt",
                     ],
                 )
+
+    def test_root_folder_name_may_match_subfolder_name(self):
+        parent = Folder.objects.create(name="Root")
+        Folder.objects.create(name="Images", parent=parent)
+        Folder(name="Images").full_clean()  # Doesn't raise

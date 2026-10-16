@@ -52,7 +52,9 @@ class Folder(TimestampsMixin, TreeNode):
         super().clean()
         if (
             not self.parent_id
-            and Folder.objects.filter(~Q(pk=self.pk), Q(name=self.name)).exists()
+            and Folder.objects.filter(
+                ~Q(pk=self.pk), Q(name=self.name), Q(parent__isnull=True)
+            ).exists()
         ):
             raise ValidationError(
                 {"name": _("Root folder with same name exists already.")}
