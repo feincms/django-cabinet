@@ -6,6 +6,7 @@ from django.contrib import admin, messages
 from django.contrib.admin import helpers
 from django.contrib.admin.options import IncorrectLookupParameters
 from django.contrib.admin.views.main import SEARCH_VAR
+from django.contrib.auth import get_permission_codename
 from django.core.exceptions import FieldDoesNotExist, PermissionDenied, ValidationError
 from django.db import router, transaction
 from django.db.models import Count
@@ -204,6 +205,11 @@ class FolderAdminMixin(admin.ModelAdmin):
             ),
         ] + super().get_urls()
 
+    def has_folder_permission(self, request, action):
+        opts = Folder._meta
+        codename = get_permission_codename(action, opts)
+        return request.user.has_perm(f"{opts.app_label}.{codename}")
+
     def folder_add(self, request):
         with transaction.atomic(using=router.db_for_write(self.model)):
             return self._folder_form(
@@ -223,10 +229,10 @@ class FolderAdminMixin(admin.ModelAdmin):
         add = not original
 
         if add:
-            if not self.has_add_permission(request):
+            if not self.has_folder_permission(request, "add"):
                 raise PermissionDenied
         else:
-            if not self.has_change_permission(request, original):
+            if not self.has_folder_permission(request, "change"):
                 raise PermissionDenied
 
         if request.method == "POST":
@@ -292,7 +298,7 @@ class FolderAdminMixin(admin.ModelAdmin):
         return response
 
     def _folder_form_delete(self, request, obj):
-        if not self.has_delete_permission(request, obj):
+        if not self.has_folder_permission(request, "delete"):
             raise PermissionDenied
 
         # Populate deleted_objects, a data structure of all related objects

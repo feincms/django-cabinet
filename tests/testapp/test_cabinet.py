@@ -708,3 +708,41 @@ class CabinetTestCase(TestCase):
                 self.assertEqual(
                     zip_file.namelist(), ["Top/a.b.txt", "Top/a.b_asdf.txt"]
                 )
+
+    def test_folder_permissions(self):
+        from django.contrib.auth.models import Permission
+
+        folder = Folder.objects.create(name="Root")
+
+        user = User(username="staff", is_staff=True)
+        user.set_password("staff")
+        user.save()
+        user.user_permissions.set(
+            Permission.objects.filter(
+                content_type__app_label="cabinet", content_type__model="file"
+            )
+        )
+        c = Client()
+        c.login(username="staff", password="staff")
+
+        response = c.get("/admin/cabinet/file/folder/add/")
+        self.assertEqual(response.status_code, 403)
+        response = c.get(f"/admin/cabinet/file/folder/{folder.pk}/")
+        self.assertEqual(response.status_code, 403)
+
+        user.user_permissions.add(
+            *Permission.objects.filter(
+                content_type__app_label="cabinet",
+                codename__in=["add_folder", "change_folder"],
+            )
+        )
+        c.login(username="staff", password="staff")  # Reset permission cache
+
+        response = c.get("/admin/cabinet/file/folder/add/")
+        self.assertEqual(response.status_code, 200)
+        response = c.post(
+            f"/admin/cabinet/file/folder/{folder.pk}/",
+            {"name": "Root", "_delete_folder": True},
+        )
+        self.assertEqual(response.status_code, 403)
+        self.assertTrue(Folder.objects.filter(pk=folder.pk).exists())

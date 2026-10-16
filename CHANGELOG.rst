@@ -6,6 +6,7 @@ Next version
 
 - Added Django 6.1.
 - Added permission checks to the upload and the move files to folder views.
+- Folder views check folder permissions instead of file permissions.
 - Root folder names are only required to be unique among root folders.
 - Fixed crashes caused by invalid query parameters in several admin views.
 - Fixed the folder listing showing files of subfolders when the search term
