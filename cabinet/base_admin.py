@@ -42,12 +42,9 @@ class FolderListFilter(admin.RelatedFieldListFilter):
         if request.GET.get(SEARCH_VAR):
             if folder_id:
                 return queryset.filter(
-                    # Avoid problems because of table aliasses (Django 1.11)
-                    folder__in=list(
-                        Folder.objects.descendants(
-                            folder_id, include_self=True
-                        ).values_list("id", flat=True)
-                    )
+                    folder__in=Folder.objects.descendants(
+                        folder_id, include_self=True
+                    ).values("id")
                 )
             return queryset
 
