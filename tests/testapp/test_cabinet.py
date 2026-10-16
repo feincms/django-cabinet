@@ -16,7 +16,7 @@ from django.core.exceptions import ImproperlyConfigured, ValidationError
 from django.core.files.base import ContentFile
 from django.core.management import call_command
 from django.test import Client, TestCase
-from django.test.utils import override_settings
+from django.test.utils import isolate_apps, override_settings
 from django.urls import reverse
 
 from cabinet.base import AbstractFile, DownloadMixin, determine_accept_file_functions
@@ -543,6 +543,7 @@ class CabinetTestCase(TestCase):
         f1 = File.objects.get()
         self.assertEqual(f1.image_file, "")
 
+    @isolate_apps("testapp")
     def test_custom_file(self):
         class NonModelMixin:
             pass
