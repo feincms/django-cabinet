@@ -649,3 +649,13 @@ class CabinetTestCase(TestCase):
         self.assertEqual(response.status_code, 403)
         file.refresh_from_db()
         self.assertEqual(file.folder, folder)
+
+    def test_search_param_empty(self):
+        folder = Folder.objects.create(name="Root")
+        subfolder = Folder.objects.create(name="Sub", parent=folder)
+        file = File(folder=subfolder)
+        file.download_file.save("hello.txt", ContentFile("Hello"))
+
+        c = self.login()
+        response = c.get(f"/admin/cabinet/file/?folder__id__exact={folder.pk}&q=")
+        self.assertContains(response, paginator(files=0), html=True)

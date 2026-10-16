@@ -39,7 +39,7 @@ class FolderListFilter(admin.RelatedFieldListFilter):
             except ValidationError as e:
                 raise IncorrectLookupParameters(e) from e
 
-        if "q" in request.GET:
+        if request.GET.get(SEARCH_VAR):
             if folder_id:
                 return queryset.filter(
                     # Avoid problems because of table aliasses (Django 1.11)
