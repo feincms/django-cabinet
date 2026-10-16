@@ -60,11 +60,19 @@
         <div class="clear"></div>
       </th>
       <th scope="col"  class="column-admin_file_name">
-        <div class="text"><span>File name</span></div>
+        <div class="text"><span>{% trans "file name"|capfirst %}</span></div>
         <div class="clear"></div>
       </th>
       <th scope="col"  class="column-admin_details">
-        <div class="text"><span>Details</span></div>
+        <div class="text"><span>{% trans "details"|capfirst %}</span></div>
+        <div class="clear"></div>
+      </th>
+      <th scope="col"  class="column-admin_created_at">
+        <div class="text"><span>{% trans "created at"|capfirst %}</span></div>
+        <div class="clear"></div>
+      </th>
+      <th scope="col"  class="column-admin_updated_at">
+        <div class="text"><span>{% trans "updated at"|capfirst %}</span></div>
         <div class="clear"></div>
       </th>
     </tr>
@@ -81,7 +89,7 @@
     <td class="field-admin_thumbnail">
       <a href="?{{ cabinet.querystring }}{% if cabinet.folder.parent_id %}&amp;folder__id__exact={{ cabinet.folder.parent_id }}{% endif %}"><span class="folder"></span></a>
     </td>
-    <th class="field-admin_file_name" colspan="2">
+    <th class="field-admin_file_name" colspan="4">
       <a href="?{{ cabinet.querystring }}{% if cabinet.folder.parent_id %}&amp;folder__id__exact={{ cabinet.folder.parent_id }}{% endif %}">../</a>
     </th>
   </tr>
@@ -105,12 +113,10 @@
           <a href="{% url 'admin:cabinet_folder_change' f.id %}?{{ cabinet.querystring }}"
              title="{% trans 'Change folder' %}" class="changelink"></a>
           {% endif %}
-          <br>
-          {% blocktrans with created_at=f.created_at|date:"SHORT_DATE_FORMAT" updated_at=f.updated_at|date:"SHORT_DATE_FORMAT" trimmed %}
-            Created {{ created_at }}, last modified {{ updated_at }}
-          {% endblocktrans %}
         </small>
       </td>
+      <td class="field-admin_created_at">{{ f.created_at|date:"SHORT_DATE_FORMAT" }}</td>
+      <td class="field-admin_updated_at">{{ f.updated_at|date:"SHORT_DATE_FORMAT" }}</td>
     </tr>
   {% endfor %}
 </script>

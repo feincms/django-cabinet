@@ -28,7 +28,9 @@
 .action-checkbox,
 .field-admin_thumbnail,
 .field-admin_file_name,
-.field-admin_details {
+.field-admin_details,
+.field-admin_created_at,
+.field-admin_updated_at {
   vertical-align: middle;
 }
 

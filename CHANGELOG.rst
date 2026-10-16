@@ -6,6 +6,8 @@ Next version
 
 - Added Django 6.1.
 - Allowed searching files by ID.
+- Allowed sorting files by name, creation and modification date. The dates
+  are shown in their own columns now.
 - Added permission checks to the upload and the move files to folder views.
 - Folder views check folder permissions instead of file permissions.
 - Root folder names are only required to be unique among root folders.

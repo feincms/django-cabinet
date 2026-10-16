@@ -11,7 +11,13 @@ from cabinet.models import File
 
 @admin.register(File)
 class FileAdmin(CKEditorFilebrowserMixin, FileAdminBase):
-    list_display = ["admin_thumbnail", "admin_file_name", "admin_details"]
+    list_display = [
+        "admin_thumbnail",
+        "admin_file_name",
+        "admin_details",
+        "admin_created_at",
+        "admin_updated_at",
+    ]
     list_display_links = ["admin_thumbnail", "admin_file_name"]
 
     @admin.display(description="")
@@ -32,7 +38,7 @@ class FileAdmin(CKEditorFilebrowserMixin, FileAdminBase):
             )
         return ""
 
-    @admin.display(description=_("file name"))
+    @admin.display(description=_("file name"), ordering="file_name")
     def admin_file_name(self, instance):
         return format_html(
             "{} <small>({})</small>",
@@ -42,16 +48,16 @@ class FileAdmin(CKEditorFilebrowserMixin, FileAdminBase):
 
     @admin.display(description=_("details"))
     def admin_details(self, instance):
-        details = [
-            instance.caption,
-            instance.copyright,
-            _("Created %(created_at)s, last modified %(updated_at)s")
-            % {
-                "created_at": date_format(instance.created_at, "SHORT_DATE_FORMAT"),
-                "updated_at": date_format(instance.updated_at, "SHORT_DATE_FORMAT"),
-            },
-        ]
+        details = [instance.caption, instance.copyright]
         return format_html(
             "<small>{}</small>",
             format_html_join(mark_safe("<br>"), "{}", ((d,) for d in details if d)),
         )
+
+    @admin.display(description=_("created at"), ordering="created_at")
+    def admin_created_at(self, instance):
+        return date_format(instance.created_at, "SHORT_DATE_FORMAT")
+
+    @admin.display(description=_("updated at"), ordering="updated_at")
+    def admin_updated_at(self, instance):
+        return date_format(instance.updated_at, "SHORT_DATE_FORMAT")

@@ -764,3 +764,23 @@ class CabinetTestCase(TestCase):
         )
         self.assertContains(response, paginator(files=1), html=True)
         self.assertContains(response, f"file-{file.pk}.txt")
+
+    def test_sorting(self):
+        folder = Folder.objects.create(name="Root")
+        for name in ["b.txt", "a.txt", "c.txt"]:
+            file = File(folder=folder)
+            file.download_file.save(name, ContentFile("Hello"))
+
+        c = self.login()
+        for o, expected in [
+            ("2", ["a.txt", "b.txt", "c.txt"]),
+            ("-2", ["c.txt", "b.txt", "a.txt"]),
+            ("4", ["b.txt", "a.txt", "c.txt"]),
+            ("-5", ["c.txt", "a.txt", "b.txt"]),
+        ]:
+            response = c.get(
+                f"/admin/cabinet/file/?folder__id__exact={folder.pk}&o={o}"
+            )
+            self.assertEqual(
+                [f.file_name for f in response.context["cl"].result_list], expected
+            )
