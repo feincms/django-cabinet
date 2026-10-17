@@ -65,6 +65,7 @@ class Link:
             num=self.cl.ck_context["CKEditorFuncNum"],
             data=json.dumps(
                 {
+                    "id": obj.pk,
                     "alternative_text": getattr(obj, "image_alt_text", ""),
                     "caption": getattr(obj, "caption", ""),
                     "copyright": getattr(obj, "copyright", ""),

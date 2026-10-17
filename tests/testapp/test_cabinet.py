@@ -1,7 +1,9 @@
+import html
 import io
 import itertools
 import json
 import os
+import re
 import shutil
 import tempfile
 from pathlib import Path
@@ -336,6 +338,17 @@ class CabinetTestCase(TestCase):
             f"/admin/cabinet/file/?_popup=1&CKEditor=editor&CKEditorFuncNum=1&langCode=en&folder__id__exact={folder.pk}"
         )
         self.assertContains(response, "data-ckeditor-function", 2)  # Icon and name
+
+        data = [
+            json.loads(html.unescape(match))
+            for match in re.findall(
+                r'data-ckeditor-data="([^"]*)"', response.content.decode()
+            )
+        ]
+        self.assertEqual(len(data), 2)
+        for item in data:
+            self.assertEqual(item["id"], file.pk)
+            self.assertEqual(item["caption"], "")
 
     def test_editing(self):
         folder = Folder.objects.create(name="Root")

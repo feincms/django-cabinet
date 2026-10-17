@@ -110,6 +110,24 @@ The values for using django-cabinet as a file and image browser follow
     CKEDITOR.config.filebrowserBrowseUrl = "/admin/cabinet/file/?_popup=1";
     CKEDITOR.config.filebrowserImageUrl = "/admin/cabinet/file/?_popup=1&file_type=image_file";
 
+When a file is selected, django-cabinet calls
+``window.opener.CKEDITOR.tools.callFunction(funcNum, url, data)``. The third
+argument is additional data about the selected file which CKEditor 4 itself
+ignores, but which other editors such as `django-prose-editor
+<https://django-prose-editor.readthedocs.io/>`__ may use. This is
+**experimental** and may change. The data looks as follows:
+
+.. code-block:: javascript
+
+    {
+        "id": 42,  // The primary key of the file
+        "alternative_text": "...",  // The image's alternative text
+        "caption": "...",
+        "copyright": "..."
+    }
+
+Fields which don't exist on the file model are set to an empty string.
+
 
 Replacing the file model
 ========================
