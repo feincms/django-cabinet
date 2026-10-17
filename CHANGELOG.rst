@@ -4,6 +4,9 @@ Change log
 Next version
 ~~~~~~~~~~~~
 
+0.20.1 (2026-10-17)
+~~~~~~~~~~~~~~~~~~~
+
 - EXPERIMENTAL: Added the file's primary key (``id``) to the additional data
   in the CKEditor 4 filebrowser callback protocol. django-prose-editor needs it
   to reference files, since the URL alone doesn't identify them reliably.
