@@ -230,4 +230,30 @@ function initMoveFiles(currentFolder) {
         window.alert(`Moving files failed: ${error.message}`)
       })
   })
+
+  // Expand collapsed folders in the tree when hovering over them for a
+  // moment while dragging files
+  let expandTarget = null
+  let expandTimer = null
+  const cancelExpand = () => {
+    clearTimeout(expandTimer)
+    expandTarget = expandTimer = null
+  }
+
+  document.addEventListener("dragover", (e) => {
+    if (!isMoveDrag(e)) return
+    const details = e.target.closest?.(
+      ".cabinet-folder-tree details:not([open]) > summary",
+    )?.parentElement
+    if (details === expandTarget) return
+    cancelExpand()
+    if (!details) return
+    expandTarget = details
+    expandTimer = setTimeout(() => {
+      details.open = true
+      cancelExpand()
+    }, 700)
+  })
+  document.addEventListener("dragend", cancelExpand)
+  document.addEventListener("drop", cancelExpand)
 }

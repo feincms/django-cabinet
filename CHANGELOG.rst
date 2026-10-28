@@ -8,7 +8,8 @@ Next version
   the subtree of the current root folder; override
   ``FileAdminBase.get_folder_tree_queryset`` to change this.
 - Allowed moving files by dragging them onto folders in the tree or in the
-  file list. Dragging a selected file moves all selected files.
+  file list. Dragging a selected file moves all selected files. Collapsed
+  folders in the tree expand when hovering over them while dragging.
 - Ordered folders in the move files to folder tree by name.
 
 0.20.1 (2026-10-17)
