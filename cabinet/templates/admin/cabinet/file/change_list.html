@@ -5,7 +5,7 @@
 {# Do not render filters, show the folder tree instead #}
 {% block filters %}
 {% if cabinet.folder_tree %}
-<nav id="changelist-filter" class="cabinet-sidebar" aria-label="{% trans 'Folders' %}">
+<nav class="module cabinet-sidebar" aria-label="{% trans 'Folders' %}">
   <h2>{% trans 'Folders' %}</h2>
   {{ cabinet.folder_tree }}
 </nav>

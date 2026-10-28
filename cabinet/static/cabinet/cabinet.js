@@ -16,11 +16,8 @@ django.jQuery((_$) => {
 django.jQuery(($) => {
   if (!document.body.classList.contains("change-list")) return
 
-  // Remove filtered class so that module uses horizontal space better,
-  // except when the folder tree is shown in the sidebar
-  if (!document.querySelector(".cabinet-sidebar")) {
-    $(".module.filtered").removeClass("filtered")
-  }
+  // Remove filtered class so that module uses horizontal space better
+  $(".module.filtered").removeClass("filtered")
 
   // Hardcoded result list HTML if there are no files at all (for example in
   // the root folder)
