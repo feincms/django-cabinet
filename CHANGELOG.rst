@@ -4,6 +4,9 @@ Change log
 Next version
 ~~~~~~~~~~~~
 
+0.21 (2026-10-28)
+~~~~~~~~~~~~~~~~~
+
 - Added a collapsible folder tree next to the file list. By default it shows
   the subtree of the current root folder; override
   ``FileAdminBase.get_folder_tree_queryset`` to change this.
