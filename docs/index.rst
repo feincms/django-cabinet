@@ -52,6 +52,41 @@ django-imagefield_ and one for downloads, a standard Django
 added to folders; files can never exist in the root folder.
 
 
+Folder tree and moving files
+============================
+
+Inside a folder, the file list shows a collapsible folder tree on the
+left. Files can be moved by dragging them onto a folder in the tree or
+onto the subfolders and ``../`` in the file list. Dragging a selected
+file moves all selected files. Collapsed folders in the tree expand when
+hovering over them for a moment while dragging.
+
+By default the tree only shows the root folder containing the current
+folder and its descendants, since showing all folders gets unwieldy
+quickly. Override ``get_folder_tree_queryset`` to change this. Return
+``Folder.objects.all()`` to always show the full tree, or ``None`` to
+hide the tree:
+
+.. code-block:: python
+
+    from django.contrib import admin
+
+    from cabinet.admin import FileAdmin
+    from cabinet.models import File
+
+
+    class NoTreeFileAdmin(FileAdmin):
+        def get_folder_tree_queryset(self, request, folder):
+            return None
+
+
+    admin.site.unregister(File)
+    admin.site.register(File, NoTreeFileAdmin)
+
+Moving files by dragging them onto the folders in the file list still
+works without the tree.
+
+
 Generating thumbnails with django-imagefield
 ============================================
 
