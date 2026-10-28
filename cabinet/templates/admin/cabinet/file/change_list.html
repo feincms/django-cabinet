@@ -2,8 +2,15 @@
 
 {% load admin_urls i18n static %}
 
-{# Do not render filters #}
-{% block filters %}{% endblock %}
+{# Do not render filters, show the folder tree instead #}
+{% block filters %}
+{% if cabinet.folder_tree %}
+<nav id="changelist-filter" class="cabinet-sidebar" aria-label="{% trans 'Folders' %}">
+  <h2>{% trans 'Folders' %}</h2>
+  {{ cabinet.folder_tree }}
+</nav>
+{% endif %}
+{% endblock %}
 
 {# Add parent folders to breadcrumbs #}
 {% block breadcrumbs %}
@@ -84,7 +91,7 @@
 
 <script type="text/template" id="cabinet-folder-list">
   {% if cabinet.folder %}
-  <tr class="row-folder">
+  <tr class="row-folder"{% if cabinet.folder.parent_id %} data-cabinet-folder="{{ cabinet.folder.parent_id }}"{% endif %}>
     {% if action_form %}<td></td>{% endif %}
     <td class="field-admin_thumbnail">
       <a href="?{{ cabinet.querystring }}{% if cabinet.folder.parent_id %}&amp;folder__id__exact={{ cabinet.folder.parent_id }}{% endif %}"><span class="folder"></span></a>
@@ -95,7 +102,7 @@
   </tr>
   {% endif %}
   {% for f in cabinet.folder_children %}
-    <tr class="row-folder">
+    <tr class="row-folder" data-cabinet-folder="{{ f.id }}">
       {% if action_form %}<td></td>{% endif %}
       <td class="field-admin_thumbnail">
         <a href="?{{ cabinet.querystring }}&amp;folder__id__exact={{ f.id }}"><span class="folder"></span></a>

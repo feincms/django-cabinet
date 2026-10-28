@@ -663,6 +663,14 @@ class CabinetTestCase(TestCase):
         file.refresh_from_db()
         self.assertEqual(file.folder, folder)
 
+        response = c.post(
+            "/admin/cabinet/file/move/",
+            {"files": file.pk, "folder": other.pk},
+        )
+        self.assertEqual(response.status_code, 403)
+        file.refresh_from_db()
+        self.assertEqual(file.folder, folder)
+
     def test_search_param_empty(self):
         folder = Folder.objects.create(name="Root")
         subfolder = Folder.objects.create(name="Sub", parent=folder)
@@ -797,3 +805,54 @@ class CabinetTestCase(TestCase):
             self.assertEqual(
                 [f.file_name for f in response.context["cl"].result_list], expected
             )
+
+    def test_folder_tree(self):
+        root = Folder.objects.create(name="Root")
+        sub = Folder.objects.create(name="Sub", parent=root)
+        subsub = Folder.objects.create(name="Subsub", parent=sub)
+        other = Folder.objects.create(name="Other")
+        c = self.login()
+
+        response = c.get("/admin/cabinet/file/")
+        self.assertNotContains(response, "cabinet-sidebar")
+
+        response = c.get(f"/admin/cabinet/file/?folder__id__exact={sub.pk}")
+        self.assertContains(response, "cabinet-sidebar")
+        self.assertContains(
+            response,
+            f'<a href="?folder__id__exact={sub.pk}" data-cabinet-folder="{sub.pk}"'
+            f' class="current">Sub</a>',
+        )
+        self.assertContains(response, f'data-cabinet-folder="{root.pk}"')
+        self.assertContains(response, f'data-cabinet-folder="{subsub.pk}"')
+        # Only the subtree of the current root folder is shown
+        self.assertNotContains(response, f'data-cabinet-folder="{other.pk}"')
+
+    def test_move(self):
+        folder = Folder.objects.create(name="Root")
+        other = Folder.objects.create(name="Other")
+        files = []
+        for name in ["a.txt", "b.txt", "c.txt"]:
+            file = File(folder=folder)
+            file.download_file.save(name, ContentFile("Hello"))
+            files.append(file)
+        c = self.login()
+
+        response = c.get("/admin/cabinet/file/move/")
+        self.assertRedirects(response, "/admin/cabinet/file/")
+
+        response = c.post("/admin/cabinet/file/move/", {"folder": other.pk})
+        self.assertEqual(response.status_code, 400)
+
+        response = c.post(
+            "/admin/cabinet/file/move/",
+            {"files": [files[0].pk, files[1].pk], "folder": other.pk},
+        )
+        self.assertEqual(response.json(), {"success": True, "count": 2})
+        self.assertEqual(
+            sorted(File.objects.filter(folder=other).values_list("pk", flat=True)),
+            [files[0].pk, files[1].pk],
+        )
+
+        response = c.get(f"/admin/cabinet/file/?folder__id__exact={other.pk}")
+        self.assertContains(response, "Moved 2 files to &quot;Other&quot;.")

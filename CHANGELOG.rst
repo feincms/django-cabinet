@@ -4,6 +4,13 @@ Change log
 Next version
 ~~~~~~~~~~~~
 
+- Added a collapsible folder tree next to the file list. By default it shows
+  the subtree of the current root folder; override
+  ``FileAdminBase.get_folder_tree_queryset`` to change this.
+- Allowed moving files by dragging them onto folders in the tree or in the
+  file list. Dragging a selected file moves all selected files.
+- Ordered folders in the move files to folder tree by name.
+
 0.20.1 (2026-10-17)
 ~~~~~~~~~~~~~~~~~~~
 

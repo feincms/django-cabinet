@@ -16,8 +16,11 @@ django.jQuery((_$) => {
 django.jQuery(($) => {
   if (!document.body.classList.contains("change-list")) return
 
-  // Remove filtered class so that module uses horizontal space better
-  $(".module.filtered").removeClass("filtered")
+  // Remove filtered class so that module uses horizontal space better,
+  // except when the folder tree is shown in the sidebar
+  if (!document.querySelector(".cabinet-sidebar")) {
+    $(".module.filtered").removeClass("filtered")
+  }
 
   // Hardcoded result list HTML if there are no files at all (for example in
   // the root folder)
@@ -37,6 +40,8 @@ django.jQuery(($) => {
     .getAll("folder__id__exact")
     .at(-1)
 
+  initMoveFiles(folder)
+
   if (!folder || !/^\d+$/.test(folder)) {
     $(".cabinet-upload-hint").remove()
     return
@@ -44,10 +49,13 @@ django.jQuery(($) => {
 
   results
     .on("drag dragstart dragend dragover dragenter dragleave drop", (e) => {
+      // Moving files around is handled by initMoveFiles
+      if (isMoveDrag(e.originalEvent)) return
       e.preventDefault()
       e.stopPropagation()
     })
-    .on("dragover dragenter", () => {
+    .on("dragover dragenter", (e) => {
+      if (isMoveDrag(e.originalEvent)) return
       ++dragCounter
       results.addClass("dragover")
     })
@@ -61,6 +69,7 @@ django.jQuery(($) => {
     .on("drop", (e) => {
       dragCounter = 0
       results.removeClass("dragover")
+      if (isMoveDrag(e.originalEvent)) return
       uploadFiles(e.originalEvent.dataTransfer.files)
     })
 
@@ -126,3 +135,102 @@ django.jQuery(($) => {
     }
   }
 })
+
+const MOVE_TYPE = "application/x-cabinet-files"
+
+function isMoveDrag(e) {
+  return !!e.dataTransfer?.types.includes(MOVE_TYPE)
+}
+
+function initMoveFiles(currentFolder) {
+  const csrfToken = document.querySelector(
+    "input[name=csrfmiddlewaretoken]",
+  )?.value
+  if (!csrfToken) return
+
+  const rows = document.querySelectorAll("#result_list tbody tr")
+  for (const row of rows) {
+    if (!row.querySelector("input.action-select")) continue
+    row.draggable = true
+  }
+
+  // Drag all selected files if the dragged row is selected, the dragged row
+  // only otherwise. Listen in the capture phase so that the upload handlers
+  // already recognize the drag as a move.
+  document.addEventListener(
+    "dragstart",
+    (e) => {
+      const row = e.target.closest?.("#result_list tr[draggable=true]")
+      if (!row) return
+
+      const checkbox = row.querySelector("input.action-select")
+      const ids = checkbox.checked
+        ? [...document.querySelectorAll("input.action-select:checked")].map(
+            (input) => input.value,
+          )
+        : [checkbox.value]
+
+      e.dataTransfer.clearData()
+      e.dataTransfer.setData(MOVE_TYPE, JSON.stringify(ids))
+      e.dataTransfer.effectAllowed = "move"
+
+      const image = document.createElement("div")
+      image.className = "cabinet-drag-image"
+      image.textContent =
+        ids.length === 1
+          ? row.querySelector(".field-admin_file_name")?.textContent.trim()
+          : `${ids.length} files`
+      document.body.append(image)
+      e.dataTransfer.setDragImage(image, 0, 0)
+      setTimeout(() => image.remove())
+    },
+    true,
+  )
+
+  const dropTarget = (e) => {
+    const target = e.target.closest?.("[data-cabinet-folder]")
+    if (!target || !isMoveDrag(e)) return null
+    if (target.dataset.cabinetFolder === currentFolder) return null
+    return target
+  }
+
+  for (const type of ["dragenter", "dragover"]) {
+    document.addEventListener(type, (e) => {
+      const target = dropTarget(e)
+      if (!target) return
+      e.preventDefault()
+      e.dataTransfer.dropEffect = "move"
+      target.classList.add("cabinet-dropover")
+    })
+  }
+
+  document.addEventListener("dragleave", (e) => {
+    const target = e.target.closest?.("[data-cabinet-folder]")
+    if (target && !target.contains(e.relatedTarget)) {
+      target.classList.remove("cabinet-dropover")
+    }
+  })
+
+  document.addEventListener("drop", (e) => {
+    const target = dropTarget(e)
+    if (!target) return
+    e.preventDefault()
+    target.classList.remove("cabinet-dropover")
+
+    const body = new FormData()
+    body.append("csrfmiddlewaretoken", csrfToken)
+    body.append("folder", target.dataset.cabinetFolder)
+    for (const id of JSON.parse(e.dataTransfer.getData(MOVE_TYPE))) {
+      body.append("files", id)
+    }
+
+    fetch("./move/", { method: "POST", body, credentials: "same-origin" })
+      .then((response) => {
+        if (!response.ok) throw new Error(response.statusText)
+        window.location.reload()
+      })
+      .catch((error) => {
+        window.alert(`Moving files failed: ${error.message}`)
+      })
+  })
+}

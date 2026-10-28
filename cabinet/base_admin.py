@@ -16,7 +16,7 @@ from django.urls import path, re_path, reverse
 from django.utils.functional import cached_property
 from django.utils.html import escape, format_html, format_html_join, mark_safe
 from django.utils.text import capfirst
-from django.utils.translation import gettext_lazy as _
+from django.utils.translation import gettext_lazy as _, ngettext
 
 from cabinet.models import Folder
 
@@ -478,6 +478,14 @@ class UploadForm(forms.Form):
     file = forms.FileField()
 
 
+class MoveForm(forms.Form):
+    folder = forms.ModelChoiceField(queryset=Folder.objects.all())
+
+    def __init__(self, *args, files, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.fields["files"] = forms.ModelMultipleChoiceField(queryset=files)
+
+
 class FileAdminBase(FolderAdminMixin):
     actions = ["move_to_folder"]
     form = IgnoreChangedDataErrorsForm
@@ -498,7 +506,12 @@ class FileAdminBase(FolderAdminMixin):
                 "upload/",
                 self.admin_site.admin_view(self.upload),
                 name="cabinet_upload",
-            )
+            ),
+            path(
+                "move/",
+                self.admin_site.admin_view(self.move),
+                name="cabinet_move",
+            ),
         ] + super().get_urls()
 
     def get_search_results(self, request, queryset, search_term):
@@ -541,6 +554,39 @@ class FileAdminBase(FolderAdminMixin):
 
         return folders
 
+    def get_folder_tree_queryset(self, request, folder):
+        """
+        Return the folders shown in the tree next to the file list, or
+        ``None`` to hide the tree. Defaults to the subtree of the current
+        folder's root folder, since showing all folders gets unwieldy quickly.
+        Return ``Folder.objects.all()`` to always show the full tree.
+        """
+        if folder is None:
+            return None
+        root = folder.ancestors(include_self=True).first()
+        return Folder.objects.descendants(root, include_self=True)
+
+    def folder_tree(self, request, folder):
+        queryset = self.get_folder_tree_queryset(request, folder)
+        if queryset is None:
+            return None
+
+        querystring = cabinet_querystring(request)
+        open_ids = set(folder.ancestors(include_self=True).values_list("pk", flat=True))
+
+        def render_label(node):
+            return format_html(
+                '<a href="?{}" data-cabinet-folder="{}"{}>{}</a>',
+                f"{querystring}&folder__id__exact={node.pk}".lstrip("&"),
+                node.pk,
+                mark_safe(' class="current"') if node.pk == folder.pk else "",
+                node.name,
+            )
+
+        return render_folder_tree(
+            build_folder_tree(queryset, open_ids=open_ids), render_label
+        )
+
     def changelist_view(self, request, extra_context=None):
         folder__id__exact = request.GET.get("folder__id__exact")
         if folder__id__exact == "last":
@@ -571,6 +617,7 @@ class FileAdminBase(FolderAdminMixin):
                     "folder_children": self.folders_annotate_counts(
                         Folder.objects.filter(parent=folder)
                     ),
+                    "folder_tree": self.folder_tree(request, folder),
                 }
             )
 
@@ -634,6 +681,28 @@ class FileAdminBase(FolderAdminMixin):
         f.save()
 
         return JsonResponse({"success": True, "pk": f.pk, "name": str(f)})
+
+    def move(self, request):
+        if request.method != "POST":
+            return self.redirect_to_folder(request, None)
+        if not self.has_change_permission(request):
+            raise PermissionDenied
+        form = MoveForm(request.POST, files=self.get_queryset(request))
+        if not form.is_valid():
+            return JsonResponse({"success": False}, status=400)
+
+        folder = form.cleaned_data["folder"]
+        count = form.cleaned_data["files"].update(folder=folder)
+        self.message_user(
+            request,
+            ngettext(
+                'Moved %(count)s file to "%(folder)s".',
+                'Moved %(count)s files to "%(folder)s".',
+                count,
+            )
+            % {"count": count, "folder": folder},
+        )
+        return JsonResponse({"success": True, "count": count})
 
     top_fields = ["folder", "caption", "copyright"]
     advanced_fields = ["_overwrite"]

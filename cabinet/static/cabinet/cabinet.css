@@ -115,3 +115,39 @@ form .aligned .cabinet-folder-tree ul {
 .cabinet-folder-tree li.leaf {
   padding-left: 1.3em;
 }
+
+/* Folder tree next to the file list */
+.cabinet-sidebar {
+  position: sticky;
+  top: 0;
+  align-self: flex-start;
+  max-height: 100vh;
+  overflow: auto;
+}
+.cabinet-sidebar .cabinet-folder-tree {
+  padding: 5px 15px 15px 5px;
+}
+.cabinet-sidebar .cabinet-folder-tree ul {
+  padding-left: 1em;
+}
+.cabinet-sidebar .cabinet-folder-tree a.current {
+  font-weight: bold;
+}
+
+/* Moving files by dragging them onto folders */
+#result_list tr[draggable="true"] {
+  cursor: grab;
+}
+.cabinet-dropover {
+  outline: 2px dashed var(--link-fg, #447e9b);
+  outline-offset: -2px;
+  background: var(--selected-row, #ffc);
+}
+.cabinet-drag-image {
+  position: absolute;
+  top: -1000px;
+  padding: 0.3em 0.6em;
+  border-radius: 4px;
+  background: var(--primary, #79aec8);
+  color: var(--primary-fg, #fff);
+}
