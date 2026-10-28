@@ -86,6 +86,46 @@ class FolderForm(forms.ModelForm):
             )
 
 
+def build_folder_tree(queryset, *, open_ids=()):
+    """
+    Return the root nodes of the folder tree, each a dict with ``folder``,
+    ``children`` and ``open`` keys. Folders whose parent isn't part of the
+    queryset become roots themselves.
+    """
+    nodes_by_id = {}
+    roots = []
+    for folder in queryset.with_tree_fields().order_siblings_by("name"):
+        node = {
+            "folder": folder,
+            "children": [],
+            "open": folder.pk in open_ids,
+        }
+        nodes_by_id[folder.pk] = node
+        if folder.parent_id and folder.parent_id in nodes_by_id:
+            nodes_by_id[folder.parent_id]["children"].append(node)
+        else:
+            roots.append(node)
+    return roots
+
+
+def render_folder_tree(roots, render_label):
+    def render_node(node):
+        label = render_label(node["folder"])
+        if node["children"]:
+            open_attr = mark_safe(" open") if node["open"] else ""
+            children_html = mark_safe("".join(render_node(c) for c in node["children"]))
+            return format_html(
+                "<li><details{}><summary>{}</summary><ul>{}</ul></details></li>",
+                open_attr,
+                label,
+                children_html,
+            )
+        return format_html('<li class="leaf">{}</li>', label)
+
+    tree_html = mark_safe("".join(render_node(node) for node in roots))
+    return format_html('<ul class="cabinet-folder-tree">{}</ul>', tree_html)
+
+
 class FolderTreeWidget(forms.Widget):
     """
     Widget that renders a folder tree as a collapsible structure using
@@ -104,48 +144,20 @@ class FolderTreeWidget(forms.Widget):
         return data.get(name)
 
     def render(self, name, value, attrs=None, renderer=None):
-        queryset = self._queryset.with_tree_fields()
+        roots = build_folder_tree(self._queryset, open_ids=self.open_ids)
 
-        nodes_by_id = {}
-        roots = []
-        for folder in queryset:
-            node = {
-                "folder": folder,
-                "children": [],
-                "open": folder.pk in self.open_ids,
-            }
-            nodes_by_id[folder.pk] = node
-            if folder.parent_id and folder.parent_id in nodes_by_id:
-                nodes_by_id[folder.parent_id]["children"].append(node)
-            else:
-                roots.append(node)
-
-        def render_node(node):
-            folder = node["folder"]
+        def render_label(folder):
             is_selected = value is not None and str(folder.pk) == str(value)
             checked = mark_safe(" checked") if is_selected else ""
-            label = format_html(
+            return format_html(
                 '<label><input type="radio" name="{}" value="{}"{}/> {}</label>',
                 name,
                 folder.pk,
                 checked,
                 folder.name,
             )
-            if node["children"]:
-                open_attr = mark_safe(" open") if node["open"] else ""
-                children_html = mark_safe(
-                    "".join(render_node(c) for c in node["children"])
-                )
-                return format_html(
-                    "<li><details{}><summary>{}</summary><ul>{}</ul></details></li>",
-                    open_attr,
-                    label,
-                    children_html,
-                )
-            return format_html('<li class="leaf">{}</li>', label)
 
-        tree_html = mark_safe("".join(render_node(node) for node in roots))
-        return format_html('<ul class="cabinet-folder-tree">{}</ul>', tree_html)
+        return render_folder_tree(roots, render_label)
 
 
 class SelectFolderForm(forms.Form):
