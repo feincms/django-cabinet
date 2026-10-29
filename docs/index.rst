@@ -55,17 +55,16 @@ added to folders; files can never exist in the root folder.
 Folder tree and moving files
 ============================
 
-Inside a folder, the file list shows a collapsible folder tree on the
-left. Files can be moved by dragging them onto a folder in the tree or
-onto the subfolders and ``../`` in the file list. Dragging a selected
-file moves all selected files. Collapsed folders in the tree expand when
-hovering over them for a moment while dragging.
+The file list shows a collapsible folder tree on the left. It starts
+with a link to the root folder, followed by the root folder containing
+the current folder and the remaining root folders sorted by name. Files
+can be moved by dragging them onto a folder in the tree or onto the
+subfolders and ``../`` in the file list. Dragging a selected file moves
+all selected files. Collapsed folders in the tree expand when hovering
+over them for a moment while dragging.
 
-By default the tree only shows the root folder containing the current
-folder and its descendants, since showing all folders gets unwieldy
-quickly. Override ``get_folder_tree_queryset`` to change this. Return
-``Folder.objects.all()`` to always show the full tree, or ``None`` to
-hide the tree:
+Override ``get_folder_tree_queryset`` to restrict the folders shown in
+the tree, or return ``None`` to hide the tree:
 
 .. code-block:: python
 

@@ -814,19 +814,29 @@ class CabinetTestCase(TestCase):
         c = self.login()
 
         response = c.get("/admin/cabinet/file/")
-        self.assertNotContains(response, "cabinet-sidebar")
+        self.assertContains(response, "cabinet-sidebar")
+        self.assertContains(response, '<a href="?" class="current">Root folder</a>')
+        content = response.content.decode()
+        # Root folders are sorted alphabetically
+        self.assertLess(
+            content.index(f'data-cabinet-folder="{other.pk}"'),
+            content.index(f'data-cabinet-folder="{root.pk}"'),
+        )
 
         response = c.get(f"/admin/cabinet/file/?folder__id__exact={sub.pk}")
-        self.assertContains(response, "cabinet-sidebar")
+        self.assertContains(response, '<a href="?">Root folder</a>')
         self.assertContains(
             response,
             f'<a href="?folder__id__exact={sub.pk}" data-cabinet-folder="{sub.pk}"'
             f' class="current">Sub</a>',
         )
-        self.assertContains(response, f'data-cabinet-folder="{root.pk}"')
         self.assertContains(response, f'data-cabinet-folder="{subsub.pk}"')
-        # Only the subtree of the current root folder is shown
-        self.assertNotContains(response, f'data-cabinet-folder="{other.pk}"')
+        content = response.content.decode()
+        # The root folder containing the current folder is shown first
+        self.assertLess(
+            content.index(f'data-cabinet-folder="{root.pk}"'),
+            content.index(f'data-cabinet-folder="{other.pk}"'),
+        )
 
     def test_move(self):
         folder = Folder.objects.create(name="Root")

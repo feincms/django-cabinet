@@ -4,6 +4,10 @@ Change log
 Next version
 ~~~~~~~~~~~~
 
+- Added a link to the root folder to the folder tree and showed all root
+  folders, starting with the one containing the current folder. The tree is
+  also shown in the root folder now.
+
 0.21 (2026-10-28)
 ~~~~~~~~~~~~~~~~~
 

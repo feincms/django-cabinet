@@ -108,7 +108,7 @@ def build_folder_tree(queryset, *, open_ids=()):
     return roots
 
 
-def render_folder_tree(roots, render_label):
+def render_folder_tree_nodes(roots, render_label):
     def render_node(node):
         label = render_label(node["folder"])
         if node["children"]:
@@ -122,8 +122,14 @@ def render_folder_tree(roots, render_label):
             )
         return format_html('<li class="leaf">{}</li>', label)
 
-    tree_html = mark_safe("".join(render_node(node) for node in roots))
-    return format_html('<ul class="cabinet-folder-tree">{}</ul>', tree_html)
+    return mark_safe("".join(render_node(node) for node in roots))
+
+
+def render_folder_tree(roots, render_label):
+    return format_html(
+        '<ul class="cabinet-folder-tree">{}</ul>',
+        render_folder_tree_nodes(roots, render_label),
+    )
 
 
 class FolderTreeWidget(forms.Widget):
@@ -557,14 +563,10 @@ class FileAdminBase(FolderAdminMixin):
     def get_folder_tree_queryset(self, request, folder):
         """
         Return the folders shown in the tree next to the file list, or
-        ``None`` to hide the tree. Defaults to the subtree of the current
-        folder's root folder, since showing all folders gets unwieldy quickly.
-        Return ``Folder.objects.all()`` to always show the full tree.
+        ``None`` to hide the tree. ``folder`` is the current folder or
+        ``None`` in the root folder.
         """
-        if folder is None:
-            return None
-        root = folder.ancestors(include_self=True).first()
-        return Folder.objects.descendants(root, include_self=True)
+        return Folder.objects.all()
 
     def folder_tree(self, request, folder):
         queryset = self.get_folder_tree_queryset(request, folder)
@@ -572,19 +574,31 @@ class FileAdminBase(FolderAdminMixin):
             return None
 
         querystring = cabinet_querystring(request)
-        open_ids = set(folder.ancestors(include_self=True).values_list("pk", flat=True))
+        ancestors = list(folder.ancestors(include_self=True)) if folder else []
+        open_ids = {node.pk for node in ancestors}
 
         def render_label(node):
             return format_html(
                 '<a href="?{}" data-cabinet-folder="{}"{}>{}</a>',
                 f"{querystring}&folder__id__exact={node.pk}".lstrip("&"),
                 node.pk,
-                mark_safe(' class="current"') if node.pk == folder.pk else "",
+                mark_safe(' class="current"')
+                if folder and node.pk == folder.pk
+                else "",
                 node.name,
             )
 
-        return render_folder_tree(
-            build_folder_tree(queryset, open_ids=open_ids), render_label
+        roots = build_folder_tree(queryset, open_ids=open_ids)
+        # Show the root folder containing the current folder first
+        if ancestors:
+            roots.sort(key=lambda node: node["folder"].pk != ancestors[0].pk)
+        return format_html(
+            '<ul class="cabinet-folder-tree"><li class="leaf"><a href="?{}"{}>{}</a>'
+            "</li>{}</ul>",
+            querystring,
+            mark_safe(' class="current"') if folder is None else "",
+            _("Root folder"),
+            render_folder_tree_nodes(roots, render_label),
         )
 
     def changelist_view(self, request, extra_context=None):
