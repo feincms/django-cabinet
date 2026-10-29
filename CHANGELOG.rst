@@ -4,6 +4,9 @@ Change log
 Next version
 ~~~~~~~~~~~~
 
+0.22 (2026-10-29)
+~~~~~~~~~~~~~~~~~
+
 - Added a link to the root folder to the folder tree and showed all root
   folders, starting with the one containing the current folder. The tree is
   also shown in the root folder now.
