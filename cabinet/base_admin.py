@@ -9,8 +9,8 @@ from django.contrib.admin.views.main import SEARCH_VAR
 from django.contrib.auth import get_permission_codename
 from django.core.exceptions import FieldDoesNotExist, PermissionDenied, ValidationError
 from django.db import router, transaction
-from django.db.models import Count
-from django.http import Http404, HttpResponseRedirect, JsonResponse
+from django.db.models import Count, Q
+from django.http import Http404, HttpResponse, HttpResponseRedirect, JsonResponse
 from django.shortcuts import get_object_or_404
 from django.urls import path, re_path, reverse
 from django.utils.functional import cached_property
@@ -86,11 +86,13 @@ class FolderForm(forms.ModelForm):
             )
 
 
-def build_folder_tree(queryset, *, open_ids=()):
+def build_folder_tree(queryset, *, open_ids=(), has_children=()):
     """
     Return the root nodes of the folder tree, each a dict with ``folder``,
-    ``children`` and ``open`` keys. Folders whose parent isn't part of the
-    queryset become roots themselves.
+    ``children``, ``open`` and ``lazy`` keys. Folders whose parent isn't part
+    of the queryset become roots themselves. Folders in ``has_children`` are
+    expandable even if their children aren't part of the queryset; the
+    children are loaded when expanding the folder.
     """
     nodes_by_id = {}
     roots = []
@@ -99,6 +101,7 @@ def build_folder_tree(queryset, *, open_ids=()):
             "folder": folder,
             "children": [],
             "open": folder.pk in open_ids,
+            "lazy": folder.pk in has_children,
         }
         nodes_by_id[folder.pk] = node
         if folder.parent_id and folder.parent_id in nodes_by_id:
@@ -119,6 +122,12 @@ def render_folder_tree_nodes(roots, render_label):
                 open_attr,
                 label,
                 children_html,
+            )
+        if node["lazy"]:
+            return format_html(
+                "<li><details data-cabinet-lazy><summary>{}</summary><ul></ul>"
+                "</details></li>",
+                label,
             )
         return format_html('<li class="leaf">{}</li>', label)
 
@@ -518,6 +527,11 @@ class FileAdminBase(FolderAdminMixin):
                 self.admin_site.admin_view(self.move),
                 name="cabinet_move",
             ),
+            path(
+                "folder-tree/",
+                self.admin_site.admin_view(self.folder_tree_view),
+                name="cabinet_folder_tree",
+            ),
         ] + super().get_urls()
 
     def get_search_results(self, request, queryset, search_term):
@@ -568,38 +582,72 @@ class FileAdminBase(FolderAdminMixin):
         """
         return Folder.objects.all()
 
-    def folder_tree(self, request, folder):
-        queryset = self.get_folder_tree_queryset(request, folder)
-        if queryset is None:
-            return None
-
+    def _folder_tree_nodes(self, request, queryset, visible, *, ancestors=()):
+        """
+        Return the tree nodes for the ``visible`` folders and a function
+        rendering their labels. Folders with children outside ``visible``
+        are expandable; their children are loaded when expanding them.
+        """
         querystring = cabinet_querystring(request)
-        ancestors = list(folder.ancestors(include_self=True)) if folder else []
         open_ids = {node.pk for node in ancestors}
+        current = ancestors[-1].pk if ancestors else None
+        has_children = set(
+            queryset.filter(
+                parent__in=list(visible.values_list("pk", flat=True))
+            ).values_list("parent", flat=True)
+        )
 
         def render_label(node):
             return format_html(
                 '<a href="?{}" data-cabinet-folder="{}"{}>{}</a>',
                 f"{querystring}&folder__id__exact={node.pk}".lstrip("&"),
                 node.pk,
-                mark_safe(' class="current"')
-                if folder and node.pk == folder.pk
-                else "",
+                mark_safe(' class="current"') if node.pk == current else "",
                 node.name,
             )
 
-        roots = build_folder_tree(queryset, open_ids=open_ids)
+        roots = build_folder_tree(visible, open_ids=open_ids, has_children=has_children)
+        return roots, render_label
+
+    def folder_tree(self, request, folder):
+        queryset = self.get_folder_tree_queryset(request, folder)
+        if queryset is None:
+            return None
+
+        ancestors = list(folder.ancestors(include_self=True)) if folder else []
+        visible = queryset.filter(Q(parent__isnull=True) | Q(parent__in=ancestors))
+        roots, render_label = self._folder_tree_nodes(
+            request, queryset, visible, ancestors=ancestors
+        )
         # Show the root folder containing the current folder first
         if ancestors:
             roots.sort(key=lambda node: node["folder"].pk != ancestors[0].pk)
         return format_html(
             '<ul class="cabinet-folder-tree"><li class="leaf"><a href="?{}"{}>{}</a>'
             "</li>{}</ul>",
-            querystring,
+            cabinet_querystring(request),
             mark_safe(' class="current"') if folder is None else "",
             _("Root folder"),
             render_folder_tree_nodes(roots, render_label),
         )
+
+    def folder_tree_view(self, request):
+        """
+        Return the subfolders of a folder in the tree as HTML list items
+        """
+        if not self.has_view_or_change_permission(request):
+            raise PermissionDenied
+        try:
+            folder = Folder.objects.get(pk=request.GET.get("folder__id__exact"))
+        except (Folder.DoesNotExist, ValueError, ValidationError) as exc:
+            raise Http404 from exc
+        queryset = self.get_folder_tree_queryset(request, folder)
+        if queryset is None:
+            raise Http404
+        roots, render_label = self._folder_tree_nodes(
+            request, queryset, queryset.filter(parent=folder)
+        )
+        return HttpResponse(render_folder_tree_nodes(roots, render_label))
 
     def changelist_view(self, request, extra_context=None):
         folder__id__exact = request.GET.get("folder__id__exact")

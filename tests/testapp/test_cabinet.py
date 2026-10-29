@@ -838,6 +838,46 @@ class CabinetTestCase(TestCase):
             content.index(f'data-cabinet-folder="{other.pk}"'),
         )
 
+    def test_folder_tree_lazy(self):
+        root = Folder.objects.create(name="Root")
+        sub = Folder.objects.create(name="Sub", parent=root)
+        subsub = Folder.objects.create(name="Subsub", parent=sub)
+        Folder.objects.create(name="Subsubsub", parent=subsub)
+        other = Folder.objects.create(name="Other")
+        Folder.objects.create(name="Other sub", parent=other)
+        c = self.login()
+
+        # Only root folders are loaded, subfolders when expanding them
+        response = c.get("/admin/cabinet/file/")
+        self.assertContains(response, "data-cabinet-lazy", 2)
+        self.assertNotContains(response, f'data-cabinet-folder="{sub.pk}"')
+
+        # The path to the current folder and its children are loaded
+        response = c.get(f"/admin/cabinet/file/?folder__id__exact={sub.pk}&o=1")
+        self.assertContains(response, f'data-cabinet-folder="{subsub.pk}"')
+        self.assertContains(response, "data-cabinet-lazy", 2)
+
+        response = c.get(
+            f"/admin/cabinet/file/folder-tree/?folder__id__exact={sub.pk}&o=1"
+        )
+        self.assertEqual(
+            response.content.decode(),
+            "<li><details data-cabinet-lazy><summary>"
+            f'<a href="?o=1&amp;folder__id__exact={subsub.pk}"'
+            f' data-cabinet-folder="{subsub.pk}">Subsub</a>'
+            "</summary><ul></ul></details></li>",
+        )
+
+        response = c.get(
+            f"/admin/cabinet/file/folder-tree/?folder__id__exact={subsub.pk}"
+        )
+        self.assertContains(response, '<li class="leaf">')
+
+        response = c.get("/admin/cabinet/file/folder-tree/?folder__id__exact=x")
+        self.assertEqual(response.status_code, 404)
+        response = c.get("/admin/cabinet/file/folder-tree/")
+        self.assertEqual(response.status_code, 404)
+
     def test_move(self):
         folder = Folder.objects.create(name="Root")
         other = Folder.objects.create(name="Other")

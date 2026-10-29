@@ -57,7 +57,8 @@ Folder tree and moving files
 
 The file list shows a collapsible folder tree on the left. It starts
 with a link to the root folder, followed by the root folder containing
-the current folder and the remaining root folders sorted by name. Files
+the current folder and the remaining root folders sorted by name.
+Subfolders are loaded when expanding a folder. Files
 can be moved by dragging them onto a folder in the tree or onto the
 subfolders and ``../`` in the file list. Dragging a selected file moves
 all selected files. Collapsed folders in the tree expand when hovering

@@ -37,6 +37,7 @@ django.jQuery(($) => {
     .getAll("folder__id__exact")
     .at(-1)
 
+  initFolderTree()
   initMoveFiles(folder)
 
   if (!folder || !/^\d+$/.test(folder)) {
@@ -132,6 +133,39 @@ django.jQuery(($) => {
     }
   }
 })
+
+function initFolderTree() {
+  // Load subfolders when expanding a folder in the tree for the first time,
+  // either by clicking or by hovering over it while dragging files. The
+  // toggle event doesn't bubble, therefore listen in the capture phase.
+  document.addEventListener(
+    "toggle",
+    (e) => {
+      const details = e.target
+      if (!details.open || !details.matches?.("details[data-cabinet-lazy]")) {
+        return
+      }
+      details.removeAttribute("data-cabinet-lazy")
+      const href = details
+        .querySelector(":scope > summary a")
+        .getAttribute("href")
+
+      fetch(`./folder-tree/${href}`, { credentials: "same-origin" })
+        .then((response) => {
+          if (!response.ok) throw new Error(response.statusText)
+          return response.text()
+        })
+        .then((html) => {
+          details.querySelector(":scope > ul").innerHTML = html
+        })
+        .catch(() => {
+          details.setAttribute("data-cabinet-lazy", "")
+          details.open = false
+        })
+    },
+    true,
+  )
+}
 
 const MOVE_TYPE = "application/x-cabinet-files"
 
