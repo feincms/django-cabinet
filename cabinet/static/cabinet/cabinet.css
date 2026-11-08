@@ -142,7 +142,7 @@ form .aligned .cabinet-folder-tree ul {
 }
 
 /* Moving files by dragging them onto folders */
-#result_list tr[draggable="true"] {
+#result_list [draggable="true"] {
   cursor: grab;
 }
 .cabinet-dropover {

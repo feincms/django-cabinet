@@ -179,10 +179,16 @@ function initMoveFiles(currentFolder) {
   )?.value
   if (!csrfToken) return
 
+  // Only the thumbnail and the file name start a drag so that the text in
+  // the other columns (for example the file ID) can still be selected.
   const rows = document.querySelectorAll("#result_list tbody tr")
   for (const row of rows) {
     if (!row.querySelector("input.action-select")) continue
-    row.draggable = true
+    for (const cell of row.querySelectorAll(
+      ".field-admin_thumbnail, .field-admin_file_name",
+    )) {
+      cell.draggable = true
+    }
   }
 
   // Drag all selected files if the dragged row is selected, the dragged row
@@ -191,7 +197,9 @@ function initMoveFiles(currentFolder) {
   document.addEventListener(
     "dragstart",
     (e) => {
-      const row = e.target.closest?.("#result_list tr[draggable=true]")
+      const row = e.target
+        .closest?.("#result_list [draggable=true]")
+        ?.closest("tr")
       if (!row) return
 
       const checkbox = row.querySelector("input.action-select")
