@@ -168,6 +168,7 @@ function initFolderTree() {
 }
 
 const MOVE_TYPE = "application/x-cabinet-files"
+const UNDO_KEY = "cabinet-undo-move"
 
 function isMoveDrag(e) {
   return !!e.dataTransfer?.types.includes(MOVE_TYPE)
@@ -256,22 +257,69 @@ function initMoveFiles(currentFolder) {
     e.preventDefault()
     target.classList.remove("cabinet-dropover")
 
-    const body = new FormData()
-    body.append("csrfmiddlewaretoken", csrfToken)
-    body.append("folder", target.dataset.cabinetFolder)
-    for (const id of JSON.parse(e.dataTransfer.getData(MOVE_TYPE))) {
-      body.append("files", id)
-    }
+    moveFiles([
+      {
+        folder: target.dataset.cabinetFolder,
+        files: JSON.parse(e.dataTransfer.getData(MOVE_TYPE)),
+      },
+    ])
+  })
 
-    fetch("./move/", { method: "POST", body, credentials: "same-origin" })
-      .then((response) => {
-        if (!response.ok) throw new Error(response.statusText)
-        window.location.reload()
+  // Move the files and reload the page. The move view returns the folders
+  // the files came from; remember them for undoing the move after reloading.
+  function moveFiles(moves) {
+    moves
+      .reduce(
+        (promise, move) =>
+          promise.then((undo) => {
+            const body = new FormData()
+            body.append("csrfmiddlewaretoken", csrfToken)
+            body.append("folder", move.folder)
+            for (const id of move.files) body.append("files", id)
+            return fetch("./move/", {
+              method: "POST",
+              body,
+              credentials: "same-origin",
+            })
+              .then((response) => {
+                if (!response.ok) throw new Error(response.statusText)
+                return response.json()
+              })
+              .then((data) => [...undo, ...data.undo])
+          }),
+        Promise.resolve([]),
+      )
+      .then((undo) => {
+        try {
+          window.sessionStorage.setItem(UNDO_KEY, JSON.stringify(undo))
+        } catch {}
       })
       .catch((error) => {
         window.alert(`Moving files failed: ${error.message}`)
       })
-  })
+      .finally(() => {
+        window.location.reload()
+      })
+  }
+
+  // Offer undoing the last move next to its success message
+  let undo = null
+  try {
+    undo = JSON.parse(window.sessionStorage.getItem(UNDO_KEY))
+    window.sessionStorage.removeItem(UNDO_KEY)
+  } catch {}
+  const message = [
+    ...document.querySelectorAll(".messagelist .cabinet-move"),
+  ].at(-1)
+  const template = document.getElementById("cabinet-undo-move")
+  if (undo?.length && message && template) {
+    const button = template.content.firstElementChild.cloneNode(true)
+    button.addEventListener("click", () => {
+      button.disabled = true
+      moveFiles(undo)
+    })
+    message.append(" ", button)
+  }
 
   // Expand collapsed folders in the tree when hovering over them for a
   // moment while dragging files

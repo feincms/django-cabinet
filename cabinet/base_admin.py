@@ -754,7 +754,12 @@ class FileAdminBase(FolderAdminMixin):
             return JsonResponse({"success": False}, status=400)
 
         folder = form.cleaned_data["folder"]
-        count = form.cleaned_data["files"].update(folder=folder)
+        files = form.cleaned_data["files"]
+        # Remember where the files came from so that the move can be undone
+        undo = {}
+        for pk, folder_id in files.values_list("pk", "folder_id"):
+            undo.setdefault(folder_id, []).append(pk)
+        count = files.update(folder=folder)
         self.message_user(
             request,
             ngettext(
@@ -763,8 +768,18 @@ class FileAdminBase(FolderAdminMixin):
                 count,
             )
             % {"count": count, "folder": folder},
+            extra_tags="cabinet-move",
         )
-        return JsonResponse({"success": True, "count": count})
+        return JsonResponse(
+            {
+                "success": True,
+                "count": count,
+                "undo": [
+                    {"folder": folder_id, "files": sorted(pks)}
+                    for folder_id, pks in sorted(undo.items())
+                ],
+            }
+        )
 
     top_fields = ["folder", "caption", "copyright"]
     advanced_fields = ["_overwrite"]

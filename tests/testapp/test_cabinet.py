@@ -898,7 +898,14 @@ class CabinetTestCase(TestCase):
             "/admin/cabinet/file/move/",
             {"files": [files[0].pk, files[1].pk], "folder": other.pk},
         )
-        self.assertEqual(response.json(), {"success": True, "count": 2})
+        self.assertEqual(
+            response.json(),
+            {
+                "success": True,
+                "count": 2,
+                "undo": [{"folder": folder.pk, "files": [files[0].pk, files[1].pk]}],
+            },
+        )
         self.assertEqual(
             sorted(File.objects.filter(folder=other).values_list("pk", flat=True)),
             [files[0].pk, files[1].pk],
@@ -906,3 +913,18 @@ class CabinetTestCase(TestCase):
 
         response = c.get(f"/admin/cabinet/file/?folder__id__exact={other.pk}")
         self.assertContains(response, "Moved 2 files to &quot;Other&quot;.")
+        self.assertContains(response, 'class="cabinet-move info"')
+        self.assertContains(response, 'id="cabinet-undo-move"')
+
+        # Undoing moves files back to the folders they came from
+        response = c.post(
+            "/admin/cabinet/file/move/",
+            {"files": [files[0].pk, files[2].pk], "folder": folder.pk},
+        )
+        self.assertEqual(
+            response.json()["undo"],
+            [
+                {"folder": folder.pk, "files": [files[2].pk]},
+                {"folder": other.pk, "files": [files[0].pk]},
+            ],
+        )
