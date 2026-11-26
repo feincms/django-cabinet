@@ -4,6 +4,9 @@ Change log
 Next version
 ~~~~~~~~~~~~
 
+0.24 (2026-11-26)
+~~~~~~~~~~~~~~~~~
+
 - Used Django admin's CSS variables for colors and border radii, so that the
   file list, its icons and the upload overlay follow dark mode and admin
   themes.
